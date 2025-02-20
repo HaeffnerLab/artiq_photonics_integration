@@ -22,5 +22,3 @@ class ResetDACTest(EnvExperiment):
         self.zotino0.init()
         delay(10*ms)
         self.zotino0.set_dac(self.voltages, self.channels)
-        
-        
