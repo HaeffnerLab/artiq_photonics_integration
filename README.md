@@ -1,6 +1,6 @@
 # ARTIQ Control Framework (ACF) of Photonics Integration
 
-ACF is a framework for ARTIQ (Advanced Real-Time Infrastructure for Quantum physics). Thanks to David Miron for initializing the framework, and thanks to Jiarui Liu and Leo Jiang for the further development.
+ACF is a framework for **ARTIQ (Advanced Real-Time Infrastructure for Quantum physics)**. Thanks to **David Miron** for initializing the framework, and thanks to **Jiarui Liu** and **Leo Jiang** for the further development.
 
 ## Installation
 
