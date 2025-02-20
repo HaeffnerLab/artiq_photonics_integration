@@ -1,0 +1,105 @@
+{
+
+"ttl": [
+  {
+    "name": "ttl_pmt_input",
+    "channel": 0
+  },  
+  {
+    "name": "ttl_linetrigger_input",
+    "channel": 0
+  },
+  {
+    "name": "ttl_awg_ready",
+    "channel": 0
+  },
+  {
+    "name": "ttl_awg_trigger",
+    "channel": 0
+  },
+  {
+    "name": "ttl_shuttling_awg_trigger",
+    "channel": 0
+  },
+  {
+    "name": "ttl_camera_trigger",
+    "channel": 0
+  },
+  {
+    "name": "ttl_375_pis",
+    "channel": 0
+  },
+  {
+    "name": "ttl_422_pis",
+    "channel": 0
+  },
+  {
+    "name": "ttl_flip_mirror",
+    "channel": 0
+  },
+  {
+    "name": "ttl_rf_switch_DDS_729SP",
+    "channel": 0
+  },
+  {
+    "name": "ttl_rf_switch_AWG_729SP",
+    "channel": 0
+  }
+],
+  
+
+
+"dds": [
+
+  {
+    "name": "dds_729_sp",
+    "board": 1,
+    "channel": 2
+  },
+  {
+    "name": "dds_729_sp_aux",
+    "board": 1,
+    "channel": 1
+  },
+  {
+    "name": "dds_397_dp",
+    "board": 0,
+    "channel": 0
+  },
+  {
+    "name": "dds_866_dp",
+    "board": 0,
+    "channel": 1
+  },
+  {
+    "name": "dds_729_dp",
+    "board": 1,
+    "channel": 1
+  },
+  {
+    "name": "dds_397_sigma",
+    "board": 1,
+    "channel": 3
+  },
+
+  {
+    "name": "dds_397_far_detuned",
+    "board": 0,
+    "channel": 3
+  },
+
+  {
+    "name": "dds_854_dp",
+    "board": 0,
+    "channel": 2
+  },
+  {
+    "name": "dds_rf_g_qubit",
+    "board": 1,
+    "channel": 3
+  }
+
+
+]
+}
+
