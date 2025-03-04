@@ -27,7 +27,7 @@ class PulseDDS(_ACFExperiment):
             "off_secs",
             NumberValue(default=1*s, unit="s", min=0*s),
             tooltip="Seconds off"
-        ) 
+        )
 
         self.add_arg_from_param("frequency/397_cooling")
         self.add_arg_from_param("frequency/866_cooling")
