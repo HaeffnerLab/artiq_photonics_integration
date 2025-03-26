@@ -66,15 +66,19 @@ class PulseDDS(_ACFExperiment):
 
         if self.if_pulse:
             while True:
+                self.dds_866_dp.set_att(self.attenuation_866)
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
                 self.dds_397_far_detuned.sw.on()
                 # self.dds_854_dp.sw.on()
                 delay(self.on_secs)
 
-                self.dds_397_dp.sw.off()
-                self.dds_866_dp.sw.off()
-                self.dds_397_far_detuned.sw.off()
+                self.dds_397_dp.sw.on()
+                # self.dds_866_dp.sw.on()
+                # self.dds_866_dp.set_att(self.attenuation_866 * 1.3)
+                self.dds_866_dp.set_att(self.attenuation_866 * 2.0)
+
+                self.dds_397_far_detuned.sw.on()
                 # self.dds_854_dp.sw.off()
                 delay(self.off_secs)
 
