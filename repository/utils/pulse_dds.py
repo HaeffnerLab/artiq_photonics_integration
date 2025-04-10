@@ -15,7 +15,7 @@ class PulseDDS(_ACFExperiment):
             "if_pulse",
             BooleanValue(default=True),
             tooltip="Is pulsing effect on"
-        ) 
+        )
 
         self.setattr_argument(
             "on_secs",
