@@ -65,22 +65,39 @@ class PulseDDS(_ACFExperiment):
         # self.dds_854_dp.sw.on()
 
         if self.if_pulse:
-            while True:
-                self.dds_866_dp.set_att(self.attenuation_866)
-                self.dds_397_dp.sw.on()
-                self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.sw.on()
-                # self.dds_854_dp.sw.on()
-                delay(self.on_secs)
+            try:
+                # Scan frequencies: original + 5 MHz, original - 5 MHz, original
+                frequencies = [
+                    self.frequency_397_far_detuned + 10*MHz,
+                    self.frequency_397_far_detuned - 10*MHz,
+                    self.frequency_397_far_detuned
+                ]
+                
+                current_freq_index = 0
+                current_freq_start_time = now_mu()
+                freq_duration = 10*s  # 20 seconds for each frequency
+                
+                self.dds_397_far_detuned.set(frequencies[current_freq_index])
+                
+                while True:
+                    # Check if it's time to switch frequency
+                    elapsed_time = self.core.get_rtio_counter_mu() - current_freq_start_time
+                    if elapsed_time >= self.core.seconds_to_mu(freq_duration):
+                        # Move to next frequency
+                        current_freq_index = (current_freq_index + 1) % len(frequencies)
+                        self.dds_397_far_detuned.set(frequencies[current_freq_index])
+                        current_freq_start_time = now_mu()
+                    
+                    # Handle 866 blinking
+                    self.dds_866_dp.set_att(self.attenuation_866)
+                    self.dds_866_dp.sw.on()
+                    delay(self.on_secs)
 
-                self.dds_397_dp.sw.on()
-                # self.dds_866_dp.sw.on()
-                # self.dds_866_dp.set_att(self.attenuation_866 * 1.3)
-                self.dds_866_dp.set_att(self.attenuation_866 * 2.0)
-
-                self.dds_397_far_detuned.sw.on()
-                # self.dds_854_dp.sw.off()
-                delay(self.off_secs)
+                    self.dds_866_dp.set_att(self.attenuation_866 * 1.0)
+                    delay(self.off_secs)
+            
+            except TerminationRequested:
+                pass
 
 
 
