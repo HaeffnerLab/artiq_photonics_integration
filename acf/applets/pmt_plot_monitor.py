@@ -144,7 +144,7 @@ class PMTPlotMonitor(QWidget):
         y_data = value[self.pmt_dataset_name][0]
         self.pmt.append(y_data)
 
-        if len(self.pmt) > 5e3:
+        if len(self.pmt) > 5e4:
             self.pmt = []
 
         if self.plotting:  # Only plot if plotting is active
