@@ -19,13 +19,13 @@ class PulseDDS(_ACFExperiment):
 
         self.setattr_argument(
             "on_secs",
-            NumberValue(default=5*s, unit="s", min=0*s),
+            NumberValue(default=5*s, unit="s", min=0*s, precision=8),
             tooltip="Seconds on"
         )
 
         self.setattr_argument(
             "off_secs",
-            NumberValue(default=1*s, unit="s", min=0*s),
+            NumberValue(default=1*s, unit="s", min=0*s, precision=8),
             tooltip="Seconds off"
         )
 
@@ -38,12 +38,15 @@ class PulseDDS(_ACFExperiment):
         self.add_arg_from_param("attenuation/866")
         self.add_arg_from_param("attenuation/854_dp")
         self.add_arg_from_param("attenuation/397_far_detuned")
-
+    def prepare(self):
+        self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
 
     @kernel
     def run(self):
-            # self.core.break_realtime()
+            # 
         self.setup_run()
+        self.core.break_realtime()
+        delay(3.0*ms)
 
         self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_dp.set_att(self.attenuation_397)
@@ -95,6 +98,15 @@ class PulseDDS(_ACFExperiment):
 
                     self.dds_866_dp.set_att(self.attenuation_866 * 1.0)
                     delay(self.off_secs)
+
+                    self.core.break_realtime()
+                    num_pmt_pulses = self.ttl_pmt_input.count(
+                        self.ttl_pmt_input.gate_rising(2.0*ms)
+                    ) 
+                    self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
+
+                    self.core.break_realtime()
+                    delay(3.0*ms)
             
             except TerminationRequested:
                 pass

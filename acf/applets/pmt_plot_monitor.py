@@ -142,17 +142,13 @@ class PMTPlotMonitor(QWidget):
                                "not in value.")
 
         y_data = value[self.pmt_dataset_name][0]
+        self.pmt.append(y_data)
 
-        
-
-        if len(self.pmt) > 5e5:
+        if len(self.pmt) > 5e3:
             self.pmt = []
 
         if self.plotting:  # Only plot if plotting is active
-            self.pmt.append(y_data)
-
             x_data = np.arange(len(self.pmt))
-
             self.plot_widget.clear()
             plot = self.plot_widget.plot(x_data, self.pmt, pen=self.pen, symbol="o")
             plot.setSymbolSize(5)
