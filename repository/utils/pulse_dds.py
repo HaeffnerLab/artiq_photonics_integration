@@ -100,9 +100,17 @@ class PulseDDS(_ACFExperiment):
                     delay(self.off_secs)
 
                     self.core.break_realtime()
-                    num_pmt_pulses = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(2.0*ms)
+                    self.dds_866_dp.sw.on()
+                    num_pmt_pulses_on = self.ttl_pmt_input.count(
+                        self.ttl_pmt_input.gate_rising(10.0*ms)
                     )
+                    delay(1.0*ms)
+                    self.dds_866_dp.sw.off()
+                    num_pmt_pulses_off = self.ttl_pmt_input.count(
+                        self.ttl_pmt_input.gate_rising(10.0*ms)
+                    )
+                    delay(1.0*ms)
+                    num_pmt_pulses = num_pmt_pulses_on - num_pmt_pulses_off
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
                     self.core.break_realtime()
                     delay(3.0*ms)
