@@ -102,7 +102,7 @@ class PulseDDS(_ACFExperiment):
                     self.core.break_realtime()
                     num_pmt_pulses = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(2.0*ms)
-                    ) 
+                    )
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
 
                     self.core.break_realtime()
