@@ -71,8 +71,8 @@ class PulseDDS(_ACFExperiment):
             try:
                 # Scan frequencies: original + 5 MHz, original - 5 MHz, original
                 frequencies = [
-                    self.frequency_397_far_detuned + 10*MHz,
-                    self.frequency_397_far_detuned - 10*MHz,
+                    self.frequency_397_far_detuned + 5*MHz,
+                    self.frequency_397_far_detuned - 5*MHz,
                     self.frequency_397_far_detuned
                 ]
                 
@@ -88,10 +88,12 @@ class PulseDDS(_ACFExperiment):
                     if elapsed_time >= self.core.seconds_to_mu(freq_duration):
                         # Move to next frequency
                         current_freq_index = (current_freq_index + 1) % len(frequencies)
-                        self.dds_397_far_detuned.set(frequencies[current_freq_index])
+                        # self.dds_397_far_detuned.set(frequencies[current_freq_index])
+                        self.dds_397_far_detuned.set(170*MHz)
                         current_freq_start_time = now_mu()
                     
                     # Handle 866 blinking
+                    self.dds_397_far_detuned.set(170*MHz)
                     self.dds_866_dp.set_att(self.attenuation_866)
                     self.dds_866_dp.sw.on()
                     delay(self.on_secs)
@@ -101,6 +103,7 @@ class PulseDDS(_ACFExperiment):
 
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
+                    self.dds_397_far_detuned.set(200*MHz)
                     num_pmt_pulses_on = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
