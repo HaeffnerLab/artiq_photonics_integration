@@ -118,6 +118,3 @@ class PulseDDS(_ACFExperiment):
             
             except TerminationRequested:
                 pass
-
-
-
