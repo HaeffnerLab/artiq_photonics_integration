@@ -89,11 +89,11 @@ class PulseDDS(_ACFExperiment):
                         # Move to next frequency
                         current_freq_index = (current_freq_index + 1) % len(frequencies)
                         # self.dds_397_far_detuned.set(frequencies[current_freq_index])
-                        self.dds_397_far_detuned.set(170*MHz)
+                        self.dds_397_far_detuned.set(175*MHz)
                         current_freq_start_time = now_mu()
                     
                     # Handle 866 blinking
-                    self.dds_397_far_detuned.set(170*MHz)
+                    self.dds_397_far_detuned.set(175*MHz)
                     self.dds_866_dp.set_att(self.attenuation_866)
                     self.dds_866_dp.sw.on()
                     delay(self.on_secs)
@@ -103,7 +103,7 @@ class PulseDDS(_ACFExperiment):
 
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
-                    self.dds_397_far_detuned.set(200*MHz)
+                    self.dds_397_far_detuned.set(205*MHz)
                     num_pmt_pulses_on = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
@@ -113,7 +113,7 @@ class PulseDDS(_ACFExperiment):
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
                     delay(1.0*ms)
-                    num_pmt_pulses = (num_pmt_pulses_on - num_pmt_pulses_off) / 1.0
+                    num_pmt_pulses = 10 * (num_pmt_pulses_on - num_pmt_pulses_off) / 1.0
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
