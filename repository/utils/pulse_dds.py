@@ -36,6 +36,12 @@ class PulseDDS(_ACFExperiment):
             tooltip="Enable DC voltage scanning"
         )
 
+        self.setattr_argument(
+            "initial_voltage_set",
+            NumberValue(default=0, min=0, max=100000, step=1, precision=0),
+            tooltip="Initial voltage set index to start from (0-4)"
+        )
+
         self.add_arg_from_param("frequency/397_cooling")
         self.add_arg_from_param("frequency/866_cooling")
         self.add_arg_from_param("frequency/854_dp")
@@ -77,7 +83,12 @@ class PulseDDS(_ACFExperiment):
 
     def prepare(self):
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
-        self.current_voltage_set = 0
+        # Set initial voltage set based on user parameter
+        self.current_voltage_set = self.initial_voltage_set
+        # Ensure voltage set index is within valid range
+        if self.current_voltage_set >= len(self.voltage_sets):
+            self.current_voltage_set = 0
+            print(f"Warning: Initial voltage set {self.initial_voltage_set} is out of range. Using 0 instead.")
 
     @kernel
     def run(self):
@@ -184,6 +195,7 @@ class PulseDDS(_ACFExperiment):
                         delay(10*ms)
                         
                         print("Changed to voltage set", self.current_voltage_set)
+                        print("Current voltages:", self.voltage_sets[self.current_voltage_set])
             
             except TerminationRequested:
                 pass
