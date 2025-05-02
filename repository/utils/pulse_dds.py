@@ -20,13 +20,13 @@ class PulseDDS(_ACFExperiment):
 
         self.setattr_argument(
             "on_secs",
-            NumberValue(default=5*s, unit="s", min=0*s, precision=8),
+            NumberValue(default=0.2*s, unit="s", min=0*s, precision=8),
             tooltip="Seconds on"
         )
 
         self.setattr_argument(
             "off_secs",
-            NumberValue(default=1*s, unit="s", min=0*s, precision=8),
+            NumberValue(default=0.2*s, unit="s", min=0*s, precision=8),
             tooltip="Seconds off"
         )
 
