@@ -101,6 +101,10 @@ class PMTPlotMonitor(QWidget):
         self.plot_widget.setTitle("PMT Count Monitor")
         self.plot_widget.setBackground('k')
         self.pen = pg.mkPen(color=(0, 255, 0))
+        
+        # Create a horizontal line at y=0 for reference
+        self.zero_line = pg.InfiniteLine(pos=0, angle=0, pen=pg.mkPen(color=(255, 255, 255), style=pg.QtCore.Qt.DashLine))
+        self.plot_widget.addItem(self.zero_line)
 
         # Add the plot widget to the main layout
         main_layout.addWidget(self.plot_widget)
@@ -135,6 +139,8 @@ class PMTPlotMonitor(QWidget):
     def clear_plot(self):
         self.pmt = []
         self.plot_widget.clear()
+        # Re-add the zero line after clearing
+        self.plot_widget.addItem(self.zero_line)
 
     def data_changed(self, value, metadata, persist, mod_buffer):
         if self.pmt_dataset_name not in value:
@@ -142,18 +148,17 @@ class PMTPlotMonitor(QWidget):
                                "not in value.")
 
         y_data = value[self.pmt_dataset_name][0]
+        self.pmt.append(y_data)
 
-        
-
-        if len(self.pmt) > 5e5:
-            self.pmt = []
+        length = 3000
+        if len(self.pmt) > length:
+            self.pmt = self.pmt[-int(length):]  # Keep only the last 1000 points
 
         if self.plotting:  # Only plot if plotting is active
-            self.pmt.append(y_data)
-
             x_data = np.arange(len(self.pmt))
-
             self.plot_widget.clear()
+            # Re-add the zero line after clearing
+            self.plot_widget.addItem(self.zero_line)
             plot = self.plot_widget.plot(x_data, self.pmt, pen=self.pen, symbol="o")
             plot.setSymbolSize(5)
             plot.setSymbolBrush((255, 0, 0))  # Set the color of the symbol
