@@ -181,8 +181,8 @@ class PulseDDS(_ACFExperiment):
                     # Increment period counter
                     period_counter += 1
                     
-                    # Check if we should change DC voltage set (every 10 periods)
-                    if self.scan_dc_voltages and period_counter >= 60:
+                    # Check if we should change DC voltage set (every 180 periods)
+                    if self.scan_dc_voltages and period_counter >= 180:
                         period_counter = 0  # Reset counter
                         
                         # Move to next voltage set
