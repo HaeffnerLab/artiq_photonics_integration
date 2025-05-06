@@ -148,11 +148,11 @@ class PulseDDS(_ACFExperiment):
                         # Move to next frequency
                         current_freq_index = (current_freq_index + 1) % len(frequencies)
                         # self.dds_397_far_detuned.set(frequencies[current_freq_index])
-                        self.dds_397_far_detuned.set(175*MHz)
+                        self.dds_397_far_detuned.set(170*MHz)
                         current_freq_start_time = now_mu()
                     
                     # Handle 866 blinking
-                    self.dds_397_far_detuned.set(175*MHz)
+                    self.dds_397_far_detuned.set(170*MHz)
                     self.dds_866_dp.set_att(self.attenuation_866)
                     self.dds_866_dp.sw.on()
                     delay(self.on_secs)
