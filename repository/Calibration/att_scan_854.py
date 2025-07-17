@@ -39,7 +39,7 @@ class AttScan854(_ACFExperiment):
 
         self.setattr_argument(
             "freq_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
             tooltip="729 double pass frequency",
         )
         self.setattr_argument(
@@ -76,7 +76,7 @@ class AttScan854(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_att_854.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg_thresholded", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("attenuation_dB", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)
@@ -138,6 +138,9 @@ class AttScan854(_ACFExperiment):
 
                 #self.dds_729_sp.sw.off()
                 self.dds_729_dp.sw.off()
+
+                delay(200*us)
+                self.dds_866_dp.sw.off()
                 self.dds_854_dp.sw.off()
                 delay(5*us)
 

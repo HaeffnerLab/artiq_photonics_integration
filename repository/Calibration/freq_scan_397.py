@@ -58,7 +58,7 @@ class FreqScan397(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_freq_397.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("frequencies_MHz", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)
@@ -84,7 +84,7 @@ class FreqScan397(_ACFExperiment):
 
             # Set the 397 frequency
             self.dds_397_dp.set(freq_397)
-            self.dds_397_far_detuned.sw.off()
+            self.dds_397_far_detuned.cfg_sw(False)
             self.dds_397_dp.sw.on()
             self.dds_866_dp.sw.on()
 
@@ -106,9 +106,9 @@ class FreqScan397(_ACFExperiment):
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
                 if self.far_detuned_on:
-                    self.dds_397_far_detuned.sw.on()
+                    self.dds_397_far_detuned.cfg_sw(True)
                 else:
-                    self.dds_397_far_detuned.sw.off()
+                    self.dds_397_far_detuned.cfg_sw(False)
 
                 num_pmt_pulses1 = self.ttl_pmt_input.count(
                     self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)

@@ -1,0 +1,66 @@
+{
+    "target": "kasli_soc",
+    "min_artiq_version": "7.0",
+    "variant": "lattice",
+    "hw_rev": "v1.0",
+    "base": "standalone",
+    "core_addr": "192.168.0.75",
+    "peripherals": [
+        {
+            "type": "dio",
+            "board": "DIO_SMA",
+            "ports": [0],
+            "bank_direction_low": "input",
+            "bank_direction_high": "output"
+        },
+        {
+            "type": "dio",
+            "board": "DIO_SMA",
+            "ports": [1],
+            "bank_direction_low": "output",
+            "bank_direction_high": "output"
+        },
+        {
+            "type": "urukul",
+            "dds": "ad9910",
+            "hw_rev": "v1.5",
+            "ports": [2, 3],
+            "clk_sel": 2
+        },
+        {
+            "type": "urukul",
+            "dds": "ad9910",
+            "hw_rev": "v1.5",
+            "ports": [4, 5],
+            "clk_sel": 2
+        },
+        {
+            "type": "urukul",
+            "dds": "ad9910",
+            "hw_rev": "v1.5",
+            "ports": [6, 7],
+            "clk_sel": 2
+        },
+        {
+            "type": "urukul",
+            "dds": "ad9910",
+            "hw_rev": "v1.5",
+            "ports": [8],
+            "clk_sel": 2
+        },
+
+        {
+            "type": "zotino",
+            "ports":[9]
+        },
+        {
+            "type": "sampler",
+            "ports": [10]
+        },
+
+        {
+            "type": "grabber",
+            "ports": [11]
+        }
+    ]
+}

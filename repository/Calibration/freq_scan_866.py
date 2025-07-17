@@ -60,7 +60,7 @@ class FreqScan866(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_freq_866.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("frequencies_MHz", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)
@@ -85,7 +85,7 @@ class FreqScan866(_ACFExperiment):
             self.dds_866_dp.set(freq_866)
             self.dds_397_dp.set(self.frequency_397_resonance)
 
-            self.dds_397_far_detuned.sw.off()
+            self.dds_397_far_detuned.cfg_sw(False)
             self.dds_397_dp.sw.on()
             self.dds_866_dp.sw.on()
 
@@ -104,7 +104,7 @@ class FreqScan866(_ACFExperiment):
                 delay(10*us)
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.sw.off()
+                self.dds_397_far_detuned.cfg_sw(False)
                 delay(1*ms)
 
                 num_pmt_pulses1 = self.ttl_pmt_input.count(

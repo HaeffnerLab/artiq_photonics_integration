@@ -15,6 +15,7 @@ class Rabi(Sequence):
             frequency_729_sp,
             attenuation_729_dp,
             attenuation_729_sp,
+            amp_729_dp=1.0,
             phase:float=0.0,
             ref_time_mu=int64(-1)
         ):
@@ -22,7 +23,7 @@ class Rabi(Sequence):
         # in the register, the phase is pow_/65536
         # in turns (meaning how many 2pi, 1 turn means 2pi)
 
-        self.dds_729_dp.set(frequency_729_dp, phase=0.0    , ref_time_mu=ref_time_mu)
+        self.dds_729_dp.set(frequency_729_dp, phase=0.0, amplitude=amp_729_dp, ref_time_mu=ref_time_mu)
         self.dds_729_sp.set(frequency_729_sp, phase=phase, ref_time_mu=ref_time_mu)
 
         self.dds_729_dp.set_att(attenuation_729_dp)

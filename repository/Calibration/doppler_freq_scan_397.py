@@ -19,13 +19,13 @@ class Doppler_FreqScan397(_ACFExperiment):
 
         self.setattr_argument(
             "RSB_freq_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2")+self.parameter_manager.get_param("qubit/vib_freq"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2")+self.parameter_manager.get_param("qubit/vib_freq"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
             tooltip="729 double pass frequency",
             group='Side_Band'
         )
         self.setattr_argument(
             "BSB_freq_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2")-self.parameter_manager.get_param("qubit/vib_freq"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2")-self.parameter_manager.get_param("qubit/vib_freq"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
             tooltip="729 double pass frequency",
             group='Side_Band'
         )
@@ -89,7 +89,7 @@ class Doppler_FreqScan397(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_freq_397.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("frequency_MHz", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)

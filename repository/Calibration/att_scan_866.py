@@ -59,7 +59,7 @@ class AttScan866(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_att_866.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("attenuation_dB", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)
@@ -83,7 +83,7 @@ class AttScan866(_ACFExperiment):
 
             # Set the 397 frequency
             self.dds_866_dp.set_att(att_866)
-            self.dds_397_far_detuned.sw.off()
+            self.dds_397_far_detuned.cfg_sw(False)
             self.dds_397_dp.sw.on()
             self.dds_866_dp.sw.on()
 
@@ -106,7 +106,7 @@ class AttScan866(_ACFExperiment):
 
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.sw.off()
+                self.dds_397_far_detuned.cfg_sw(False)
                 delay(50*us)
 
                 num_pmt_pulses1 = self.ttl_pmt_input.count(

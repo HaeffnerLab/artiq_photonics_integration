@@ -78,6 +78,9 @@ class Sequence:
         """
         self.exp = exp
         self.seq = seq
+        self.core=exp.core
+        self.experiment_data=self.exp.experiment_data
+        self.parameter_manager=self.exp.parameter_manager
         self.set_param_and_arg_defaults()
         hardware.add_device_attributes(self)
 
