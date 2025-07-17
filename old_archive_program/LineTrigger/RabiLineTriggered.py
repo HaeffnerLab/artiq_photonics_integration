@@ -91,10 +91,10 @@ class RabiLineTriggered(_ACFExperiment):
         )
 
         self.setattr_device("ttl1")             #input the line trigger signal
-        self.setattr_device("ttl7")            #sets drivers of ttl7 as attributes to see the ha[[e]]
+        self.setattr_device("ttl12")            #sets drivers of TTL12 as attributes to see the ha[[e]]
 
         self.trigger=self.ttl1
-        self.ttl_out=self.ttl7
+        self.ttl_out=self.ttl12
 
 
     def prepare(self):
