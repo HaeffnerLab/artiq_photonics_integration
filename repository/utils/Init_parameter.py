@@ -48,6 +48,11 @@ _DEFAULTS = {
     "frequency/397_sigma":(200*MHz, "MHz"),
     "qubit/vib_freq":(200*MHz, "MHz"),
     "readout/pmt_sampling_time":(100*us, "s"),
+    "SDF/amp_729_sp": (1.0, "V"),
+    "SDF/amp_729_sp_aux": (1.0, "V"),
+    "SDF/beta_range_us": (100*us, "us"),
+    "SDF/num_beta": (100, "V"),
+    "readout/threshold0": (0.0, "V"),
 }
 
 class InitAllDefaults(EnvExperiment):
