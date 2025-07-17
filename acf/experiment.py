@@ -32,7 +32,7 @@ class _ACFExperiment(EnvExperiment):
         self.core.reset()
         self.core.break_realtime()
 
-        self.seq.rf.set_voltage('store')
+        # self.seq.rf.set_voltage('store')
 
         # Init all DDSs
         for dds in self.hardware.get_all_dds():
