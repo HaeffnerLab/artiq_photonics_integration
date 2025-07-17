@@ -7,10 +7,10 @@ class TTL_Input_As_Trigger(EnvExperiment):
 
         self.setattr_device("core")             #sets drivers of core device as attributes
         self.setattr_device("ttl1")             #input the line trigger signal
-        self.setattr_device("ttl12")             #sets drivers of TTL6 as attributes
+        self.setattr_device("ttl7")             #sets drivers of TTL6 as attributes
 
         self.trigger=self.ttl1
-        self.ttl_out=self.ttl12
+        self.ttl_out=self.ttl7
 
         
     @kernel #this code runs on the FPGA
