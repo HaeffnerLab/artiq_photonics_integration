@@ -28,7 +28,7 @@ class FreqScan866_Cam(_ACFExperiment):
             Scannable(
                 default=RangeScan(
                     start=50*MHz,
-                    stop=95*MHz,
+                    stop=105*MHz,
                     npoints=100
                 ),
                 global_min=2*MHz,
@@ -46,7 +46,7 @@ class FreqScan866_Cam(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_freq_866.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("frequencies_MHz", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)
@@ -63,6 +63,7 @@ class FreqScan866_Cam(_ACFExperiment):
         self.setup_run()
         self.seq.ion_store.run()
         delay(5*us)
+        self.seq.rf.set_voltage(mode="lower")
 
         self.seq.cam_two_ions.cam_setup()
         

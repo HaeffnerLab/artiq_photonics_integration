@@ -34,11 +34,11 @@ class Ion_Storage(Sequence):
         self.dds_729_sp_aux.sw.off()
         self.dds_729_sp.set_att(13*dB)
         delay(2*us)
-        self.dds_729_sp.sw.on()
+        self.dds_729_sp.sw.off()
         self.dds_729_dp.sw.off()
         self.dds_854_dp.sw.off()
-        self.dds_rf_g_qubit.sw.off()
-
+        self.dds_Raman_1.sw.off()
+        self.dds_Raman_2.sw.off()
         delay(1*us)
         
         #set attenuation
@@ -47,7 +47,7 @@ class Ion_Storage(Sequence):
         self.dds_866_dp.set_att(self.attenuation_866)
 
         #set frequency
-        self.dds_397_dp.set(self.frequency_397_cooling)#+2.5*MHz)
+        self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_far_detuned.set(self.frequency_397_far_detuned)
         self.dds_866_dp.set(self.frequency_866_cooling)
 
@@ -55,7 +55,7 @@ class Ion_Storage(Sequence):
 
         self.dds_866_dp.sw.on()
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.sw.on()
+        self.dds_397_far_detuned.cfg_sw(True)
         delay(5*us)
 
         # self.dds_397_sigma.set(213*MHz)

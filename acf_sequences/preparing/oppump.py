@@ -22,8 +22,6 @@ class Op_pump(Sequence):
         self.add_argument_from_parameter("Op_pump_att_729", "optical_pumping/att_729_dp")
 
 
-        # self.add_argument("interesting_arg", NumberValue(default=5*MHz, unit="MHz"))
-
         self.add_argument("Op_pump_cycle", NumberValue(default=40, min=0, max=1000, precision=0, step=1))
 
     @kernel

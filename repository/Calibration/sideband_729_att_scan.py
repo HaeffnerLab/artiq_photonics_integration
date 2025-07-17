@@ -43,7 +43,7 @@ class Sideband_AttScan729dp(_ACFExperiment):
 
         self.setattr_argument(
             "RSB_drive_time",
-            NumberValue(default=100*us, min=0.*us, max=1000*us, unit='us'),
+            NumberValue(default=1000*us, min=0.*us, max=1000*us, unit='us'),
             tooltip="Drive time for RSB excitation",
             group='Red_Side_Band'
         )
@@ -77,7 +77,7 @@ class Sideband_AttScan729dp(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_att_729_dp.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_freq], broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg_thresholded", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("attenuation_dB", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset('fit_signal', num_samples, broadcast=True)

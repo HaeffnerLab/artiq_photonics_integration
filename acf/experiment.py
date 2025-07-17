@@ -3,6 +3,8 @@ from acf.hardware_setup import HardwareSetup
 from acf.experiment_data import ExperimentData
 from acf.parameter_manager import ParameterManager
 
+# from awg_utils.rf_modulator import rf_modulator
+
 class _ACFExperiment(EnvExperiment):
 
     def setup(self, sequences):
@@ -28,6 +30,9 @@ class _ACFExperiment(EnvExperiment):
     def setup_run(self):
         """Setup to run at the beginning of the run method."""
         self.core.reset()
+        self.core.break_realtime()
+
+        self.seq.rf.set_voltage('store')
 
         # Init all DDSs
         for dds in self.hardware.get_all_dds():
@@ -35,11 +40,15 @@ class _ACFExperiment(EnvExperiment):
            dds.cpld.init()
         
         # Init all devices / turn off all devices / set them to initial value
-        self.seq.init_device.run()
 
+        self.seq.ion_store.run()
+        #self.seq.init_device.run()
        
         self.ttl_rf_switch_AWG_729SP.off()
         self.ttl_rf_switch_DDS_729SP.on()
+
+        #store rf 
+        
 
         self.core.break_realtime()
 

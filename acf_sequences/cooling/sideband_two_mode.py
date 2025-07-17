@@ -21,7 +21,7 @@ class SideBandCool2Mode(Sequence):
         self.add_parameter("sideband2mode/att_854")
         self.add_parameter("sideband2mode/att_866")
 
-        self.add_argument("SideBandCool_num_cycle", NumberValue(default=30, min=0, max=1000, precision=0, step=1))
+        self.add_argument("SideBandCool_num_cycle", NumberValue(default=20, min=0, max=1000, precision=0, step=1))
         self.add_argument("SideBandCool_Cooling_Type", EnumerationValue(["cw", "pulse"], default="cw"))
 
         #sigma minus 397 light 
@@ -115,7 +115,7 @@ class SideBandCool2Mode(Sequence):
         ##############################################################################################################################
         #set laser power & frequency
         self.set_OP()
-        self.dds_397_far_detuned.sw.off()
+        self.dds_397_far_detuned.cfg_sw(False)
         self.dds_397_dp.sw.off()
 
         self.dds_729_dp.sw.off()
@@ -258,8 +258,8 @@ class SideBandCool2Mode(Sequence):
 
             self.dds_729_sp.set_att(self.sideband2mode_att_729_sp)
             self.dds_729_dp.set_att(self.sideband2mode_att_729_dp-1.0*dB) 
-            if i < 2*self.SideBandCool_num_cycle/5:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2*4)
+            if i < 1*self.SideBandCool_num_cycle/5:
+                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2*2)
             else:
                 self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2)
             delay(200*us)
@@ -268,8 +268,8 @@ class SideBandCool2Mode(Sequence):
             self.dds_729_sp.set_att(self.sideband2mode_att_729_sp) #COM mode
             self.dds_854_dp.set_att(self.sideband2mode_att_854)
             #continous sideband cooling 
-            if i < 2*self.SideBandCool_num_cycle/5:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1*4)
+            if i < 1*self.SideBandCool_num_cycle/5:
+                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1*2)
             else:
                 self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1)
             delay(200*us)

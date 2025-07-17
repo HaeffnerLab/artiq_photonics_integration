@@ -28,19 +28,23 @@ class Init_Device(Sequence):
     def run(self):
 
         # Init devices
-        self.exp.core.break_realtime()
-        self.dds_397_dp.init()
-        self.dds_397_far_detuned.init()
-        self.dds_866_dp.init()
-        self.dds_729_dp.init()
-        self.dds_729_sp.init()
-        self.dds_854_dp.init()
-        delay(5*us)
+        #self.exp.core.break_realtime()
+        # self.dds_397_dp.init()
+        # self.dds_397_far_detuned.init()
+        # self.dds_866_dp.init()
+        #delay(2*us)
+        # self.dds_729_dp.init()
+        # self.dds_729_sp.init()
+        # self.dds_854_dp.init()
+        # self.dds_Raman_1.init()
+        # self.dds_Raman_2.init()
+        #delay(2*us)
         
         # Set attenuations
-        self.dds_397_dp.set_att(self.attenuation_397)
-        self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned)
-        self.dds_866_dp.set_att(self.attenuation_866)
+        # self.dds_397_dp.set_att(self.attenuation_397)
+        # self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned)
+        # self.dds_866_dp.set_att(self.attenuation_866)
+        # delay(2*us)
 
         self.dds_729_dp.set_att(self.attenuation_729_dp)
         self.dds_729_sp.set_att(self.attenuation_729_sp)
@@ -49,9 +53,10 @@ class Init_Device(Sequence):
         delay(5*us)
 
         # Set frequencies
-        self.dds_397_dp.set(self.frequency_397_cooling)
-        self.dds_866_dp.set(self.frequency_866_cooling)
-        self.dds_397_far_detuned.set(self.frequency_397_far_detuned)
+        # self.dds_397_dp.set(self.frequency_397_cooling)
+        # self.dds_866_dp.set(self.frequency_866_cooling)
+        # self.dds_397_far_detuned.set(self.frequency_397_far_detuned)
+        # delay(2*us)
         
         self.dds_729_dp.set(self.frequency_729_dp)
         self.dds_729_sp.set(self.frequency_729_sp)
@@ -65,11 +70,16 @@ class Init_Device(Sequence):
         self.dds_729_sp_aux.sw.off()
         self.dds_729_dp.sw.off()
         self.dds_854_dp.sw.off()
-        self.dds_866_dp.sw.off()
-        self.dds_397_dp.sw.off()
-        self.dds_397_far_detuned.sw.off()
-        self.dds_rf_g_qubit.sw.off()
+        delay(2*us)
+        # self.dds_866_dp.sw.on()
+        # self.dds_397_dp.sw.off()
+        # self.dds_397_far_detuned.cfg_sw(False)
+        delay(2*us)
+        self.dds_Raman_1.sw.off()
+        self.dds_Raman_2.sw.off()
 
+        self.dds_729_radial_dp.sw.off()
+        self.dds_729_radial_sp.cfg_sw(False)
         delay(5*us)
         
 

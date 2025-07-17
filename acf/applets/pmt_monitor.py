@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushBut
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from artiq.applets.simple import TitleApplet, SimpleApplet
-
+import numpy as np
 class PMTMonitor(QWidget):
     def __init__(self,args, req):
         super().__init__()
@@ -47,6 +47,8 @@ class PMTMonitor(QWidget):
             raise RuntimeError(f"Dataset name '{self.pmt_count_name}' not in value.")
 
         self.number=value[self.pmt_count_name][0]
+
+        if(np.isnan(self.number)): return
 
         self.change_number()
 

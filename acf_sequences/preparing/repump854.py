@@ -17,7 +17,7 @@ class Repump854(Sequence):
 
         self.add_argument(
             "repump_854_time",
-            NumberValue(default=100*us, min=5*us, max=1*ms, unit="us")
+            NumberValue(default=60*us, min=5*us, max=1*ms, unit="us")
         )
 
     @kernel
@@ -26,8 +26,8 @@ class Repump854(Sequence):
         self.dds_729_dp.sw.off()
         self.dds_729_sp.sw.off()
         self.dds_729_sp_aux.sw.off()
-        # self.dds_397_dp.sw.off()
-        # self.dds_397_far_detuned.sw.off()
+        self.dds_397_dp.sw.off()
+        self.dds_397_far_detuned.cfg_sw(False)
         delay(2*us)
         # 854 repump
         self.dds_854_dp.set(self.frequency_854_dp)
@@ -42,4 +42,4 @@ class Repump854(Sequence):
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         #self.dds_854_dp.set_att(30*dB)
-        delay(5*us)
+        delay(2*us)
