@@ -46,10 +46,10 @@ class Init_Device(Sequence):
         # self.dds_866_dp.set_att(self.attenuation_866)
         # delay(2*us)
 
-        self.dds_729_dp.set_att(self.attenuation_729_dp)
-        self.dds_729_sp.set_att(self.attenuation_729_sp)
-        self.dds_729_sp_aux.set_att(self.attenuation_729_sp)
-        self.dds_854_dp.set_att(self.attenuation_854_dp)
+        # self.dds_729_dp.set_att(self.attenuation_729_dp)
+        # self.dds_729_sp.set_att(self.attenuation_729_sp)
+        # self.dds_729_sp_aux.set_att(self.attenuation_729_sp)
+        # self.dds_854_dp.set_att(self.attenuation_854_dp)
         delay(5*us)
 
         # Set frequencies
@@ -58,28 +58,28 @@ class Init_Device(Sequence):
         # self.dds_397_far_detuned.set(self.frequency_397_far_detuned)
         # delay(2*us)
         
-        self.dds_729_dp.set(self.frequency_729_dp)
-        self.dds_729_sp.set(self.frequency_729_sp)
-        self.dds_729_sp_aux.set(self.frequency_729_sp)
+        # self.dds_729_dp.set(self.frequency_729_dp)
+        # self.dds_729_sp.set(self.frequency_729_sp)
+        # self.dds_729_sp_aux.set(self.frequency_729_sp)
 
-        self.dds_854_dp.set(self.frequency_854_dp)
+        # self.dds_854_dp.set(self.frequency_854_dp)
         
         delay(5*us)
 
-        self.dds_729_sp.sw.off()
-        self.dds_729_sp_aux.sw.off()
-        self.dds_729_dp.sw.off()
-        self.dds_854_dp.sw.off()
+        # self.dds_729_sp.sw.off()
+        # self.dds_729_sp_aux.sw.off()
+        # self.dds_729_dp.sw.off()
+        # self.dds_854_dp.sw.off()
         delay(2*us)
         # self.dds_866_dp.sw.on()
         # self.dds_397_dp.sw.off()
         # self.dds_397_far_detuned.cfg_sw(False)
         delay(2*us)
-        self.dds_Raman_1.sw.off()
-        self.dds_Raman_2.sw.off()
+        # self.dds_Raman_1.sw.off()
+        # self.dds_Raman_2.sw.off()
 
-        self.dds_729_radial_dp.sw.off()
-        self.dds_729_radial_sp.cfg_sw(False)
+        # self.dds_729_radial_dp.sw.off()
+        # self.dds_729_radial_sp.cfg_sw(False)
         delay(5*us)
         
 

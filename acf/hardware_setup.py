@@ -26,8 +26,8 @@ class HardwareSetup:
         for dds_device in data["dds"]:
             self.add_dds(dds_device["name"], dds_device["board"], dds_device["channel"])
         
-        self.add_cam()
-        self.add_sampler()
+        # self.add_cam()
+        # self.add_sampler()
         self.add_dac()
 
     def add_dac(self):
@@ -36,16 +36,16 @@ class HardwareSetup:
             "device_str": "zotino0",
         }
 
-    def add_sampler(self):
-        self.hardware['sampler'] = {
-            "type": "sampler",
-            "device_str": "sampler0",
-        }
-    def add_cam(self):
-        self.hardware['cam'] = {
-            "type": "camera",
-            "device_str": "grabber0",
-        }
+    # def add_sampler(self):
+    #     self.hardware['sampler'] = {
+    #         "type": "sampler",
+    #         "device_str": "sampler0",
+    #     }
+    # def add_cam(self):
+    #     self.hardware['cam'] = {
+    #         "type": "camera",
+    #         "device_str": "grabber0",
+    #     }
 
     def add_ttl(self, name, channel):
         """Add a ttl type device.

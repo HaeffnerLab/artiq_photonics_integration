@@ -37,8 +37,8 @@ class Ion_Storage(Sequence):
         self.dds_729_sp.sw.off()
         self.dds_729_dp.sw.off()
         self.dds_854_dp.sw.off()
-        self.dds_Raman_1.sw.off()
-        self.dds_Raman_2.sw.off()
+        # self.dds_Raman_1.sw.off()
+        # self.dds_Raman_2.sw.off()
         delay(1*us)
         
         #set attenuation
