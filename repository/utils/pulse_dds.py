@@ -99,6 +99,9 @@ class PulseDDS(_ACFExperiment):
     @kernel
     def run(self):
         # 
+        delay(3.0*ms)
+        self.core.break_realtime()
+        delay(3.0*ms)
         self.setup_run()
         self.core.break_realtime()
         delay(3.0*ms)

@@ -72,20 +72,21 @@ class DopplerCool(Sequence):
         #coarse cooling
         self.dds_397_dp.set(freq_397_cooling)#+3*MHz)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.sw.on()
+        self.dds_397_far_detuned.cfg_sw(True)
         self.dds_866_dp.sw.on()
         delay(doppler_cooling_time * 0.2)
 
         #fine cooling      
         self.dds_397_dp.set(freq_397_cooling)
-        self.dds_397_far_detuned.sw.off()
+        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_dp.set_att(attenuation_397+2*dB) 
         delay(doppler_cooling_time * 0.3)
 
-        self.dds_397_dp.set_att(attenuation_397+2*dB) 
+        
         delay(doppler_cooling_time * 0.5)
         
         #turn off the cooling laser at the end 
-        self.dds_397_far_detuned.sw.off()
+        self.dds_397_far_detuned.cfg_sw(False)
         self.dds_397_dp.sw.off()
         self.dds_866_dp.sw.off()
         delay(5*us)

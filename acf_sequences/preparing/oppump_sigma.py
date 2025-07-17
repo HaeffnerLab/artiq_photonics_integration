@@ -35,4 +35,4 @@ class Op_pump_sigma(Sequence):
 
         self.dds_866_dp.sw.off()
         self.dds_397_sigma.sw.off()
-        delay(5*us)
+        delay(2*us)

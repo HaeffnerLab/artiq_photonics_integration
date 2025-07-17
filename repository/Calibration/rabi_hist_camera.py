@@ -95,6 +95,11 @@ class HistScan_Cam(_ACFExperiment):
                 #    continue
                 sample_num+=1
 
+                if sample_num%200==0:
+                    self.seq.rf.tickle()
+                    self.seq.ion_store.run()
+                    self.seq.rf.save_ion()
+
                 delay(50*us)
             
                 # Doppler cooling    
@@ -141,9 +146,10 @@ class HistScan_Cam(_ACFExperiment):
 
                 self.core.break_realtime()
                 
-            # if i == 0:
-            #     print("CONTINUING IN 1 SECONDS")
-            #     delay(1*s)
+           
+                
+                #print("CONTINUING IN 1 SECONDS")
+                #delay(1*s)
         
         #protect ion
         self.seq.ion_store.run()

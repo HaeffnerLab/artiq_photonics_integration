@@ -68,7 +68,10 @@ class ExperimentData:
             broadcast (int): Set to true to broadcast the dataset. Required for live plotting.
         """
         self.exp.set_dataset(name, np.full(shape, np.nan), broadcast=broadcast)
-        self.datasets[name] = { "curr_loc": 0, "broadcast": broadcast }
+        self.datasets[name] = { 
+            "curr_loc": 0, 
+            "broadcast": broadcast 
+        }
         # TODO: How will current_loc work for this? Column/row major ordering?
 
     def append_list_dataset(self, name, data):
@@ -94,13 +97,16 @@ class ExperimentData:
                 of this index should match the shape with which the dataset was
                 defined. Ex. for a dataset with shape [50, 10, 5], this index could
                 be [10, 0, 0], but not [10, 0] (not enough indices) or [10, 0, 10]
-                (the last index would be out of range).
+                (the last index would be out of range). (Issue !!! This is not verified API)
             data (?): The datapoint to insert.
         """
-        if type(index) in [int, np.int32]:
+        if type(index) in [int, np.int32]: #1D dataset insertion: verified! 
             index_mut = index
         elif type(index) is list:
-            index_mut = tuple(index)
+            #index_mut = tuple(index)
+            assert len(index) == 2, "Only 2D dataset insertion is supported for now"
+
+            index_mut = ((index[0],index[0]+1),(index[1],index[1]+1))
         else:
             raise RuntimeError("index must be int or list.")
         

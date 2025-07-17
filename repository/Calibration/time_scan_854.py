@@ -25,7 +25,7 @@ class TimeScan854(_ACFExperiment):
 
         self.setattr_argument(
             "PI_freq_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2"), min=200*MHz, max=250*MHz, unit="MHz", precision=6),
+            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2"), min=200*MHz, max=250*MHz, unit="MHz", precision=6),
             tooltip="729 double pass frequency for resonance",
             group='Pi pulse excitation'
         )
@@ -92,7 +92,7 @@ class TimeScan854(_ACFExperiment):
 
         # Create datasets
         num_samples = len(self.scan_854_time.sequence)
-        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_scan])
+        self.experiment_data.set_nd_dataset("pmt_counts", [num_samples, self.samples_per_scan], broadcast=True)
         #self.experiment_data.set_list_dataset("pmt_counts_avg", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("pmt_counts_avg_thresholded", num_samples, broadcast=True)
         self.experiment_data.set_list_dataset("time", num_samples, broadcast=True)

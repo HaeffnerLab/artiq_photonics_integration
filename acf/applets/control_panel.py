@@ -104,18 +104,3 @@ class _control_panel(QWidget):
             action,
             "SetDDS",
             "Set DAC{} {}V".format(channel, voltage))
-        
-    def dac_set_mul(self, channels, voltages):
-        setup = f"""
-                    self.setattr_device("zotino0")
-        """
-        action = f"""
-                    self.zotino0.init()
-                    delay(1*s)
-                    self.zotino0.set_dac({voltages}, {channels})
-        """
-        self._faux_injection(
-            setup,
-            action,
-            "SetDDS",
-            "Set DAC{} {}V".format(channels, voltages))
