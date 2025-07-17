@@ -74,7 +74,7 @@
     {
       "name": "dds_729_dp",
       "board": 1,
-      "channel": 1
+      "channel": 0
     },
     {
       "name": "dds_397_sigma",
