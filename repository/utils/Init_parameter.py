@@ -42,7 +42,7 @@ _DEFAULTS = {
     "attenuation/397_far_detuned":(  18.0,   "dB"),
     "doppler_cooling/cooling_time":(100*us, "s"),
     "doppler_cooling/att_397": (  20.0,   "dB"),
-    "readout/threshold":(  0.0,   "dB"),
+    "readout/threshold":(  10.0,   "V"),
     "qubit/Sm1_2_S1_2":(200*MHz, "MHz"),
     "AWG_amplitude/729_sp":(  20.0,   "dB"),
     "frequency/397_sigma":(200*MHz, "MHz"),
