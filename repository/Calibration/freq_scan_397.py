@@ -11,8 +11,8 @@ class FreqScan397(_ACFExperiment):
     def build(self):
         self.setup(sequences)
 
-        self.seq.doppler_cool.add_arguments_to_gui()
-        self.seq.ion_store.add_arguments_to_gui()
+        # self.seq.doppler_cool.add_arguments_to_gui()
+        # self.seq.ion_store.add_arguments_to_gui()
 
         self.setup_fit(fitting_func, 'Voigt_Split', 218)
 
@@ -74,7 +74,7 @@ class FreqScan397(_ACFExperiment):
     def run(self):
         
         self.setup_run()
-        self.seq.ion_store.run()
+        # self.seq.ion_store.run()
         delay(5*us)
 
 
@@ -94,7 +94,7 @@ class FreqScan397(_ACFExperiment):
             total_pmt_counts = 0
             for sample_i in range(self.samples_per_freq):
 
-                self.seq.doppler_cool.run()
+                # self.seq.doppler_cool.run()
                 
                 self.dds_397_dp.set(freq_397)
                 self.dds_397_dp.set_att(self.attenuation_397)
