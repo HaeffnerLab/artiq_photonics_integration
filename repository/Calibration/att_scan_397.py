@@ -83,7 +83,7 @@ class AttScan397(_ACFExperiment):
 
             # Set the 397 frequency
             self.dds_397_dp.set_att(att_397)
-            self.dds_397_far_detuned.cfg_sw(False)
+            self.dds_397_far_detuned.sw.off()
             self.dds_397_dp.sw.on()
             self.dds_866_dp.sw.on()
 
@@ -106,7 +106,7 @@ class AttScan397(_ACFExperiment):
 
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.cfg_sw(False)
+                self.dds_397_far_detuned.sw.off()
                 delay(50*us)
 
                 num_pmt_pulses1 = self.ttl_pmt_input.count(

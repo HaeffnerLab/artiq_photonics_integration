@@ -42,12 +42,17 @@ _DEFAULTS = {
     "attenuation/397_far_detuned":(  18.0,   "dB"),
     "doppler_cooling/cooling_time":(100*us, "s"),
     "doppler_cooling/att_397": (  20.0,   "dB"),
-    "readout/threshold":(  0.0,   "dB"),
+    "readout/threshold":(  10.0,   "V"),
     "qubit/Sm1_2_S1_2":(200*MHz, "MHz"),
     "AWG_amplitude/729_sp":(  20.0,   "dB"),
     "frequency/397_sigma":(200*MHz, "MHz"),
     "qubit/vib_freq":(200*MHz, "MHz"),
     "readout/pmt_sampling_time":(100*us, "s"),
+    "SDF/amp_729_sp": (1.0, "V"),
+    "SDF/amp_729_sp_aux": (1.0, "V"),
+    "SDF/beta_range_us": (100*us, "us"),
+    "SDF/num_beta": (100, "V"),
+    "readout/threshold0": (0.0, "V"),
 }
 
 class InitAllDefaults(EnvExperiment):

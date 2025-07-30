@@ -46,11 +46,13 @@ class PulseDDS(_ACFExperiment):
         self.add_arg_from_param("frequency/866_cooling")
         self.add_arg_from_param("frequency/854_dp")
         self.add_arg_from_param("frequency/397_far_detuned")
+        self.add_arg_from_param("frequency/729_dp")
         
         self.add_arg_from_param("attenuation/397")
         self.add_arg_from_param("attenuation/866")
         self.add_arg_from_param("attenuation/854_dp")
         self.add_arg_from_param("attenuation/397_far_detuned")
+        self.add_arg_from_param("attenuation/729_dp")
         
         # Define the DC voltage sets similar to set_dc_manual.py
         self.channels = [i for i in range(32)]
@@ -124,12 +126,16 @@ class PulseDDS(_ACFExperiment):
         self.dds_866_dp.set(self.frequency_866_cooling)
         self.dds_866_dp.set_att(self.attenuation_866)
 
+        self.dds_729_dp.set(self.frequency_729_dp)
+        self.dds_729_dp.set_att(self.attenuation_729_dp)
+
         # self.dds_854_dp.set(self.frequency_854_dp)
         # self.dds_854_dp.set_att(self.attenuation_854_dp)
 
         self.dds_397_dp.sw.on()
         self.dds_866_dp.sw.on()
         self.dds_397_far_detuned.sw.on()
+        self.dds_729_dp.sw.on()
         # self.dds_854_dp.sw.on()
 
         if self.if_pulse:
@@ -180,14 +186,14 @@ class PulseDDS(_ACFExperiment):
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
                     delay(1.0*ms)
-                    # self.dds_866_dp.sw.off()
+                    self.dds_866_dp.sw.off()
                     self.dds_397_dp.sw.off()
                     num_pmt_pulses_off = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
                     delay(1.0*ms)
                     num_pmt_pulses = 10 * (num_pmt_pulses_on - num_pmt_pulses_off) / 1.0
-                    # self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
+                    self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
                     self.dds_397_dp.sw.on()

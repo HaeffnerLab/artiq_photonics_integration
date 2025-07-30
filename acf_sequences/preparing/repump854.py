@@ -27,7 +27,7 @@ class Repump854(Sequence):
         self.dds_729_sp.sw.off()
         self.dds_729_sp_aux.sw.off()
         self.dds_397_dp.sw.off()
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         delay(2*us)
         # 854 repump
         self.dds_854_dp.set(self.frequency_854_dp)

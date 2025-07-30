@@ -170,7 +170,10 @@ class ParameterWidget(QMainWindow):
         Returns:
             The converted value
         """
-        scale = getattr(units, unit_str)
+        if unit_str == "": 
+            scale=1
+        else:
+            scale = getattr(units, unit_str)
         return value / scale
 
     def data_changed(self, value: Dict, metadata: Any, persist: bool, mod_buffer: List[Dict]) -> None:

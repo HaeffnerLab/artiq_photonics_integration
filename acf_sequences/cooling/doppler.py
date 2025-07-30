@@ -1,6 +1,6 @@
 from acf.sequence import Sequence
 
-from artiq.experiment import kernel, delay, s, dB, us, NumberValue, MHz
+from artiq.experiment import kernel, delay, s, ms, dB, us, NumberValue, MHz
 
 
 class DopplerCool(Sequence):
@@ -58,36 +58,50 @@ class DopplerCool(Sequence):
         self.dds_729_dp.sw.off()
         self.dds_729_sp.sw.on()
         self.dds_729_sp_aux.sw.off()
+        delay(10*ms)  # Ensure proper initialization timing with larger buffer
 
         #set initial parameters for all the lasers
         self.dds_397_far_detuned.set(freq_397_far_detuned)
+        delay(5*ms)
         self.dds_397_far_detuned.set_att(attenuation_397_far_detuned)
+        delay(5*ms)
 
         self.dds_866_dp.set(freq_866_cooling)
+        delay(5*ms)
         self.dds_866_dp.set_att(attenuation_866)
+        delay(5*ms)
 
-        self.dds_397_dp.set_att(attenuation_397) 
+        self.dds_397_dp.set_att(attenuation_397)
+        delay(5*ms) 
         self.dds_397_dp.set(freq_397_cooling)
+        delay(5*ms)
 
         #coarse cooling
         self.dds_397_dp.set(freq_397_cooling)#+3*MHz)
+        delay(3*ms)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        delay(2*ms)
+        self.dds_397_far_detuned.sw.on()
+        delay(2*ms)
         self.dds_866_dp.sw.on()
         delay(doppler_cooling_time * 0.2)
 
         #fine cooling      
         self.dds_397_dp.set(freq_397_cooling)
-        self.dds_397_far_detuned.cfg_sw(False)
-        self.dds_397_dp.set_att(attenuation_397+2*dB) 
+        delay(3*ms)
+        self.dds_397_far_detuned.sw.off()
+        delay(2*ms)
+        self.dds_397_dp.set_att(attenuation_397+2*dB)
         delay(doppler_cooling_time * 0.3)
 
         
         delay(doppler_cooling_time * 0.5)
         
         #turn off the cooling laser at the end 
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
+        delay(2*ms)
         self.dds_397_dp.sw.off()
+        delay(2*ms)
         self.dds_866_dp.sw.off()
-        delay(5*us)
+        delay(5*ms)
 

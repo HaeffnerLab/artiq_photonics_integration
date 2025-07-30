@@ -110,7 +110,7 @@ class FreqScan397ACF(_ACFExperiment):
             # Set the 397 frequency
             self.dds_397_dp.set(freq_397)
             
-            self.dds_397_far_detuned.cfg_sw(False)
+            self.dds_397_far_detuned.sw.off()
             
             # Collect PMT counts
             total_pmt_counts = 0

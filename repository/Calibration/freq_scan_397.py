@@ -13,13 +13,10 @@ class FreqScan397(_ACFExperiment):
 
         self.seq.doppler_cool.add_arguments_to_gui()
         self.seq.ion_store.add_arguments_to_gui()
+        self.seq.readout_397.add_arguments_to_gui()
 
         self.setup_fit(fitting_func, 'Voigt_Split', 218)
 
-        self.add_arg_from_param("frequency/866_cooling")
-        self.add_arg_from_param("attenuation/397") 
-        self.add_arg_from_param("attenuation/866") 
-        self.add_arg_from_param("readout/pmt_sampling_time")
 
         self.setattr_argument(
             "samples_per_freq",
@@ -32,11 +29,11 @@ class FreqScan397(_ACFExperiment):
             "scan_freq_397",
             Scannable(
                 default=RangeScan(
-                    start=190*MHz,
-                    stop=235*MHz,
+                    start=120*MHz,
+                    stop=220*MHz,
                     npoints=100
                 ),
-                global_min=150*MHz,
+                global_min=20*MHz,
                 global_max=300*MHz,
                 global_step=1*MHz,
                 unit="MHz"
@@ -44,11 +41,11 @@ class FreqScan397(_ACFExperiment):
             tooltip="Scan parameters for sweeping the 397 laser."
         )     
         
-        self.setattr_argument(
-           "far_detuned_on",
-            BooleanValue(default=False),
-            tooltip="Whether to prompt for a result at the end"
-        )
+        # self.setattr_argument(
+        #    "far_detuned_on",
+        #     BooleanValue(default=False),
+        #     tooltip="Whether to prompt for a result at the end"
+        # )
 
         self.setattr_argument("enable_diff_mode", BooleanValue(False))
 
@@ -74,8 +71,11 @@ class FreqScan397(_ACFExperiment):
     def run(self):
         
         self.setup_run()
+        self.core.break_realtime()
+        delay(100*us)
         self.seq.ion_store.run()
-        delay(5*us)
+        
+        delay(100*us)
 
 
 
@@ -83,59 +83,36 @@ class FreqScan397(_ACFExperiment):
         for freq_397 in self.scan_freq_397.sequence:
 
             # Set the 397 frequency
-            self.dds_397_dp.set(freq_397)
-            self.dds_397_far_detuned.cfg_sw(False)
-            self.dds_397_dp.sw.on()
-            self.dds_866_dp.sw.on()
-
-            delay(20*us)
+            self.core.break_realtime()
+            delay(50*us)
             
             # Collect PMT counts
             total_pmt_counts = 0
             for sample_i in range(self.samples_per_freq):
 
-                self.seq.doppler_cool.run()
-                
-                self.dds_397_dp.set(freq_397)
-                self.dds_397_dp.set_att(self.attenuation_397)
-                self.dds_866_dp.set(self.frequency_866_cooling)
-                self.dds_866_dp.set_att(self.attenuation_866)
+                # self.seq.doppler_cool.run()
+                delay(20*us)
 
+                num_pmt_pulses1 = self.seq.readout_397.run(freq_397_dp=freq_397)
                 delay(10*us)
-
-                self.dds_397_dp.sw.on()
-                self.dds_866_dp.sw.on()
-                if self.far_detuned_on:
-                    self.dds_397_far_detuned.cfg_sw(True)
-                else:
-                    self.dds_397_far_detuned.cfg_sw(False)
-
-                num_pmt_pulses1 = self.ttl_pmt_input.count(
-                    self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)
-                )
-                delay(10*us)
-                self.dds_866_dp.sw.off()
                 
                
-                delay(10*us)
 
                 if self.enable_diff_mode:
-                    num_pmt_pulses2 = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)
-                    )
-                    delay(30*us)
+                    num_pmt_pulses2 = self.seq.readout_397.run(freq_397_dp=freq_397, turn_off_866=True)
 
                     num_pmt_pulses = num_pmt_pulses1 - num_pmt_pulses2
                 else:
                     num_pmt_pulses = num_pmt_pulses1 
                 
                 #protect ion
-                self.seq.ion_store.run()
+                self.seq.ion_store.run() 
                 delay(5*us)
 
                 self.experiment_data.insert_nd_dataset("pmt_counts", [freq_i, sample_i], num_pmt_pulses)
                 total_pmt_counts += num_pmt_pulses
-                delay(5*ms)
+                self.core.break_realtime()
+                delay(100*us)
                 
                 
             pmt_counts_avg = total_pmt_counts / self.samples_per_freq
@@ -145,15 +122,10 @@ class FreqScan397(_ACFExperiment):
             self.experiment_data.append_list_dataset("frequencies_MHz", freq_397/MHz)
             
             freq_i += 1
-            delay(5*ms)
+            self.core.break_realtime()
+            delay(200*us)
         
         self.seq.ion_store.run()
-
-
-	
-        
-
-
     def analyze(self):
 
             

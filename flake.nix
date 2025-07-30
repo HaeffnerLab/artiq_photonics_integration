@@ -14,6 +14,7 @@
           (pkgs.python3.withPackages(ps: [
             # List desired Python packages here.
             artiq.artiq
+            pyserial
             #ps.paramiko  # needed if and only if flashing boards remotely (artiq_flash -H)
             #artiq.flake8-artiq
             #artiq.dax
