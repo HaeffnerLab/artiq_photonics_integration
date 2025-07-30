@@ -40,63 +40,66 @@ class RF(Sequence):
             mode="store"
         ):
 
-       
+        pass
 
-        if mode=="load":
-            self.dac.write_dac(2, self.rf_bias)
-            self.dac.write_dac(3, self.rf_bias)
-            self.dac.write_dac(0, self.rf_load)
-            self.dac.write_dac(1, self.rf_load)
-            self.dac.load()
-        elif mode=="dump":
-            self.dac.write_dac(2, 5.0)
-            self.dac.write_dac(3, 5.0)
-            self.dac.write_dac(0, self.rf_dump)
-            self.dac.write_dac(1, self.rf_dump)
-            self.dac.load()
-        elif mode=="store":
-            self.dac.write_dac(2, self.rf_bias)
-            self.dac.write_dac(3, self.rf_bias)
-            self.dac.write_dac(0, self.rf_store)
-            self.dac.write_dac(1, self.rf_store)
-            self.dac.load()
-        elif mode=="save":
-            self.dac.write_dac(2, self.rf_bias)
-            self.dac.write_dac(3, self.rf_bias)
-            self.dac.write_dac(0, self.rf_save)
-            self.dac.write_dac(1, self.rf_save)
-            self.dac.load()
-        elif mode=="lower":
-            self.dac.write_dac(2, self.rf_bias)
-            self.dac.write_dac(3, self.rf_bias)
-            self.dac.write_dac(0, -1.0)
-            self.dac.write_dac(1, -1.0)
-            self.dac.load()       
+        # if mode=="load":
+        #     self.dac.write_dac(2, self.rf_bias)
+        #     self.dac.write_dac(3, self.rf_bias)
+        #     self.dac.write_dac(0, self.rf_load)
+        #     self.dac.write_dac(1, self.rf_load)
+        #     self.dac.load()
+        # elif mode=="dump":
+        #     self.dac.write_dac(2, 5.0)
+        #     self.dac.write_dac(3, 5.0)
+        #     self.dac.write_dac(0, self.rf_dump)
+        #     self.dac.write_dac(1, self.rf_dump)
+        #     self.dac.load()
+        # elif mode=="store":
+        #     self.dac.write_dac(2, self.rf_bias)
+        #     self.dac.write_dac(3, self.rf_bias)
+        #     self.dac.write_dac(0, self.rf_store)
+        #     self.dac.write_dac(1, self.rf_store)
+        #     self.dac.load()
+        # elif mode=="save":
+        #     self.dac.write_dac(2, self.rf_bias)
+        #     self.dac.write_dac(3, self.rf_bias)
+        #     self.dac.write_dac(0, self.rf_save)
+        #     self.dac.write_dac(1, self.rf_save)
+        #     self.dac.load()
+        # elif mode=="lower":
+        #     self.dac.write_dac(2, self.rf_bias)
+        #     self.dac.write_dac(3, self.rf_bias)
+        #     self.dac.write_dac(0, -1.0)
+        #     self.dac.write_dac(1, -1.0)
+        #     self.dac.load()       
 
     @kernel
     def tickle(self, pulse_time=20.0*ms):
+        pass
 
-        self.dac.write_dac(2, self.rf_bias)
-        self.dac.write_dac(3, self.rf_bias)
+        # self.dac.write_dac(2, self.rf_bias)
+        # self.dac.write_dac(3, self.rf_bias)
 
-        self.dac.write_dac(0, self.rf_dump)
-        self.dac.write_dac(1, self.rf_dump)
-        self.dac.load()
-        delay(pulse_time)
-        self.dac.write_dac(0, self.rf_store)
-        self.dac.write_dac(1, self.rf_store)
-        self.dac.load()
-        delay(100.0*ms)
+        # self.dac.write_dac(0, self.rf_dump)
+        # self.dac.write_dac(1, self.rf_dump)
+        # self.dac.load()
+        # delay(pulse_time)
+        # self.dac.write_dac(0, self.rf_store)
+        # self.dac.write_dac(1, self.rf_store)
+        # self.dac.load()
+        # delay(100.0*ms)
 
     @kernel
     def save_ion(self):
-        self.dac.write_dac(2, self.rf_bias)
-        self.dac.write_dac(3, self.rf_bias)
-        self.dac.write_dac(0, self.rf_save)
-        self.dac.write_dac(1, self.rf_save)
-        self.dac.load()
-        delay(600*ms)
-        self.dac.write_dac(0, self.rf_store)
-        self.dac.write_dac(1, self.rf_store)
-        self.dac.load()
-        delay(500.0*ms)
+        pass
+
+        # self.dac.write_dac(2, self.rf_bias)
+        # self.dac.write_dac(3, self.rf_bias)
+        # self.dac.write_dac(0, self.rf_save)
+        # self.dac.write_dac(1, self.rf_save)
+        # self.dac.load()
+        # delay(600*ms)
+        # self.dac.write_dac(0, self.rf_store)
+        # self.dac.write_dac(1, self.rf_store)
+        # self.dac.load()
+        # delay(500.0*ms)

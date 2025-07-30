@@ -196,7 +196,7 @@ class RFRabiTime(_ACFExperiment):
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         self.dds_397_dp.sw.off()
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         self.dds_rf_g_qubit.sw.off()
 
 
@@ -227,7 +227,7 @@ class RFRabiTime(_ACFExperiment):
 
         self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        self.dds_397_far_detuned.sw.on()
         self.seq.repump_854.run()
 
         delay(2000*us)
@@ -277,7 +277,7 @@ class RFRabiTime(_ACFExperiment):
                 self.seq.doppler_cool.run()
                 self.dds_397_dp.sw.off()
                 self.dds_866_dp.sw.off()
-                self.dds_397_far_detuned.cfg_sw(False)
+                self.dds_397_far_detuned.sw.off()
                 delay(10*us)
 
                 self.seq.sideband_cool.run()
@@ -301,7 +301,7 @@ class RFRabiTime(_ACFExperiment):
                 self.dds_397_dp.set_att(self.attenuation_397) 
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.cfg_sw(True)
+                self.dds_397_far_detuned.sw.on()
 
                 delay(20*us)
 
@@ -340,7 +340,7 @@ class RFRabiTime(_ACFExperiment):
 
         self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        self.dds_397_far_detuned.sw.on()
         self.dds_866_dp.sw.on()
     
     

@@ -83,7 +83,7 @@ class SetDDS(_ACFExperiment):
             self.dds_397_sigma.set_att(self.attenuation_397_sigma)
 
             self.dds_397_dp.sw.on()
-            self.dds_397_far_detuned.cfg_sw(True)
+            self.dds_397_far_detuned.sw.on()
             self.dds_397_sigma.sw.on()
 
         # =============== 866 nm Laser Control ===============

@@ -280,7 +280,7 @@ class RabiLineTriggered(_ACFExperiment):
 
         self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        self.dds_397_far_detuned.sw.on()
         self.dds_866_dp.sw.on()
     
     def analyze(self):

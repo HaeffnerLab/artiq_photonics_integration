@@ -619,7 +619,7 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
 
         self.dds_397_dp.set(self.freq_397_cooling)
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        self.dds_397_far_detuned.sw.on()
         self.dds_866_dp.sw.on()
             
     
@@ -630,12 +630,12 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
         self.dds_866_dp.set(self.freq_866_cooling)
         
         self.dds_397_dp.sw.on()
-        self.dds_397_far_detuned.cfg_sw(True)
+        self.dds_397_far_detuned.sw.on()
         self.dds_866_dp.sw.on()
         
         delay(self.doppler_cooling_time * 0.6)
         
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         
         delay(self.doppler_cooling_time * 0.2)
 

@@ -174,7 +174,7 @@ class RFRabiFreqScan(_ACFExperiment):
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         self.dds_397_dp.sw.off()
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         self.dds_rf_g_qubit.sw.off()
 
     @kernel
@@ -290,7 +290,7 @@ class RFRabiFreqScan(_ACFExperiment):
                 self.dds_866_dp.set(self.frequency_866_cooling)
                 self.dds_397_dp.sw.on()
                 self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.cfg_sw(True)
+                self.dds_397_far_detuned.sw.on()
                 
                 delay(20*us)
 

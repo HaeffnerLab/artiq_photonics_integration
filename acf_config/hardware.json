@@ -64,7 +64,7 @@
     {
       "name": "dds_397_dp",
       "board": 0,
-      "channel": 0
+      "channel": 3
     },
     {
       "name": "dds_866_dp",
@@ -85,18 +85,13 @@
     {
       "name": "dds_397_far_detuned",
       "board": 0,
-      "channel": 3
+      "channel": 0
     },
   
     {
       "name": "dds_854_dp",
       "board": 0,
       "channel": 2
-    },
-    {
-      "name": "dds_rf_g_qubit",
-      "board": 1,
-      "channel": 3
     }
   
   

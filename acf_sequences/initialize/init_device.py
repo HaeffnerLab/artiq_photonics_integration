@@ -73,7 +73,7 @@ class Init_Device(Sequence):
         delay(2*us)
         # self.dds_866_dp.sw.on()
         # self.dds_397_dp.sw.off()
-        # self.dds_397_far_detuned.cfg_sw(False)
+        # self.dds_397_far_detuned.sw.off()
         delay(2*us)
         # self.dds_Raman_1.sw.off()
         # self.dds_Raman_2.sw.off()

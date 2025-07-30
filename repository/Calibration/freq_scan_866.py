@@ -12,23 +12,11 @@ class FreqScan866(_ACFExperiment):
         self.setup(sequences)
 
         self.seq.doppler_cool.add_arguments_to_gui()
+        self.seq.ion_store.add_arguments_to_gui()
+        self.seq.readout_397.add_arguments_to_gui()
 
         self.setup_fit(fitting_func, 'Voigt_Split', 218)
 
-        self.add_arg_from_param("frequency/397_resonance")
-        self.add_arg_from_param("frequency/397_cooling") #
-        self.add_arg_from_param("frequency/397_far_detuned") #
-        self.add_arg_from_param("frequency/866_cooling")
-        self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("frequency/854_dp")
-        self.add_arg_from_param("attenuation/397") #
-        self.add_arg_from_param("attenuation/397_far_detuned")
-        self.add_arg_from_param("attenuation/866") #
-        self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
-        self.add_arg_from_param("attenuation/854_dp")
-        self.add_arg_from_param("readout/pmt_sampling_time")
 
         self.setattr_argument(
             "samples_per_freq",
@@ -75,50 +63,29 @@ class FreqScan866(_ACFExperiment):
     def run(self):
         
         self.setup_run()
+        self.core.break_realtime()
+        delay(100*us)
         self.seq.ion_store.run()
-        delay(5*us)
+        
+        delay(100*us)
         
         freq_i = 0
         for freq_866 in self.scan_freq_866.sequence:
-
-            # Set the 397 frequency
-            self.dds_866_dp.set(freq_866)
-            self.dds_397_dp.set(self.frequency_397_resonance)
-
-            self.dds_397_far_detuned.cfg_sw(False)
-            self.dds_397_dp.sw.on()
-            self.dds_866_dp.sw.on()
-
+            
+            self.core.break_realtime()
             delay(20*us)
             
             # Collect PMT counts
             total_pmt_counts = 0
             for sample_i in range(self.samples_per_freq):
 
-                self.seq.doppler_cool.run()
+                #self.seq.doppler_cool.run()
 
-                self.dds_397_dp.set(self.frequency_397_resonance)
-                self.dds_397_dp.set_att(self.attenuation_397)
-                self.dds_866_dp.set(freq_866)
-                self.dds_866_dp.set_att(self.attenuation_866)
-                delay(10*us)
-                self.dds_397_dp.sw.on()
-                self.dds_866_dp.sw.on()
-                self.dds_397_far_detuned.cfg_sw(False)
-                delay(1*ms)
-
-                num_pmt_pulses1 = self.ttl_pmt_input.count(
-                    self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)
-                )
-                delay(10*us)
-                self.dds_866_dp.sw.off()
+                num_pmt_pulses1 = self.seq.readout_397.run(freq_866_dp=freq_866)
                 delay(10*us)
 
                 if self.enable_diff_mode:
-                    num_pmt_pulses2 = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)
-                    )
-                    delay(30*us)
+                    num_pmt_pulses2 = self.seq.readout_397.run(freq_866_dp=freq_866, turn_off_866=True)
 
                     num_pmt_pulses = num_pmt_pulses1 - num_pmt_pulses2
                 else:
@@ -131,7 +98,8 @@ class FreqScan866(_ACFExperiment):
 
                 self.experiment_data.insert_nd_dataset("pmt_counts", [freq_i, sample_i], num_pmt_pulses)
                 total_pmt_counts += num_pmt_pulses
-                delay(5*ms)
+                self.core.break_realtime()
+                delay(100*us)
                 
                 
             pmt_counts_avg = total_pmt_counts / self.samples_per_freq
@@ -141,7 +109,8 @@ class FreqScan866(_ACFExperiment):
             self.experiment_data.append_list_dataset("frequencies_MHz", freq_866/MHz)
             
             freq_i += 1
-            delay(5*ms)
+            self.core.break_realtime()
+            delay(100*us)
         
         self.seq.ion_store.run()
 	

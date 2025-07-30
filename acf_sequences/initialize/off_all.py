@@ -27,7 +27,7 @@ class Off_DDS(Sequence):
         delay(1*us)
         self.dds_866_dp.sw.off()
         self.dds_397_dp.sw.off()
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         self.dds_397_sigma.sw.off()
         delay(1*us)
 

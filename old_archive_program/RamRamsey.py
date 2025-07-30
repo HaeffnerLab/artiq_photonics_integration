@@ -371,7 +371,7 @@ class RamRamsey(_ACFExperiment):
                                           float(total_thresh_count) / self.samples_per_scan)
             delay(40*ms)
             self.dds_854_dp.sw.on()
-            self.dds_397_far_detuned.cfg_sw(True)
+            self.dds_397_far_detuned.sw.on()
 
 
 

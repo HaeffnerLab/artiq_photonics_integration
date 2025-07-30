@@ -115,7 +115,7 @@ class SideBandCool2Mode(Sequence):
         ##############################################################################################################################
         #set laser power & frequency
         self.set_OP()
-        self.dds_397_far_detuned.cfg_sw(False)
+        self.dds_397_far_detuned.sw.off()
         self.dds_397_dp.sw.off()
 
         self.dds_729_dp.sw.off()

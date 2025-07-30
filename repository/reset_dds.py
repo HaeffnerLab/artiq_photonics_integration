@@ -11,15 +11,7 @@ class ReSetDDS(EnvExperiment):
         self.setattr_device("urukul1_ch0")         
         self.setattr_device("urukul1_ch1")         
         self.setattr_device("urukul1_ch2")         
-        self.setattr_device("urukul1_ch3")          
-        self.setattr_device("urukul2_ch0")         
-        self.setattr_device("urukul2_ch1")           
-        self.setattr_device("urukul2_ch2")         
-        self.setattr_device("urukul2_ch3")         
-        self.setattr_device("urukul3_ch0")         
-        self.setattr_device("urukul3_ch1")         
-        self.setattr_device("urukul3_ch2")         
-        self.setattr_device("urukul3_ch3")      
+        self.setattr_device("urukul1_ch3")      
         self.dv=[
             self.urukul0_ch0,
             self.urukul0_ch1,                 
@@ -31,10 +23,6 @@ class ReSetDDS(EnvExperiment):
             self.urukul1_ch2,
             self.urukul1_ch3,   
 
-            self.urukul2_ch0,
-            self.urukul2_ch1,                 
-            self.urukul2_ch2,
-            self.urukul2_ch3
                 ]
         # self.slow_dv=[
         #     self.urukul3_ch0,
