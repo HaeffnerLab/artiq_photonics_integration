@@ -16,6 +16,9 @@ class Ion_Storage(Sequence):
         self.add_parameter("attenuation/397_far_detuned")
         self.add_parameter("attenuation/866")
 
+        self.add_parameter("frequency/854_dp")
+        self.add_parameter("attenuation/854_dp")
+
     @kernel
     def update_parameters(self):
         self.attenuation_397=self.exp.parameter_manager.get_float_param("attenuation/397")
@@ -26,11 +29,18 @@ class Ion_Storage(Sequence):
         self.frequency_397_far_detuned=self.exp.parameter_manager.get_float_param("frequency/397_far_detuned")
         self.frequency_866_cooling=self.exp.parameter_manager.get_float_param("frequency/866_cooling")
 
+        self.frequency_854_dp=self.exp.parameter_manager.get_float_param("frequency/854_dp")
+        self.attenuation_854_dp=self.exp.parameter_manager.get_float_param("attenuation/854_dp")
+
     @kernel
     def run(self):
 
         self.core.break_realtime()
-        self.dds_854_dp.sw.off()
+        # self.dds_854_dp.sw.off()
+        self.dds_854_dp.set(self.frequency_854_dp)
+        self.dds_854_dp.set_att(self.attenuation_854_dp)
+        self.dds_854_dp.sw.on()
+        self.core.break_realtime()
         delay(20*us)
         
         #set attenuation

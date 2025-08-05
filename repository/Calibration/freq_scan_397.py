@@ -30,7 +30,7 @@ class FreqScan397(_ACFExperiment):
             Scannable(
                 default=RangeScan(
                     start=120*MHz,
-                    stop=220*MHz,
+                    stop=280*MHz,
                     npoints=100
                 ),
                 global_min=20*MHz,
@@ -90,7 +90,7 @@ class FreqScan397(_ACFExperiment):
             total_pmt_counts = 0
             for sample_i in range(self.samples_per_freq):
 
-                # self.seq.doppler_cool.run()
+                self.seq.doppler_cool.run()
                 delay(20*us)
 
                 num_pmt_pulses1 = self.seq.readout_397.run(freq_397_dp=freq_397)
