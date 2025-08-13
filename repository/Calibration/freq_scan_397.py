@@ -29,9 +29,9 @@ class FreqScan397(_ACFExperiment):
             "scan_freq_397",
             Scannable(
                 default=RangeScan(
-                    start=120*MHz,
-                    stop=280*MHz,
-                    npoints=100
+                    start=170*MHz,
+                    stop=240*MHz,
+                    npoints=60
                 ),
                 global_min=20*MHz,
                 global_max=300*MHz,
@@ -47,7 +47,7 @@ class FreqScan397(_ACFExperiment):
         #     tooltip="Whether to prompt for a result at the end"
         # )
 
-        self.setattr_argument("enable_diff_mode", BooleanValue(False))
+        self.setattr_argument("enable_diff_mode", BooleanValue(True))
 
 
     def prepare(self):
