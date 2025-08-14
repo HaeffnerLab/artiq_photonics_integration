@@ -131,6 +131,9 @@ class PulseDDS(_ACFExperiment):
         self.dds_729_dp.set(self.frequency_729_dp)
         self.dds_729_dp.set_att(self.attenuation_729_dp)
 
+        self.dds_854_dp.set(self.frequency_854_dp)
+        self.dds_854_dp.set_att(self.attenuation_854_dp)
+
         # self.dds_854_dp.set(self.frequency_854_dp)
         # self.dds_854_dp.set_att(self.attenuation_854_dp)
 
@@ -138,7 +141,7 @@ class PulseDDS(_ACFExperiment):
         self.dds_866_dp.sw.on()
         self.dds_397_far_detuned.sw.on()
         self.dds_729_dp.sw.on()
-        # self.dds_854_dp.sw.on()
+        self.dds_854_dp.sw.on()
 
         if self.if_pulse:
             try:
@@ -172,11 +175,13 @@ class PulseDDS(_ACFExperiment):
                     # self.dds_397_far_detuned.set(200*MHz)
                     self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned)
                     self.dds_866_dp.set_att(self.attenuation_866)
+                    self.dds_854_dp.set_att(self.attenuation_854_dp)
                     self.dds_866_dp.sw.on()
                     self.dds_397_dp.sw.on()
                     delay(self.on_secs)
 
                     self.dds_866_dp.set_att(self.attenuation_866 * 1.0) # If 1.0, then 100% attenuation and no blinking
+                    self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
                     delay(self.off_secs)
 
                     self.core.break_realtime()
@@ -184,12 +189,14 @@ class PulseDDS(_ACFExperiment):
                     self.dds_397_dp.sw.on()
                     # self.dds_397_far_detuned.set(205*MHz)
                     self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned * 1.0)
+                    self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
                     num_pmt_pulses_on = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
                     delay(1.0*ms)
                     self.dds_866_dp.sw.off()
                     self.dds_397_dp.sw.off()
+                    self.dds_854_dp.sw.off()
                     num_pmt_pulses_off = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
@@ -199,6 +206,7 @@ class PulseDDS(_ACFExperiment):
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
                     self.dds_397_dp.sw.on()
+                    self.dds_854_dp.sw.on()
                     delay(3.0*ms)
                     
                     # Increment period counter
