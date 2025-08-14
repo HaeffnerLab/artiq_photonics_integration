@@ -29,8 +29,8 @@ class FreqScan397(_ACFExperiment):
             "scan_freq_397",
             Scannable(
                 default=RangeScan(
-                    start=170*MHz,
-                    stop=240*MHz,
+                    start=190*MHz,
+                    stop=220*MHz,
                     npoints=60
                 ),
                 global_min=20*MHz,
