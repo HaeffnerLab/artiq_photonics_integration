@@ -31,7 +31,8 @@ class FreqScan866(_ACFExperiment):
                 default=RangeScan(
                     start=50*MHz,
                     stop=95*MHz,
-                    npoints=100
+                    npoints=100,
+                    randomize=True
                 ),
                 global_min=2*MHz,
                 global_max=120*MHz,
@@ -41,7 +42,7 @@ class FreqScan866(_ACFExperiment):
             tooltip="Scan parameters for sweeping the 866 laser."
         )
 
-        self.setattr_argument("enable_diff_mode", BooleanValue(False))
+        self.setattr_argument("enable_diff_mode", BooleanValue(True))
         
     def prepare(self):
         self.fitting_func.setup(len(self.scan_freq_866.sequence))
