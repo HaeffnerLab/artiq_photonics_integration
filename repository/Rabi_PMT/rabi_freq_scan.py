@@ -199,6 +199,8 @@ class RabiFreqScan(_ACFExperiment):
         while freq_i < len(self.scan_freq_729_dp.sequence):
 
             freq_729_dp=self.scan_freq_729_dp.sequence[freq_i]
+            self.core.break_realtime()
+            delay(100*us)
             self.dds_729_dp.set(freq_729_dp)
 
             #PMT
@@ -214,10 +216,13 @@ class RabiFreqScan(_ACFExperiment):
 
             while sample_num<self.samples_per_freq:
                 if is_ion_good:
-                    #line trigger
-                    if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(50*us) ) <0 : 
-                        continue
+                    # #line trigger
+                    # if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(2*ms) ) <0 : 
+                    #     continue
                     
+                    # Ensure timeline is safely ahead before SPI-heavy repump sequence
+                    self.core.break_realtime()
+                    delay(1*ms)
                     #854 repump
                     self.seq.repump_854.run()
                     # Cool
@@ -294,10 +299,10 @@ class RabiFreqScan(_ACFExperiment):
             
             self.experiment_data.append_list_dataset("frequencies_MHz", freq_729_dp / MHz)
             if not self.enable_thresholding:
-            	self.experiment_data.append_list_dataset("pmt_counts_avg",
+                self.experiment_data.append_list_dataset("pmt_counts_avg",
                                           -float(total_pmt_counts) / self.samples_per_freq)
             else:
-            	self.experiment_data.append_list_dataset("pmt_counts_avg",
+                self.experiment_data.append_list_dataset("pmt_counts_avg",
                                           float(total_thresh_count) / self.samples_per_freq)
             freq_i += 1
             

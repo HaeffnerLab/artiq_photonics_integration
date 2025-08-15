@@ -37,11 +37,13 @@ class LineTrigger(Sequence):
         
         #self.trigger.count(self.core.get_rtio_counter_mu() + time_holdoff_mu) #drain the FIFO to avoid input overflow
 
-        at_mu(core.get_rtio_counter_mu()+20000)
+        # Provide extra slack for subsequent SPI/Urukul transactions
+        at_mu(core.get_rtio_counter_mu()+200000)
 
         self.ttl_linetrigger_input._set_sensitivity(0)
 
-        at_mu(core.get_rtio_counter_mu() + time_holdoff_mu +20000) #set the current time (software) to be the same as the current hardware timeline + a shift in time
+        # Increase additional offset to ensure following DDS configs are safely in the future
+        at_mu(core.get_rtio_counter_mu() + time_holdoff_mu + 200000) # set current time relative to hardware timeline with ample margin
 
         # if t_trig_mu < 0:
         #     raise Exception("MissingTrigger")
