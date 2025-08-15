@@ -21,17 +21,17 @@ class HistScan(_ACFExperiment):
 
         self.setattr_argument(
             "samples",
-            NumberValue(default=500, precision=0, step=1),
+            NumberValue(default=1000, precision=0, step=1),
         )
 
         self.setattr_argument(
             "bin_width",
-            NumberValue(default=1, precision=0, step=1),
+            NumberValue(default=2, precision=0, step=1),
         )
 
         self.setattr_argument(
             "bin_val_max",
-            NumberValue(default=300, precision=0, step=1),
+            NumberValue(default=2000, precision=0, step=1),
         )
 
         self.setattr_argument("enable_sideband_cool", BooleanValue(False))
@@ -68,14 +68,14 @@ class HistScan(_ACFExperiment):
         for i in range(2):
             sample_num=0
             while sample_num< self.samples:
-                
+
                 #line trigger
-                if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(50*us) ) <0 : 
-                   continue
+                # if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(50*us) ) <0 : 
+                #    continue
                 sample_num+=1
 
                 delay(50*us)
-            
+
                 # Doppler cooling    
                 self.seq.doppler_cool.run()
                 delay(50*us)
@@ -92,7 +92,7 @@ class HistScan(_ACFExperiment):
                 self.seq.ion_store.run()
                 delay(5*us)
 
-                
+
                 for bin_i in range(self.num_bins - 1):
                     
                     if num_pmt_pulses < (bin_i + 1) * self.bin_width:
