@@ -22,7 +22,9 @@ class Rabi(Sequence):
 
         # in the register, the phase is pow_/65536
         # in turns (meaning how many 2pi, 1 turn means 2pi)
-
+        # Ensure sufficient timeline slack before issuing DDS configuration to avoid RTIO underflow
+        self.core.break_realtime()
+        delay(2*us)
         self.dds_729_dp.set(frequency_729_dp, phase=0.0, amplitude=amp_729_dp, ref_time_mu=ref_time_mu)
         self.dds_729_sp.set(frequency_729_sp, phase=phase, ref_time_mu=ref_time_mu)
 
