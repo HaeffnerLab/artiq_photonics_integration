@@ -26,7 +26,7 @@ class HistScan(_ACFExperiment):
 
         self.setattr_argument(
             "bin_width",
-            NumberValue(default=2, precision=0, step=1),
+            NumberValue(default=1, precision=0, step=1),
         )
 
         self.setattr_argument(
