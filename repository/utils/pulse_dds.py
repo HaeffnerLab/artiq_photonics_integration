@@ -160,6 +160,7 @@ class PulseDDS(_ACFExperiment):
                 
                 # Add period counter for DC voltage scanning
                 period_counter = 0
+                save_on_cycle = 1
                 
                 while True:
                     # Check if it's time to switch frequency
@@ -195,14 +196,18 @@ class PulseDDS(_ACFExperiment):
                     )
                     delay(1.0*ms)
                     self.dds_866_dp.sw.off()
-                    self.dds_397_dp.sw.off()
+                    # self.dds_397_dp.sw.off()
                     self.dds_854_dp.sw.off()
                     num_pmt_pulses_off = self.ttl_pmt_input.count(
                         self.ttl_pmt_input.gate_rising(100.0*ms)
                     )
                     delay(1.0*ms)
-                    num_pmt_pulses = 10 * (num_pmt_pulses_on - num_pmt_pulses_off) / 1.0
+                    if save_on_cycle == 1:
+                        num_pmt_pulses = 10 * (num_pmt_pulses_on) / 1.0
+                    else:
+                        num_pmt_pulses = 10 * (num_pmt_pulses_off) / 1.0
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
+                    save_on_cycle = 1 - save_on_cycle
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
                     self.dds_397_dp.sw.on()
