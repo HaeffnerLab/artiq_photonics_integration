@@ -216,9 +216,9 @@ class RabiFreqScan(_ACFExperiment):
 
             while sample_num<self.samples_per_freq:
                 if is_ion_good:
-                    #line trigger
-                    if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(2*ms) ) <0 : 
-                        continue
+                    # #line trigger
+                    # if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(5*ms), self.core.seconds_to_mu(2*ms) ) <0 : 
+                    #     continue
                     
                     # Ensure timeline is safely ahead before SPI-heavy repump sequence
                     self.core.break_realtime()
