@@ -21,7 +21,7 @@ class HistScan(_ACFExperiment):
 
         self.setattr_argument(
             "samples",
-            NumberValue(default=100, precision=0, step=1),
+            NumberValue(default=200, precision=0, step=1),
         )
 
         self.setattr_argument(
@@ -31,7 +31,7 @@ class HistScan(_ACFExperiment):
 
         self.setattr_argument(
             "bin_val_max",
-            NumberValue(default=100, precision=0, step=1),
+            NumberValue(default=200, precision=0, step=1),
         )
 
         self.setattr_argument("enable_sideband_cool", BooleanValue(False))
