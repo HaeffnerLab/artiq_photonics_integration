@@ -192,20 +192,20 @@ class PulseDDS(_ACFExperiment):
                     self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned * 1.0)
                     self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
                     num_pmt_pulses_on = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(100.0*ms)
+                        self.ttl_pmt_input.gate_rising(2.0*ms)
                     )
                     delay(1.0*ms)
-                    self.dds_866_dp.sw.off()
+                    # self.dds_866_dp.sw.off()
                     # self.dds_397_dp.sw.off()
-                    self.dds_854_dp.sw.off()
+                    # self.dds_854_dp.sw.off()
                     num_pmt_pulses_off = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(100.0*ms)
+                        self.ttl_pmt_input.gate_rising(2.0*ms)
                     )
                     delay(1.0*ms)
                     if save_on_cycle == 1:
-                        num_pmt_pulses = 10 * (num_pmt_pulses_on) / 1.0
+                        num_pmt_pulses = 500 * (num_pmt_pulses_on) / 1.0
                     else:
-                        num_pmt_pulses = 10 * (num_pmt_pulses_off) / 1.0
+                        num_pmt_pulses = 500 * (num_pmt_pulses_off) / 1.0
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
                     save_on_cycle = 1 - save_on_cycle
                     self.core.break_realtime()
