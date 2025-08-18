@@ -78,7 +78,7 @@ class RabiFreqScan(_ACFExperiment):
         )
         self.setattr_argument(
             "att_729_dp",
-            NumberValue(default=30*dB, min=8*dB, max=31*dB, unit="dB", precision=8),
+            NumberValue(default=15.0*dB, min=14*dB, max=31*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
@@ -90,7 +90,7 @@ class RabiFreqScan(_ACFExperiment):
         )
         self.setattr_argument(
             "att_729_sp",
-            NumberValue(default=30*dB, min=8*dB, max=31*dB, unit="dB", precision=8),
+            NumberValue(default=15.0*dB, min=14*dB, max=31*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )

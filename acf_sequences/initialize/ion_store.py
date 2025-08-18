@@ -37,9 +37,12 @@ class Ion_Storage(Sequence):
 
         self.core.break_realtime()
         # self.dds_854_dp.sw.off()
+        delay(200*us)
         self.dds_854_dp.set(self.frequency_854_dp)
-        delay(100*us)
+        self.core.break_realtime()
+        delay(200*us)
         self.dds_854_dp.set_att(self.attenuation_854_dp)
+        self.core.break_realtime()
         delay(20*us)
         self.dds_854_dp.sw.on()
         self.core.break_realtime()
@@ -57,6 +60,7 @@ class Ion_Storage(Sequence):
        # self.dds_397_far_detuned.set(self.frequency_397_far_detuned)
         self.dds_866_dp.set(self.frequency_866_cooling)
 
+        self.core.break_realtime()
         delay(20*us)
 
         self.dds_866_dp.sw.on()
