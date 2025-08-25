@@ -64,7 +64,7 @@ class PulseDDS(_ACFExperiment):
 
         # self.list_of_voltages = [{'DC21': 0.12718469454428813, 'DC20': 3.439853967471257, 'DC19': -3.6402581025534277, 'DC18': -3.7166523980855413, 'DC17': 4.852153969447675, 'DC16': -0.14913026101592308, 'DC15': -0.6724215824451155, 'DC14': -0.38235534793950243, 'DC13': -0.35777420082836636, 'DC12': -0.3113434633727601, 'DC10': -1.1266803203065043, 'DC9': -1.682111631372993, 'DC8': -3.4740523230696505, 'DC7': -3.025011573972312, 'DC6': -2.6195211293835037, 'DC5': -1.4570743050708157, 'DC4': -1.0072790731272554, 'DC3': -0.7112138599342495, 'DC2': -0.51236159390516, 'DC1': -0.3802935497698644, 'DC11': -0.8454585763078156}]
 
-        self.list_of_voltages = [{'DC21': -8.880782398725461, 'DC20': 4.801567879558883, 'DC19': -2.630572217599167, 'DC18': -1.1546284526018598, 'DC17': 8.07429626579938, 'DC16': -3.2576163296921, 'DC15': -3.1025323871215673, 'DC14': -2.9409893397910087, 'DC13': -2.4892734594296706, 'DC12': -2.1196656562563962, 'DC10': -9.56996148464414, 'DC9': 5.364810052876383, 'DC8': -3.8951706415727987, 'DC5': -5.6803414412897135, 'DC4': -3.6624344922788503, 'DC3': -2.9058739498105703, 'DC2': -2.0883709704548594, 'DC1': -3.914403874262656, 'DC11': -0.2736247859967382, 'DC7': 0.0, 'DC6': 0.0}]
+        self.list_of_voltages = [{'DC21': -9.288201481676468, 'DC20': 4.8789912845433445, 'DC19': -2.502199151617073, 'DC18': -1.2390705339662351, 'DC17': 8.481589437656282, 'DC16': -3.3551218638200395, 'DC15': -3.2072967896336464, 'DC14': -3.044741908279169, 'DC13': -2.5791200908105663, 'DC12': -2.1972542988582884, 'DC10': -10.005915225757725, 'DC9': 5.544216616167688, 'DC8': -3.685681193630632, 'DC5': -5.897090669783115, 'DC4': -3.803929163232532, 'DC3': -3.0154787810398247, 'DC2': -2.1673072519448713, 'DC1': -4.0567347565874305, 'DC11': -0.2591883637216652, 'DC7': 0.0, 'DC6': 0.0}]
 
         self.voltage_sets = []
         # Pre-process all voltage sets
@@ -192,26 +192,28 @@ class PulseDDS(_ACFExperiment):
                     self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned * 1.0)
                     self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
                     num_pmt_pulses_on = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(2.0*ms)
+                        self.ttl_pmt_input.gate_rising(200.0*ms)
                     )
                     delay(1.0*ms)
                     # self.dds_866_dp.sw.off()
                     # self.dds_397_dp.sw.off()
                     # self.dds_854_dp.sw.off()
+                    # self.dds_729_dp.sw.off()
                     num_pmt_pulses_off = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(2.0*ms)
+                        self.ttl_pmt_input.gate_rising(200.0*ms)
                     )
                     delay(1.0*ms)
                     if save_on_cycle == 1:
-                        num_pmt_pulses = 500 * (num_pmt_pulses_on) / 1.0
-                    else:
-                        num_pmt_pulses = 500 * (num_pmt_pulses_off) / 1.0
+                        num_pmt_pulses = 5 * (num_pmt_pulses_on) / 1.0
+                    else:   
+                        num_pmt_pulses = 5 * (num_pmt_pulses_off) / 1.0
                     self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
                     save_on_cycle = 1 - save_on_cycle
                     self.core.break_realtime()
                     self.dds_866_dp.sw.on()
                     self.dds_397_dp.sw.on()
                     self.dds_854_dp.sw.on()
+                    self.dds_729_dp.sw.on()
                     delay(3.0*ms)
                     
                     # Increment period counter
