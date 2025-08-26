@@ -322,9 +322,9 @@ class RabiTimeScan(_ACFExperiment):
 
             while sample_num<self.samples_per_time:
                 if is_ion_good:
-                    #line trigger
-                    if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(25*ms), self.core.seconds_to_mu(50*us) ) <0 : 
-                        continue
+                    # #line trigger
+                    # if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(25*ms), self.core.seconds_to_mu(50*us) ) <0 : 
+                    #     continue
                 
                     delay(50*us)
 
@@ -335,12 +335,13 @@ class RabiTimeScan(_ACFExperiment):
                     #  Cool
                     self.seq.doppler_cool.run()
                     self.seq.doppler_cool.run()
-                    if self.cooling_option == "sidebandcool":
-                        self.seq.sideband_cool.run()
-                    elif self.cooling_option == "sidebandcool2mode":
-                        self.seq.sideband_cool_2mode.run()
-                    else:
-                        self.seq.op_pump.run()
+                    # if self.cooling_option == "sidebandcool":
+                    #     self.seq.sideband_cool.run()
+                    # elif self.cooling_option == "sidebandcool2mode":
+                    #     self.seq.sideband_cool_2mode.run()
+                    # else:
+                    #     self.seq.op_pump.run()
+                    # delay(30*ms)
                     delay(5*us)
 
                     # Apply pi pulse after sideband cooling to get the initial state |1>
@@ -417,7 +418,7 @@ class RabiTimeScan(_ACFExperiment):
                 self.experiment_data.append_list_dataset("pmt_counts_avg_thresholded",
                                           float(total_pmt_counts) / self.samples_per_time)
             time_i+=1
-            delay(5*ms)
+            delay(1*ms)
 
         self.seq.ion_store.run()
         self.core.break_realtime()

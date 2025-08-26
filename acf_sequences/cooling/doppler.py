@@ -58,39 +58,39 @@ class DopplerCool(Sequence):
         self.dds_729_dp.sw.off()
         self.dds_729_sp.sw.on()
         self.dds_729_sp_aux.sw.off()
-        delay(10*ms)  # Ensure proper initialization timing with larger buffer
+        delay(1*ms)  # Ensure proper initialization timing with larger buffer
 
         #set initial parameters for all the lasers
         self.dds_397_far_detuned.set(freq_397_far_detuned)
-        delay(5*ms)
+        delay(200*us)
         self.dds_397_far_detuned.set_att(attenuation_397_far_detuned)
-        delay(5*ms)
+        delay(200*us)
 
         self.dds_866_dp.set(freq_866_cooling)
-        delay(5*ms)
+        delay(200*us)
         self.dds_866_dp.set_att(attenuation_866)
-        delay(5*ms)
+        delay(200*us)
 
         self.dds_397_dp.set_att(attenuation_397)
-        delay(5*ms) 
+        delay(200*us)
         self.dds_397_dp.set(freq_397_cooling)
-        delay(5*ms)
+        delay(200*us)
 
         #coarse cooling
         self.dds_397_dp.set(freq_397_cooling)#+3*MHz)
-        delay(3*ms)
+        delay(200*us)
         self.dds_397_dp.sw.on()
-        delay(2*ms)
+        delay(200*us)
         self.dds_397_far_detuned.sw.on()
-        delay(2*ms)
+        delay(200*us)
         self.dds_866_dp.sw.on()
         delay(doppler_cooling_time * 0.2)
 
-        #fine cooling      
+        #fine cooling
         self.dds_397_dp.set(freq_397_cooling)
-        delay(3*ms)
+        delay(200*us)
         self.dds_397_far_detuned.sw.off()
-        delay(2*ms)
+        delay(200*us)
         self.dds_397_dp.set_att(attenuation_397+2*dB)
         delay(doppler_cooling_time * 0.3)
 
@@ -99,9 +99,9 @@ class DopplerCool(Sequence):
         
         #turn off the cooling laser at the end 
         self.dds_397_far_detuned.sw.off()
-        delay(2*ms)
+        delay(200*us)
         self.dds_397_dp.sw.off()
-        delay(2*ms)
+        delay(200*us)
         self.dds_866_dp.sw.off()
-        delay(5*ms)
+        delay(200*us)
 

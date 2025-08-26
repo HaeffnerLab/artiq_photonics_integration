@@ -73,8 +73,8 @@ class FreqScan397(_ACFExperiment):
         
         self.setup_run()
         self.core.break_realtime()
-        delay(100*us)
-        self.seq.ion_store.run()
+        # delay(100*us)
+        # self.seq.ion_store.run()
         
         delay(100*us)
 

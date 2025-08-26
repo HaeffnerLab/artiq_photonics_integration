@@ -16,6 +16,14 @@ class DefaultExperiment(_ACFExperiment):
         self.seq.ion_store.add_arguments_to_gui()
         self.seq.cam_two_ions.build()
 
+        #729 dp
+        self.add_arg_from_param("frequency/729_dp")
+        self.add_arg_from_param("attenuation/729_dp")
+
+        #729 sp
+        self.add_arg_from_param("frequency/729_sp")
+        self.add_arg_from_param("attenuation/729_sp")
+
         #self.ser= serial.Serial('/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_AZBRb132J02-if00-port0', 9600) #//port & baud rate
 
 
@@ -34,6 +42,16 @@ class DefaultExperiment(_ACFExperiment):
         #protect ion
         self.seq.ion_store.run()
         delay(5*us)
+
+        #set 729 dp
+        self.dds_729_dp.set(self.frequency_729_dp)
+        self.dds_729_dp.set_att(self.attenuation_729_dp)
+        self.dds_729_dp.sw.on()
+
+        #set 729 sp
+        self.dds_729_sp.set(self.frequency_729_sp)
+        self.dds_729_sp.set_att(self.attenuation_729_sp)
+        # self.dds_729_sp.sw.on()
 
         self.seq.rf.set_voltage('store')
         time.sleep(1)
