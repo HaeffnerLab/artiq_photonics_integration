@@ -54,6 +54,13 @@ class PulseDDS(_ACFExperiment):
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/729_dp")
         
+        # Allow manual control of 854 amplitude from ARTIQ dashboard (0.0 - 1.0)
+        self.setattr_argument(
+            "amplitude_854_dp",
+            NumberValue(default=1.0, min=0.0, max=1.0, step=0.01),
+            tooltip="Amplitude (0..1) for 854 DDS"
+        )
+        
         # Define the DC voltage sets similar to set_dc_manual.py
         self.channels = [i for i in range(32)]
         # self.list_of_voltages = [{'DC21': 0.21, 'DC20': 0.2, 'DC19': 0.19, 'DC18': 0.18, 'DC17': 0.17, 'DC16': 0.16, 'DC15': 0.15, 'DC14': 0.14, 'DC13': 0.13, 'DC12': 0.12, 'DC10': 0.1, 'DC9': 0.09, 'DC8': 0.08, 'DC7': 0.07, 'DC6': 0.06, 'DC5': 0.05, 'DC4': 0.04, 'DC3': 0.03, 'DC2': 0.02, 'DC1': 0.01, 'DC11': 0.11}, {'DC21': 9.99, 'DC20': 9.0, 'DC19': 8.0, 'DC18': 7.0, 'DC17': 6.0, 'DC16': 5.0, 'DC15': 4.0, 'DC14': 3.0, 'DC13': 2.0, 'DC12': 1.0, 'DC10': -1.0, 'DC9': -2.0, 'DC8': -3.0, 'DC7': -4.0, 'DC6': -5.0, 'DC5': -6.0, 'DC4': -7.0, 'DC3': -8.0, 'DC2': -9.0, 'DC1': -9.99, 'DC11': 0.1}]
@@ -131,7 +138,8 @@ class PulseDDS(_ACFExperiment):
         self.dds_729_dp.set(self.frequency_729_dp)
         self.dds_729_dp.set_att(self.attenuation_729_dp)
 
-        self.dds_854_dp.set(self.frequency_854_dp)
+        # Set 854 frequency and amplitude together to ensure a single IO_UPDATE
+        self.dds_854_dp.set(self.frequency_854_dp, amplitude=self.amplitude_854_dp)
         self.dds_854_dp.set_att(self.attenuation_854_dp)
 
         # self.dds_854_dp.set(self.frequency_854_dp)
