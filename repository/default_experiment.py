@@ -46,12 +46,12 @@ class DefaultExperiment(_ACFExperiment):
         #set 729 dp
         self.dds_729_dp.set(self.frequency_729_dp)
         self.dds_729_dp.set_att(self.attenuation_729_dp)
-        self.dds_729_dp.sw.on()
+        self.dds_729_dp.sw.off()
 
         #set 729 sp
         self.dds_729_sp.set(self.frequency_729_sp)
         self.dds_729_sp.set_att(self.attenuation_729_sp)
-        # self.dds_729_sp.sw.on()
+        self.dds_729_sp.sw.off()
 
         self.seq.rf.set_voltage('store')
         time.sleep(1)
