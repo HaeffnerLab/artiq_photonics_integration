@@ -57,8 +57,8 @@ class RabiFreqScan(_ACFExperiment):
             "scan_freq_729_dp",
             Scannable(
                 default=RangeScan(
-                   start=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2")-0.003*MHz,
-                    stop=self.parameter_manager.get_param("qubit/Sm1_2_Dm1_2")+0.003*MHz,
+                   start=self.parameter_manager.get_param("qubit/S1_2_D3_2")-0.24*MHz,
+                    stop=self.parameter_manager.get_param("qubit/S1_2_D3_2")+0.24*MHz,
                     npoints=50
                 ),
                 global_min=150*MHz,
@@ -72,13 +72,13 @@ class RabiFreqScan(_ACFExperiment):
 
         self.setattr_argument(
             "rabi_t",
-            NumberValue(default=300*us, min=0.0*us, max=10000*us, unit="us", precision=8),
+            NumberValue(default=8.1*us, min=0.0*us, max=10000*us, unit="us", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
         self.setattr_argument(
             "att_729_dp",
-            NumberValue(default=17.0*dB, min=14*dB, max=31*dB, unit="dB", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=14*dB, max=31*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
