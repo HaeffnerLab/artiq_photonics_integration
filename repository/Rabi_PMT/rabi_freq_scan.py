@@ -78,7 +78,7 @@ class RabiFreqScan(_ACFExperiment):
         )
         self.setattr_argument(
             "att_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=14*dB, max=31*dB, unit="dB", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=12.5*dB, max=31*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
