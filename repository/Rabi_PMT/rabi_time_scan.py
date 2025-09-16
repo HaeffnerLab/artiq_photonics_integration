@@ -70,8 +70,8 @@ class RabiTimeScan(_ACFExperiment):
             Scannable(
                 default=RangeScan(
                     start=0*us,
-                    stop=60*us,
-                    npoints=30
+                    stop=120*us,
+                    npoints=60
                 ),
                 global_min=0*us,
                 global_max=10000*us,
@@ -83,7 +83,7 @@ class RabiTimeScan(_ACFExperiment):
 
         self.setattr_argument(
             "freq_729_dp",
-            NumberValue(default=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2"), min=200*MHz, max=250*MHz, unit="MHz", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("qubit/S1_2_D3_2"), min=180*MHz, max=250*MHz, unit="MHz", precision=8),
             tooltip="729 double pass frequency",
             group="rabi"
         )
@@ -318,7 +318,7 @@ class RabiTimeScan(_ACFExperiment):
             # Collision Detection
             is_ion_good = True
             num_try_save_ion = 0 
-            delay(200*us)
+            delay(2*us)
 
             while sample_num<self.samples_per_time:
                 if is_ion_good:
@@ -341,8 +341,8 @@ class RabiTimeScan(_ACFExperiment):
                     #     self.seq.sideband_cool_2mode.run()
                     # else:
                     #     self.seq.op_pump.run()
-                    # delay(30*ms)
-                    delay(5*us)
+                    # delay(100*ms)
+                    delay(1*us)
 
                     # Apply pi pulse after sideband cooling to get the initial state |1>
                     if self.enable_pi_pulse:

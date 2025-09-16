@@ -57,8 +57,8 @@ class RabiFreqScan(_ACFExperiment):
             "scan_freq_729_dp",
             Scannable(
                 default=RangeScan(
-                   start=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2")-0.003*MHz,
-                    stop=self.parameter_manager.get_param("qubit/Sm1_2_Dm5_2")+0.003*MHz,
+                   start=self.parameter_manager.get_param("qubit/S1_2_D3_2")-0.24*MHz,
+                    stop=self.parameter_manager.get_param("qubit/S1_2_D3_2")+0.24*MHz,
                     npoints=50
                 ),
                 global_min=150*MHz,
@@ -72,13 +72,13 @@ class RabiFreqScan(_ACFExperiment):
 
         self.setattr_argument(
             "rabi_t",
-            NumberValue(default=600*us, min=0.0*us, max=10000*us, unit="us", precision=8),
+            NumberValue(default=8.1*us, min=0.0*us, max=10000*us, unit="us", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
         self.setattr_argument(
             "att_729_dp",
-            NumberValue(default=15.0*dB, min=14*dB, max=31*dB, unit="dB", precision=8),
+            NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=12.5*dB, max=31*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation",
             group="rabi"
         )
@@ -228,20 +228,20 @@ class RabiFreqScan(_ACFExperiment):
                     # Cool
                     self.seq.doppler_cool.run()
 
-                    if self.enable_sideband_cool:
-                        self.seq.sideband_cool.run()
-                    else:
-                        self.seq.op_pump.run()
-                    delay(5*us)
+                    # if self.enable_sideband_cool:
+                    #     self.seq.sideband_cool.run()
+                    # else:
+                    #     self.seq.op_pump.run()
+                    # delay(5*us)
                     
-                    if self.enable_pi_pulse:
-                        #self.rabi(self.PI_drive_time, self.freq_729_pi,0.0)
-                        self.seq.rabi.run(self.PI_drive_time,
-                                        self.freq_729_dp_pi,
-                                        self.freq_729_sp_pi,
-                                        self.att_729_dp_pi,
-                                        self.att_729_sp_pi
-                            )
+                    # if self.enable_pi_pulse:
+                    #     #self.rabi(self.PI_drive_time, self.freq_729_pi,0.0)
+                    #     self.seq.rabi.run(self.PI_drive_time,
+                    #                     self.freq_729_dp_pi,
+                    #                     self.freq_729_sp_pi,
+                    #                     self.att_729_dp_pi,
+                    #                     self.att_729_sp_pi
+                    #         )
 
                     # Attempt Rabi flop
                     self.seq.rabi.run(self.rabi_t,

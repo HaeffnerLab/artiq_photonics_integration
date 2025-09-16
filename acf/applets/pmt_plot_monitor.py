@@ -145,8 +145,8 @@ class PMTPlotMonitor(QWidget):
 
         
 
-        if len(self.pmt) > 2e4:
-            self.pmt = []
+        if len(self.pmt) > 3e3:  # 30,000 counts limit
+            self.pmt = self.pmt[-int(3e3):]  # Keep only the last 30,000 counts
 
         if(np.isnan(y_data)): return
 
