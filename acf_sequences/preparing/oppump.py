@@ -17,8 +17,8 @@ class Op_pump(Sequence):
 
         self.add_argument_from_parameter("Op_pump_freq_729_dp", "qubit/S1_2_Dm3_2")
         self.add_argument_from_parameter("Op_pump_att_729_dp", "optical_pumping/att_729_dp")
-        self.add_argument_from_parameter("Op_pump_freq_729_sp", "frequency/729_sp")
-        self.add_argument_from_parameter("Op_pump_att_729_sp", "optical_pumping/att_729_sp")
+        # self.add_argument_from_parameter("Op_pump_freq_729_sp", "frequency/729_sp")
+        # self.add_argument_from_parameter("Op_pump_att_729_sp", "optical_pumping/att_729_sp")
         self.add_argument_from_parameter("Op_pump_att_729", "optical_pumping/att_729_dp")
 
 
@@ -31,8 +31,8 @@ class Op_pump(Sequence):
         self.dds_729_dp.set(self.Op_pump_freq_729_dp+7.0*freq_diff_dp/5.0)
         self.dds_729_dp.set_att(self.Op_pump_att_729_dp)
 
-        self.dds_729_sp.set(self.Op_pump_freq_729_sp)
-        self.dds_729_sp.set_att(self.Op_pump_att_729_sp)
+        # self.dds_729_sp.set(self.Op_pump_freq_729_sp)
+        # self.dds_729_sp.set_att(self.Op_pump_att_729_sp)
 
         self.dds_854_dp.set_att(self.attenuation_854_dp)
         self.dds_866_dp.set_att(self.attenuation_866)
@@ -45,7 +45,7 @@ class Op_pump(Sequence):
         for i in range(self.Op_pump_cycle):
             # ground state optical pumping
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
+            # self.dds_729_sp.sw.on()
             delay(10*us)
             self.dds_729_dp.sw.off()
 

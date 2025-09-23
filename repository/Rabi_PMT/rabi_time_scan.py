@@ -335,12 +335,12 @@ class RabiTimeScan(_ACFExperiment):
                     #  Cool
                     self.seq.doppler_cool.run()
                     self.seq.doppler_cool.run()
-                    # if self.cooling_option == "sidebandcool":
-                    #     self.seq.sideband_cool.run()
-                    # elif self.cooling_option == "sidebandcool2mode":
-                    #     self.seq.sideband_cool_2mode.run()
-                    # else:
-                    #     self.seq.op_pump.run()
+                    if self.cooling_option == "sidebandcool":
+                        self.seq.sideband_cool.run()
+                    elif self.cooling_option == "sidebandcool2mode":
+                        self.seq.sideband_cool_2mode.run()
+                    else:
+                        self.seq.op_pump.run()
                     # delay(100*ms)
                     delay(1*us)
 
