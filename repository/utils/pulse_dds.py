@@ -207,7 +207,7 @@ class PulseDDS(_ACFExperiment):
                         self.ttl_pmt_input.gate_rising(50.0*ms)
                     )
                     delay(1.0*ms)
-                    # self.dds_866_dp.sw.off()
+                    self.dds_866_dp.sw.off()
                     # self.dds_397_dp.sw.off()
                     # self.dds_854_dp.sw.off()
                     # self.dds_729_dp.sw.off()
