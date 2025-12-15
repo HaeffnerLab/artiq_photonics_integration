@@ -40,12 +40,12 @@ class AttScan397(_ACFExperiment):
             "scan_att_397",
             Scannable(
                 default=RangeScan(
-                    start=18*dB,
-                    stop=30*dB,
-                    npoints=100,
+                    start=9*dB,
+                    stop=20*dB,
+                    npoints=30,
                     randomize=True
                 ),
-                global_min=10*dB,
+                global_min=9*dB,
                 global_max=31.5*dB,
                 unit="dB",
                 precision=6
