@@ -341,8 +341,8 @@ class RabiTimeScan(_ACFExperiment):
                         self.seq.sideband_cool_2mode.run()
                     else:
                         self.seq.op_pump.run()
-                    # delay(100*ms)
-                    delay(1*us)
+                    delay(100*ms)
+                    # delay(1*us)
 
                     # Apply pi pulse after sideband cooling to get the initial state |1>
                     if self.enable_pi_pulse:
