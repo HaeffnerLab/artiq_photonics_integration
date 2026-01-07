@@ -14,7 +14,6 @@ class DefaultExperiment(_ACFExperiment):
         self.setup(sequences)
         self.set_default_scheduling(priority=-99)
         self.seq.ion_store.add_arguments_to_gui()
-        self.seq.cam_two_ions.build()
 
         #729 dp
         self.add_arg_from_param("frequency/729_dp")
@@ -53,30 +52,27 @@ class DefaultExperiment(_ACFExperiment):
         self.dds_729_sp.set_att(self.attenuation_729_sp)
         self.dds_729_sp.sw.off()
 
-        self.seq.rf.set_voltage('store')
         time.sleep(1)
         
         while True:
-            self.seq.ion_store.update_parameters()
+            #self.seq.ion_store.update_parameters()
 
             delay(10*ms)
 
-            with parallel:
-                if self.scheduler.check_pause():
-                    self.scheduler.submit()
-                    break
-                #time.sleep(0.1)
-                try:
-                    #self.turn_off_voltage_source()
-                    self.core.break_realtime()
-                    self.ttl_375_pis.off()
-                    self.ttl_422_pis.off()
-                finally:
-                    pass
             
-            for j in range(10):
-                self.ttl_camera_trigger.pulse(10*us)
-                delay(50*ms)   
+            if self.scheduler.check_pause():
+                self.scheduler.submit()
+                break
+            #time.sleep(0.1)
+            try:
+                #self.turn_off_voltage_source()
+                self.core.break_realtime()
+                self.ttl_375_pis.off()
+                self.ttl_422_pis.off()
+            finally:
+                pass
+            
+
 
 
             self.core.break_realtime()

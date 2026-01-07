@@ -34,25 +34,12 @@ from acf_sequences.preparing.repump854 import Repump854
 from acf_sequences.preparing.oppump import Op_pump
 from acf_sequences.preparing.oppump_sigma import Op_pump_sigma
 
-# Van der Pol experiment sequences
-from acf_sequences.Vdp.Vdp import VdP
-from acf_sequences.Vdp.Vdp_2mode import VdP2Mode
-from acf_sequences.Vdp.Vdp_2mode_one import VdP1mode
 
-# Calibration sequences
-from acf_sequences.calibrate.power_adjust import Adjust_729_Power
-from acf_sequences.calibrate.calibrate_729_freq import Check_729_Freq
-from acf_sequences.calibrate.calibrate_motion import Check_Motion
-from acf_sequences.calibrate.calibrate_729_freq_Ramsey import Check_729_Freq_Ramsey
-from acf_sequences.calibrate.calibrate_motion_SDF import Check_Motion_SDF
-from acf_sequences.calibrate.calibrate_729_pi_pulse import Check_729_Pi_Pulse
 # SDF sequences
 from acf_sequences.SDF.SDF import SDF_single_ion
 from acf_sequences.SDF.SDF import SDF_mode1
 from acf_sequences.SDF.SDF import SDF_mode2
 
-# RF sequences
-from acf_sequences.rf.rf import RF
 
 # Tickle sequences
 from acf_sequences.SDF.Tickle import Tickle
@@ -92,16 +79,6 @@ sequences.add_sequence("repump_854", Repump854())
 sequences.add_sequence('op_pump', Op_pump())
 sequences.add_sequence('op_pump_sigma', Op_pump_sigma())
 
-# Van der Pol experiment sequences
-sequences.add_sequence('vdp', VdP())
-sequences.add_sequence('vdp2mode_one', VdP1mode())
-sequences.add_sequence('vdp2mode', VdP2Mode())
-
-# Calibration sequences
-sequences.add_sequence('adjust_729_power', Adjust_729_Power())
-sequences.add_sequence('adjust_729_freq', Check_729_Freq())
-sequences.add_sequence('adjust_729_freq_ramsey', Check_729_Freq_Ramsey())
-sequences.add_sequence('adjust_729_pi_pulse', Check_729_Pi_Pulse())
 # Utility sequences
 sequences.add_sequence("print_hi", PrintHi())
 
@@ -110,12 +87,7 @@ sequences.add_sequence('sdf_single_ion', SDF_single_ion())
 sequences.add_sequence('sdf_mode1', SDF_mode1())
 sequences.add_sequence('sdf_mode2', SDF_mode2())
 
-# RF sequences
-sequences.add_sequence('rf', RF())
 
-# Calibration sequences
-sequences.add_sequence('calibrate_motion', Check_Motion())
-sequences.add_sequence('calibrate_motion_SDF', Check_Motion_SDF())
 
 # Tickle sequences
 sequences.add_sequence('tickle', Tickle())

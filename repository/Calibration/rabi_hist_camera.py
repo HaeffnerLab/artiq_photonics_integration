@@ -96,9 +96,7 @@ class HistScan_Cam(_ACFExperiment):
                 sample_num+=1
 
                 if sample_num%200==0:
-                    self.seq.rf.tickle()
                     self.seq.ion_store.run()
-                    self.seq.rf.save_ion()
 
                 delay(50*us)
             

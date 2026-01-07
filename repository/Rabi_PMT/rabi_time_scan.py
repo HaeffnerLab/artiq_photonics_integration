@@ -119,7 +119,7 @@ class RabiTimeScan(_ACFExperiment):
             tooltip="Number of samples to take for each time",
         )
 
-        self.setattr_argument("cooling_option", EnumerationValue(["sidebandcool", "sidebandcool2mode","opticalpumping"], default="sidebandcool"))
+        self.setattr_argument("cooling_option", EnumerationValue(["sidebandcool", "opticalpumping"], default="opticalpumping"))
         self.setattr_argument("enable_collision_detection", BooleanValue(True))     
         self.setattr_argument("enable_thresholding", BooleanValue(True))
         self.setattr_argument(
@@ -326,35 +326,34 @@ class RabiTimeScan(_ACFExperiment):
                     # if self.seq.ac_trigger.run(self.core, self.core.seconds_to_mu(25*ms), self.core.seconds_to_mu(50*us) ) <0 : 
                     #     continue
                 
-                    delay(50*us)
-
+                    delay(500*us)
 
                     #854 repump
                     self.seq.repump_854.run()
                     
                     #  Cool
-                    self.seq.doppler_cool.run()
+                    # self.seq.doppler_cool.run()
                     self.seq.doppler_cool.run()
                     if self.cooling_option == "sidebandcool":
                         self.seq.sideband_cool.run()
-                    elif self.cooling_option == "sidebandcool2mode":
-                        self.seq.sideband_cool_2mode.run()
                     else:
                         self.seq.op_pump.run()
-                    # delay(0*ms)
-                    delay(1*us)
+                    # delay(100*ms)
+                    self.core.break_realtime()
 
                     # Apply pi pulse after sideband cooling to get the initial state |1>
-                    if self.enable_pi_pulse:
-                        #self.rabi(self.PI_drive_time, self.freq_729_pi,0.0)
-                        self.seq.rabi.run(self.PI_drive_time,
-                                    self.freq_729_dp_pi,
-                                    self.freq_729_sp_pi,
-                                    self.att_729_dp_pi,
-                                    self.att_729_sp_pi
-                        )
+                    # if self.enable_pi_pulse:
+                    #     #self.rabi(self.PI_drive_time, self.freq_729_pi,0.0)
+                    #     self.seq.rabi.run(self.PI_drive_time,
+                    #                 self.freq_729_dp_pi,
+                    #                 self.freq_729_sp_pi,
+                    #                 self.att_729_dp_pi,
+                    #                 self.att_729_sp_pi
+                    #     )
                     #self.ttl_shuttling_awg_trigger.pulse(1*us)
                     #delay(300*us)
+
+                    self.core.break_realtime()
 
                     self.seq.rabi.run(rabi_t,
                                     self.freq_729_dp,
@@ -365,6 +364,7 @@ class RabiTimeScan(_ACFExperiment):
 
                     #qubit readout
                     num_pmt_pulses=self.seq.readout_397.run()
+                    
 
                     if num_pmt_pulses < self.threshold_pmt_count and self.enable_collision_detection:
 
@@ -423,10 +423,10 @@ class RabiTimeScan(_ACFExperiment):
         self.seq.ion_store.run()
         self.core.break_realtime()
 
-    def analyze(self):
-        rabi_time=self.get_dataset("rabi_t")
-        rabi_PMT=self.get_dataset('pmt_counts_avg_thresholded')
-        self.fitting_func.fit(rabi_time, rabi_PMT)
+    # def analyze(self):
+    #     rabi_time=self.get_dataset("rabi_t")
+    #     rabi_PMT=self.get_dataset('pmt_counts_avg_thresholded')
+    #     self.fitting_func.fit(rabi_time, rabi_PMT)
 
 
     
