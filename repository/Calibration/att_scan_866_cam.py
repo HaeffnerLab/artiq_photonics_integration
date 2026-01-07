@@ -62,7 +62,6 @@ class AttScan866_Cam(_ACFExperiment):
         self.setup_run()
         self.seq.ion_store.run()
         delay(5*us)
-        self.seq.rf.set_voltage(mode="lower")
         self.seq.cam_two_ions.cam_setup()
 
         

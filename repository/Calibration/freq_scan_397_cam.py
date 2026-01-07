@@ -78,7 +78,6 @@ class FreqScan397_Cam(_ACFExperiment):
         self.setup_run()
         self.seq.ion_store.run()
         delay(5*us)
-        self.seq.rf.set_voltage(mode="lower")
         
         delay(5*us)
 

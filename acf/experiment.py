@@ -32,7 +32,6 @@ class _ACFExperiment(EnvExperiment):
         self.core.reset()
         self.core.break_realtime()
 
-        # self.seq.rf.set_voltage('store')
 
         # Init all DDSs
         for dds in self.hardware.get_all_dds():
@@ -43,11 +42,6 @@ class _ACFExperiment(EnvExperiment):
 
         self.seq.ion_store.run()
         #self.seq.init_device.run()
-       
-        self.ttl_rf_switch_AWG_729SP.off()
-        self.ttl_rf_switch_DDS_729SP.on()
-
-        #store rf 
         
 
         self.core.break_realtime()

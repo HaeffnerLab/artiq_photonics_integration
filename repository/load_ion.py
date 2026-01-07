@@ -78,7 +78,6 @@ class Ion_Load(_ACFExperiment):
         self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
 
-        self.seq.rf.set_voltage('load')
 
         # turn on the oven & ttl
         self.ttl_375_pis.on()

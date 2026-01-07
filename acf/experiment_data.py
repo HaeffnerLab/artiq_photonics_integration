@@ -106,7 +106,7 @@ class ExperimentData:
             #index_mut = tuple(index)
             assert len(index) == 2, "Only 2D dataset insertion is supported for now"
 
-            index_mut = ((index[0],index[0]+1),(index[1],index[1]+1))
+            index_mut = ((np.int32(index[0]),np.int32(index[0]+1)),(np.int32(index[1]),np.int32(index[1]+1)))
         else:
             raise RuntimeError("index must be int or list.")
         

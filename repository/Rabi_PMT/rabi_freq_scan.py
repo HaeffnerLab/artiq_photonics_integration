@@ -15,7 +15,7 @@ class RabiFreqScan(_ACFExperiment):
         self.seq.doppler_cool.add_arguments_to_gui()
         self.seq.sideband_cool.add_arguments_to_gui()
         self.seq.repump_854.add_arguments_to_gui()
-        self.seq.op_pump.add_arguments_to_gui()
+        # self.seq.op_pump.add_arguments_to_gui()
 
         self.setup_fit(fitting_func ,'Lorentzian', -999)
 

@@ -1,6 +1,5 @@
 from acf.sequence import Sequence
 from artiq.experiment import *
-from awg_utils.transmitter import send_exp_para
 from utils_func.stark_D import stark_shift_kernel
 
 class SDF_single_ion(Sequence):

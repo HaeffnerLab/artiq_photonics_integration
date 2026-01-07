@@ -5,7 +5,7 @@ from acf.experiment import _ACFExperiment
 from acf_sequences.sequences import sequences
 from acf_config.arguments_definition import argument_manager
 
-class ResetDACTest(EnvExperiment):       
+class ResetDACTest(EnvExperiment):
 
     def build(self):
         self.setattr_device("core")

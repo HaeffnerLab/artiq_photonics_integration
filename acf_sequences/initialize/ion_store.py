@@ -9,11 +9,9 @@ class Ion_Storage(Sequence):
         super().__init__()
 
         self.add_parameter("frequency/397_cooling")
-        self.add_parameter("frequency/397_far_detuned")
         self.add_parameter("frequency/866_cooling")
      
         self.add_parameter("attenuation/397")
-        self.add_parameter("attenuation/397_far_detuned")
         self.add_parameter("attenuation/866")
 
         self.add_parameter("frequency/854_dp")
@@ -23,10 +21,8 @@ class Ion_Storage(Sequence):
     def update_parameters(self):
         self.attenuation_397=self.exp.parameter_manager.get_float_param("attenuation/397")
         self.attenuation_866=self.exp.parameter_manager.get_float_param("attenuation/866")
-        self.attenuation_397_far_detuned=self.exp.parameter_manager.get_float_param("attenuation/397_far_detuned")
 
         self.frequency_397_cooling=self.exp.parameter_manager.get_float_param("frequency/397_cooling")
-        self.frequency_397_far_detuned=self.exp.parameter_manager.get_float_param("frequency/397_far_detuned")
         self.frequency_866_cooling=self.exp.parameter_manager.get_float_param("frequency/866_cooling")
 
         self.frequency_854_dp=self.exp.parameter_manager.get_float_param("frequency/854_dp")
