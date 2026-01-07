@@ -26,17 +26,13 @@ class Rabi(Sequence):
         self.core.break_realtime()
         delay(2*us)
         self.dds_729_dp.set(frequency_729_dp, phase=0.0, amplitude=amp_729_dp, ref_time_mu=ref_time_mu)
-        self.dds_729_sp.set(frequency_729_sp, phase=phase, ref_time_mu=ref_time_mu)
 
         self.dds_729_dp.set_att(attenuation_729_dp)
-        self.dds_729_sp.set_att(attenuation_729_sp)
         #delay(5*us)
-        
+
         delay(1*us)
-        self.dds_729_sp.sw.on()
-        self.dds_729_sp_aux.sw.off()
         self.dds_729_dp.sw.on()
-        
+
         delay(pulse_time)
         self.dds_729_dp.sw.off()
         delay(1*us)
