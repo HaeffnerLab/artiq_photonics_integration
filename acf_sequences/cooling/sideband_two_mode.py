@@ -103,8 +103,6 @@ class SideBandCool2Mode(Sequence):
     def SideBandCoolingPulse2mode(self):
 
         #switch to artiq sp_aux
-        self.ttl_rf_switch_DDS_729SP.on()
-        self.ttl_rf_switch_AWG_729SP.off()
 
         ##############################################################################################################################
         #set laser power & frequency
@@ -190,16 +188,12 @@ class SideBandCool2Mode(Sequence):
         self.dds_866_dp.sw.off()
 
 
-        self.ttl_rf_switch_DDS_729SP.off()
-        self.ttl_rf_switch_AWG_729SP.on()
    
 
     @kernel
     def SideBandCoolingCW2mode(self):
 
         #switch to artiq sp_aux
-        # self.ttl_rf_switch_DDS_729SP.on()
-        # self.ttl_rf_switch_AWG_729SP.off()
 
         ##############################################################################################################################
         #set laser power & frequency
@@ -285,6 +279,4 @@ class SideBandCool2Mode(Sequence):
         # self.dds_866_dp.sw.off()
         #################################
 
-        # self.ttl_rf_switch_DDS_729SP.off()
-        # self.ttl_rf_switch_AWG_729SP.on()
 

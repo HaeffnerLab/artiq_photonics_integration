@@ -303,7 +303,6 @@ class SideBandCool(Sequence):
         self.dds_866_dp.sw.on()
         self.dds_729_dp.sw.on()
         self.dds_397_sigma.sw.off()
-        self.ttl_rf_switch_AWG_729SP.off()
         delay(5*us)
 
         for i in range(self.SideBandCool_num_cycle):

@@ -34,7 +34,6 @@ class SDF_single_ion(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)
         delay(2*us)
@@ -76,7 +75,6 @@ class SDF_mode1(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)
         delay(2*us)
@@ -117,7 +115,6 @@ class SDF_mode2(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
 
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)
