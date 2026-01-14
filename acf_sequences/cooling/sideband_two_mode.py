@@ -11,8 +11,6 @@ class SideBandCool2Mode(Sequence):
         ### cool two modes simultaneously (double pass full power)
         self.add_argument_from_parameter("sideband2mode_freq_729_dp", "qubit/Sm1_2_Dm5_2")
         self.add_parameter("sideband2mode/att_729_dp")
-        self.add_parameter("sideband2mode/freq_729_sp")
-        self.add_parameter("sideband2mode/att_729_sp")
         self.add_parameter("sideband2mode/vib_freq1")
         self.add_parameter("sideband2mode/vib_freq2")
 
@@ -34,8 +32,6 @@ class SideBandCool2Mode(Sequence):
         #optical pumping
         self.add_argument_from_parameter("optical_pumping_freq_729_dp", "qubit/S1_2_Dm3_2") 
         self.add_argument_from_parameter("optical_pumping_att_729_dp", "attenuation/729_dp")
-        self.add_argument_from_parameter("optical_pumping_freq_729_sp", "frequency/729_sp")
-        self.add_argument_from_parameter("optical_pumping_att_729_sp", "attenuation/729_sp")
         self.add_argument_from_parameter("optical_pumping_freq_866", "frequency/866_cooling")
         self.add_argument_from_parameter("optical_pumping_att_866", "attenuation/866")
         self.add_argument_from_parameter("optical_pumping_freq_854", "frequency/854_dp")
@@ -79,8 +75,6 @@ class SideBandCool2Mode(Sequence):
     def set_OP(self):
         self.dds_729_dp.set(self.optical_pumping_freq_729_dp)
         self.dds_729_dp.set_att(self.optical_pumping_att_729_dp)
-        self.dds_729_sp.set(self.optical_pumping_freq_729_sp)
-        self.dds_729_sp.set_att(self.optical_pumping_att_729_sp)
         
         self.dds_854_dp.set_att(self.optical_pumping_att_854)
         self.dds_866_dp.set_att(self.optical_pumping_att_866)
@@ -119,38 +113,29 @@ class SideBandCool2Mode(Sequence):
         self.dds_397_dp.sw.off()
 
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
-        self.dds_729_sp_aux.sw.off()
         delay(2*us)
         ##############################################################################################################################       
         self.dds_729_dp.set(self.sideband2mode_freq_729_dp)
-        self.dds_729_sp.set_att(13*dB)
         self.dds_729_dp.set_att(15*dB)
 
         for i in range(int(self.SideBandCool_num_cycle/5)):
             ########################################################################################################################### 
             for j in range(5):
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+4*self.sideband2mode_vib_freq1)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(21*us)
                 self.dds_729_dp.sw.off()
                 self.repump_854()
                 
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+1*self.sideband2mode_vib_freq2)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(20*us)
                 self.dds_729_dp.sw.off()
 
                 self.repump_854() 
 
 
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+2*self.sideband2mode_vib_freq1)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(21*us)
                 self.dds_729_dp.sw.off()
 
@@ -160,13 +145,10 @@ class SideBandCool2Mode(Sequence):
 
         ##############################################################################################################################       
         self.dds_729_dp.set(self.sideband2mode_freq_729_dp)
-        self.dds_729_sp.set_att(13*dB)
         self.dds_729_dp.set_att(25*dB)
         for i in range(self.SideBandCool_num_cycle):
             ########################################################################################################################### 
             for j in range(5):
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1)
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 delay(20*us)
                 self.dds_729_dp.sw.off()
@@ -174,8 +156,6 @@ class SideBandCool2Mode(Sequence):
 
                 self.repump_854()
 
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2)
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 delay(30*us)
                 self.dds_729_dp.sw.off()
@@ -183,8 +163,6 @@ class SideBandCool2Mode(Sequence):
                 self.repump_854()
 
 
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1)
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 delay(20*us)
                 self.dds_729_dp.sw.off()
@@ -201,7 +179,6 @@ class SideBandCool2Mode(Sequence):
 
             # ground state optical pumping
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
             delay(10*us)
             self.dds_729_dp.sw.off()
 
@@ -209,10 +186,8 @@ class SideBandCool2Mode(Sequence):
         
         delay(5*us)
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
-        self.dds_729_sp_aux.sw.off()
 
 
         self.ttl_rf_switch_DDS_729SP.off()
@@ -234,8 +209,6 @@ class SideBandCool2Mode(Sequence):
         self.dds_854_dp.sw.on()
         self.dds_866_dp.sw.on()
         self.dds_729_dp.sw.on()
-        self.dds_729_sp.sw.on()
-        self.dds_729_sp_aux.sw.off()
         ##############################################################################################################################       
         for i in range(self.SideBandCool_num_cycle):
             
@@ -256,27 +229,13 @@ class SideBandCool2Mode(Sequence):
             self.dds_866_dp.set_att(self.sideband2mode_att_866)
             self.dds_729_dp.set(self.sideband2mode_freq_729_dp)
 
-            self.dds_729_sp.set_att(self.sideband2mode_att_729_sp)
             self.dds_729_dp.set_att(self.sideband2mode_att_729_dp-1.0*dB) 
-            if i < 1*self.SideBandCool_num_cycle/5:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2*2)
-            else:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq2)
-            delay(200*us)
-            
-            self.dds_729_dp.set_att(self.sideband2mode_att_729_dp)
-            self.dds_729_sp.set_att(self.sideband2mode_att_729_sp) #COM mode
-            self.dds_854_dp.set_att(self.sideband2mode_att_854)
-            #continous sideband cooling 
-            if i < 1*self.SideBandCool_num_cycle/5:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1*2)
-            else:
-                self.dds_729_sp.set(self.sideband2mode_freq_729_sp+self.sideband2mode_vib_freq1)
-            delay(200*us)
 
             
-            
-        
+            self.dds_729_dp.set_att(self.sideband2mode_att_729_dp)
+            self.dds_854_dp.set_att(self.sideband2mode_att_854)
+
+
         #################################
 
 
@@ -284,17 +243,14 @@ class SideBandCool2Mode(Sequence):
 
         #upper state clean up
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
-        self.dds_729_sp_aux.sw.off()
         delay(3*us)
         self.set_OP()
         delay(3*us)
         self.OP_Sigma()
         delay(3*us)
 
-        self.dds_729_sp.sw.on()
         for i in range(5):
 
             # ground state optical pumping
@@ -310,10 +266,8 @@ class SideBandCool2Mode(Sequence):
         
         delay(2*us)
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
-        self.dds_729_sp_aux.sw.off()
 
         #################################
         
@@ -327,10 +281,8 @@ class SideBandCool2Mode(Sequence):
         # self.dds_729_dp.sw.on()
 
         # self.dds_729_dp.sw.off()
-        # self.dds_729_sp.sw.off()
         # self.dds_854_dp.sw.off()
         # self.dds_866_dp.sw.off()
-        # self.dds_729_sp_aux.sw.off()
         #################################
 
         # self.ttl_rf_switch_DDS_729SP.off()

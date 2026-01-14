@@ -20,9 +20,7 @@ class Ramsey_Scan(_ACFExperiment):
 
         # self.setup_fit(fitting_func ,'Exp_decay', 10)
         self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
 
 
        
@@ -202,7 +200,6 @@ class Ramsey_Scan(_ACFExperiment):
         self.dds_729_dp.set(self.frequency_729_dp, phase=phase)
         self.dds_729_dp.set_att(self.attenuation_729_dp)
         self.dds_729_dp.sw.on()
-        self.dds_729_sp.sw.on()
         delay(pulse_time)
         self.dds_729_dp.sw.off()
 

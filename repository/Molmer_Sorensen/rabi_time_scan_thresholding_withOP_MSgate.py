@@ -46,10 +46,6 @@ class MS_time_scan(_ACFExperiment):
         
 
 
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("attenuation/729_sp")
-
-
         self.setattr_argument(
             "scan_rabi_t",
             Scannable(
@@ -77,30 +73,6 @@ class MS_time_scan(_ACFExperiment):
             "att_729_dp",
             NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=10*dB, max=30*dB, unit="dB", precision=8),
             tooltip="729 double pass attenuation"
-        )
-
-        self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=80*MHz-2*self.parameter_manager.get_param("qubit/vib_freq"), min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-        )
-
-        self.setattr_argument(
-            "freq_729_sp_aux",
-            NumberValue(default=80*MHz+2*self.parameter_manager.get_param("qubit/vib_freq"), min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-        )
-
-        self.setattr_argument(
-            "att_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=10*dB, max=30*dB, unit="dB", precision=8),
-            tooltip="729 single pass attenuation"
-        )
-        
-        self.setattr_argument(
-            "att_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=10*dB, max=30*dB, unit="dB", precision=8),
-            tooltip="729 single pass attenuation"
         )
 
 
@@ -173,9 +145,9 @@ class MS_time_scan(_ACFExperiment):
                 
                
                 self.seq.displacement.run( rabi_t,
-                     self.att_729_dp, self.att_729_sp, self.att_729_sp_aux,
-                     self.freq_729_dp, self.freq_729_sp, self.freq_729_sp_aux,
-                     drive_phase_sp =0.0, drive_phase_sp_aux=0.0
+                     self.att_729_dp, 
+                     self.freq_729_dp, 
+                     drive_phase_sp =0.0
                 )
 
 

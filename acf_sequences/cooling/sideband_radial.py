@@ -9,8 +9,6 @@ class SideBandCool_Radial(Sequence):
         super().__init__()
 
 
-        self.add_argument_from_parameter("sideband_freq_729_sp", "frequency/729_sp")
-        self.add_argument_from_parameter("sideband_att_729_sp", "attenuation/729_radial_sp")
         self.add_argument_from_parameter("SideBandCool_729_dp_sideband", "qubit/Sm1_2_Dm5_2")
 
 
@@ -31,8 +29,6 @@ class SideBandCool_Radial(Sequence):
         #729 optical pumping
         self.add_argument_from_parameter("Op_pump_freq_729_dp", "qubit/S1_2_Dm3_2")
         self.add_argument_from_parameter("Op_pump_att_729_dp", "optical_pumping/att_729_dp")
-        self.add_argument_from_parameter("Op_pump_freq_729_sp", "frequency/729_sp")
-        self.add_argument_from_parameter("Op_pump_att_729_sp", "optical_pumping/att_729_sp")
         self.add_argument_from_parameter("Op_pump_att_729", "optical_pumping/att_729_dp")
 
         self.add_argument_from_parameter("Op_pump_att_854", "attenuation/854_dp")
@@ -112,9 +108,6 @@ class SideBandCool_Radial(Sequence):
         self.dds_729_radial_dp.set(op_freq)
         self.dds_729_radial_dp.set_att(att_729)
 
-        self.dds_729_radial_sp.set_att(self.sideband_att_729_sp)
-        self.dds_729_radial_sp.set(self.sideband_freq_729_sp)
-
         self.dds_397_sigma.set(self.frequency_397_resonance)
         self.dds_397_sigma.set_att(self.optical_pumping_att_397_sigma)
         
@@ -123,7 +116,6 @@ class SideBandCool_Radial(Sequence):
         self.dds_854_dp.sw.on()
         self.dds_866_dp.sw.on()
         self.dds_729_radial_dp.sw.on()
-        self.dds_729_radial_sp.cfg_sw(True)
         self.dds_397_sigma.sw.off()
         delay(5*us)
 
@@ -141,8 +133,6 @@ class SideBandCool_Radial(Sequence):
                 ##GS pumping
                 self.dds_729_radial_dp.set(op_freq)
                 self.dds_729_radial_dp.set_att(self.Op_pump_att_729_dp)
-                self.dds_729_radial_sp.set_att(self.Op_pump_att_729_sp)
-                self.dds_729_radial_sp.set(self.Op_pump_freq_729_sp)
                 self.dds_854_dp.set_att(att_854)
                 self.dds_866_dp.set_att(att_866)
                 delay(300*us)
@@ -174,7 +164,6 @@ class SideBandCool_Radial(Sequence):
 
         delay(2*us)
         self.dds_729_radial_dp.sw.off()
-        self.dds_729_radial_sp.cfg_sw(False)
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         delay(2*us)
@@ -182,14 +171,11 @@ class SideBandCool_Radial(Sequence):
         #upper state clean up
         self.dds_729_dp.set(op_freq)
         self.dds_729_dp.set_att(self.Op_pump_att_729_dp)
-        self.dds_729_sp.set_att(self.Op_pump_att_729_sp)
-        self.dds_729_sp.set(self.Op_pump_freq_729_sp)
 
         self.OP_Sigma()
 
         for i in range(5):
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
             delay(10*us)
             self.dds_729_dp.sw.off()
 
@@ -202,7 +188,6 @@ class SideBandCool_Radial(Sequence):
             self.dds_866_dp.sw.off()
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
 
@@ -242,9 +227,6 @@ class SideBandCool_Radial(Sequence):
         self.dds_729_radial_dp.set(op_freq)
         self.dds_729_radial_dp.set_att(att_729)
 
-        self.dds_729_radial_sp.set_att(self.sideband_att_729_sp)
-        self.dds_729_radial_sp.set(self.sideband_freq_729_sp)
-
         self.dds_397_sigma.set(self.frequency_397_resonance)
         self.dds_397_sigma.set_att(self.optical_pumping_att_397_sigma)
         
@@ -253,7 +235,6 @@ class SideBandCool_Radial(Sequence):
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         self.dds_729_radial_dp.sw.off()
-        self.dds_729_radial_sp.cfg_sw(True)
         self.dds_397_sigma.sw.off()
 
         pulse_length_max=40.0*us
@@ -270,8 +251,6 @@ class SideBandCool_Radial(Sequence):
                 ##GS pumping
                 self.dds_729_radial_dp.set(op_freq)
                 self.dds_729_radial_dp.set_att(self.Op_pump_att_729_dp)
-                self.dds_729_radial_sp.set_att(self.Op_pump_att_729_sp)
-                self.dds_729_radial_sp.set(self.Op_pump_freq_729_sp)
                 self.dds_854_dp.set_att(att_854)
                 self.dds_866_dp.set_att(att_866)
                 delay(300*us)
@@ -319,7 +298,6 @@ class SideBandCool_Radial(Sequence):
 
         delay(2*us)
         self.dds_729_radial_dp.sw.off()
-        self.dds_729_radial_sp.cfg_sw(False)
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         delay(2*us)
@@ -327,8 +305,6 @@ class SideBandCool_Radial(Sequence):
         #upper state clean up
         self.dds_729_dp.set(op_freq)
         self.dds_729_dp.set_att(self.Op_pump_att_729_dp)
-        self.dds_729_sp.set_att(self.Op_pump_att_729_sp)
-        self.dds_729_sp.set(self.Op_pump_freq_729_sp)
 
         self.OP_Sigma()
 
@@ -337,7 +313,6 @@ class SideBandCool_Radial(Sequence):
             # ground state optical pumping
 
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
             delay(10*us)
             self.dds_729_dp.sw.off()
 
@@ -350,7 +325,6 @@ class SideBandCool_Radial(Sequence):
             self.dds_866_dp.sw.off()
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
 

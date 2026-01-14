@@ -22,13 +22,11 @@ class FreqScan854(_ACFExperiment):
         self.add_arg_from_param("frequency/397_far_detuned") #
         self.add_arg_from_param("frequency/866_cooling")
         self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("frequency/854_dp")
         self.add_arg_from_param("attenuation/397") #
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/866") #
         self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
         self.add_arg_from_param("attenuation/854_dp")
 
 
@@ -124,10 +122,8 @@ class FreqScan854(_ACFExperiment):
         self.dds_729_dp.set(frequency, phase=phase)
         self.dds_729_dp.set_att(self.amp_729_pi)
         self.dds_729_dp.sw.on()
-        self.dds_729_sp.sw.on()
         delay(pulse_time)
         self.dds_729_dp.sw.off()
-        self.dds_729_sp_aux.sw.off()
     
     @kernel
     def run(self):

@@ -12,21 +12,17 @@ class Rabi(Sequence):
     def run(self,
             pulse_time,
             frequency_729_dp,
-            frequency_729_sp,
             attenuation_729_dp,
-            attenuation_729_sp
         ):
 
         self.core.break_realtime()
         delay(10*us)
         
         self.dds_729_dp.set_frequency(frequency_729_dp)
-        self.dds_729_sp.set_frequency(frequency_729_sp)
 
         delay(10*us)
 
         self.dds_729_dp.set_att(attenuation_729_dp)
-        self.dds_729_sp.set_att(attenuation_729_sp)
         #delay(5*us)
         
         delay(10*us)

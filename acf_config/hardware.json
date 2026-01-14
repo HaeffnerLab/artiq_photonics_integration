@@ -52,16 +52,6 @@
   "dds": [
   
     {
-      "name": "dds_729_sp",
-      "board": 1,
-      "channel": 2
-    },
-    {
-      "name": "dds_729_sp_aux",
-      "board": 1,
-      "channel": 1
-    },
-    {
       "name": "dds_397_dp",
       "board": 0,
       "channel": 3
@@ -69,7 +59,7 @@
     {
       "name": "dds_866_dp",
       "board": 1,
-      "channel": 1
+      "channel": 2
     },
     {
       "name": "dds_729_dp",

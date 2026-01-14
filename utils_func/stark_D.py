@@ -44,13 +44,11 @@ def stark_shift(parameter_manager: Any, freq_dp: float, freq_sp: float, Rabi_fre
     float
         Calculated Stark shift in MHz.
     """
-    # Get 729 nm single-pass frequency
-    freq_729_sp = parameter_manager.get_param("frequency/729_sp")
     
     # Calculate transition frequencies relative to 729 nm
-    Sm1_2_Dm5_2 = -parameter_manager.get_param("qubit/Sm1_2_Dm5_2")*2 - freq_729_sp
-    Sm1_2_Dm1_2 = -parameter_manager.get_param("qubit/Sm1_2_Dm1_2")*2 - freq_729_sp
-    Sm1_2_D3_2 = -parameter_manager.get_param("qubit/Sm1_2_D3_2")*2 - freq_729_sp
+    Sm1_2_Dm5_2 = -parameter_manager.get_param("qubit/Sm1_2_Dm5_2")*2
+    Sm1_2_Dm1_2 = -parameter_manager.get_param("qubit/Sm1_2_Dm1_2")*2
+    Sm1_2_D3_2 = -parameter_manager.get_param("qubit/Sm1_2_D3_2")*2
     
     # Calculate AC frequency
     freq_ac = -freq_sp - freq_dp*2

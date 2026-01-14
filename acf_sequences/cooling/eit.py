@@ -77,7 +77,6 @@ class EITCool(Sequence):
 
         #     # ground state optical pumping
         #     self.dds_729_dp.sw.on()
-        #     self.dds_729_sp.sw.on()
         #     delay(10*us)
         #     self.dds_729_dp.sw.off()
 
@@ -90,7 +89,6 @@ class EITCool(Sequence):
         #     self.dds_866_dp.sw.off()
         
         # self.dds_729_dp.sw.off()
-        # self.dds_729_sp.sw.off()
         # self.dds_854_dp.sw.off()
         # self.dds_866_dp.sw.off()
 

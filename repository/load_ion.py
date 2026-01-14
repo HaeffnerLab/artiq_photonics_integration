@@ -75,7 +75,6 @@ class Ion_Load(_ACFExperiment):
         self.seq.ion_store.run()
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
 
 

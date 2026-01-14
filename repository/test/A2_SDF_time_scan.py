@@ -49,35 +49,11 @@ class SDFTimeScan(_ACFExperiment):
             tooltip="729 double pass frequency 1",
             group='Displacement Operation'
         )
-        self.setattr_argument(
-            "displace_freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")+2*self.parameter_manager.get_param("qubit/vib_freq"), min=50*MHz, max=120*MHz, unit="MHz", precision=6),
-            tooltip="729 single pass frequency 1",
-            group='Displacement Operation'
-        )
-        self.setattr_argument(
-            "displace_freq_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")-2*self.parameter_manager.get_param("qubit/vib_freq"), min=50*MHz, max=120*MHz, unit="MHz", precision=6),
-            tooltip="729 single pass frequency 2",
-            group='Displacement Operation'
-        )
         # 
         self.setattr_argument(
             "displace_amp_729_dp",
             NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=5*dB, max=30*dB, unit="dB", precision=5),
             tooltip="729 douuble pass amplitude 1",
-            group='Displacement Operation'
-        )
-        self.setattr_argument(
-            "displace_amp_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=5*dB, max=30*dB, unit="dB", precision=5),
-            tooltip="729 single pass amplitude 1",
-            group='Displacement Operation'
-        )
-        self.setattr_argument(
-            "displace_amp_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=5*dB, max=30*dB, unit="dB", precision=5),
-            tooltip="729 single pass amplitude 2",
             group='Displacement Operation'
         )
 
@@ -132,18 +108,12 @@ class SDFTimeScan(_ACFExperiment):
         
         #set attenuation
         self.dds_729_dp.set_att(self.displace_amp_729_dp)
-        self.dds_729_sp.set_att(self.displace_amp_729_sp)
-        self.dds_729_sp_aux.set_att(self.displace_amp_729_sp_aux)
 
         #set frequency
         self.dds_729_dp.set(self.displace_freq_729_dp_resonance)
-        self.dds_729_sp.set(self.displace_freq_729_sp, phase=0.0)
-        self.dds_729_sp_aux.set(self.displace_freq_729_sp_aux, phase=drive_phase)
 
         #turn on the 729
         self.dds_729_dp.sw.on()
-        self.dds_729_sp.sw.on()
-        self.dds_729_sp_aux.sw.on()
         delay(drive_time)
         self.dds_729_dp.sw.off()
 
@@ -193,12 +163,9 @@ class SDFTimeScan(_ACFExperiment):
 
                 # self.seq.rabi.run(rabi_t,
                 #                   self.displace_freq_729_dp_resonance,
-                #                   self.displace_freq_729_sp,
                 #                   self.displace_amp_729_dp,
-                #                   self.displace_amp_729_sp
+                #                   self.displace_amp_729_dp
                 # )
-
-              
 
                 delay(5*us)
 

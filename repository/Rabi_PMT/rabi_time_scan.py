@@ -26,9 +26,7 @@ class RabiTimeScan(_ACFExperiment):
 
         self.setup_fit(fitting_func, 'Sin' ,-1)
         
-        # self.add_arg_from_param("frequency/729_sp")
         # self.add_arg_from_param("attenuation/729_dp")
-        # self.add_arg_from_param("attenuation/729_sp")
 
 
         self.setattr_argument("enable_pi_pulse", BooleanValue(False), group='Pi pulse excitation')
@@ -41,18 +39,6 @@ class RabiTimeScan(_ACFExperiment):
         self.setattr_argument(
             "att_729_dp_pi",
             NumberValue(default=self.parameter_manager.get_param("attenuation/729_dp"), min=10*dB, max=30*dB, unit="dB", precision=8),
-            tooltip="729 double pass amplitude for resonance",
-            group='Pi pulse excitation'
-        )
-        self.setattr_argument(
-            "freq_729_sp_pi",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp"), min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency for resonance",
-            group='Pi pulse excitation'
-        )
-        self.setattr_argument(
-            "att_729_sp_pi",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=10*dB, max=30*dB, unit="dB", precision=8),
             tooltip="729 double pass amplitude for resonance",
             group='Pi pulse excitation'
         )
@@ -100,18 +86,6 @@ class RabiTimeScan(_ACFExperiment):
             tooltip="729 double pass attenuation",
             group="rabi"
         )
-        self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp"), min=40*MHz, max=160*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group="rabi"
-        )
-        self.setattr_argument(
-            "att_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("attenuation/729_sp"), min=8*dB, max=31*dB, unit="dB", precision=8),
-            tooltip="729 double pass attenuation",
-            group="rabi"
-        )
 
         self.setattr_argument(
             "samples_per_time",
@@ -139,8 +113,6 @@ class RabiTimeScan(_ACFExperiment):
         self.dds_729_dp.set(frequency, phase=phase)
         self.dds_729_dp.set_att(self.att_729_pi)
         self.dds_729_dp.sw.on()
-        self.dds_729_sp.sw.on()
-        self.dds_729_sp_aux.sw.off()
         delay(pulse_time)
         self.dds_729_dp.sw.off()
         
@@ -169,7 +141,6 @@ class RabiTimeScan(_ACFExperiment):
                 self.dds_729_dp.set((sbc_freq+2*axialmodes[i])*MHz)
                 self.dds_729_dp.set_att(15*dB)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(12*us)
                 self.dds_729_dp.sw.off()
                 self.dds_854_dp.sw.on()
@@ -181,7 +152,6 @@ class RabiTimeScan(_ACFExperiment):
             for OP_num in range(5):
                 self.dds_729_dp.set((op_freq)*MHz)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(7*us)
                 self.dds_729_dp.sw.off()
                 self.dds_854_dp.sw.on()
@@ -194,7 +164,6 @@ class RabiTimeScan(_ACFExperiment):
                 self.dds_729_dp.set((sbc_freq+axialmodes[i])*MHz)
                 self.dds_729_dp.set_att(18*dB)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 #delay(20*np.sqrt(axialmodes[i]/axialmodes[0])*us)
                 delay(20*us)
                 self.dds_729_dp.sw.off()
@@ -207,7 +176,6 @@ class RabiTimeScan(_ACFExperiment):
             for OP_num in range(5):
                 self.dds_729_dp.set((op_freq)*MHz)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(7*us)
                 self.dds_729_dp.sw.off()
                 self.dds_854_dp.sw.on()
@@ -220,7 +188,6 @@ class RabiTimeScan(_ACFExperiment):
                 self.dds_729_dp.set((sbc_freq +axialmodes[0])*MHz)
                 self.dds_729_dp.set_att(20*dB)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(20*us)
                 self.dds_729_dp.sw.off()
                 self.dds_854_dp.sw.on()
@@ -233,7 +200,6 @@ class RabiTimeScan(_ACFExperiment):
             for OP_num in range(5):
                 self.dds_729_dp.set((op_freq)*MHz)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(10*us)
                 self.dds_729_dp.sw.off()
                 self.dds_854_dp.sw.on()
@@ -249,7 +215,6 @@ class RabiTimeScan(_ACFExperiment):
         # self.dds_854_dp.set_att(30*dB)
 
         # self.dds_729_dp.sw.on()
-        # self.dds_729_sp.sw.on()
         # self.dds_854_dp.sw.on()
         # self.dds_866_dp.sw.on()
         # delay(1.5*ms)
@@ -261,7 +226,6 @@ class RabiTimeScan(_ACFExperiment):
         # for OP_num in range(10):
         #     self.dds_729_dp.set((op_freq)*MHz)
         #     self.dds_729_dp.sw.on()
-        #     self.dds_729_sp.sw.on()
         #     delay(10*us)
         #     self.dds_729_dp.sw.off()
         #     self.dds_854_dp.sw.on()
@@ -289,9 +253,9 @@ class RabiTimeScan(_ACFExperiment):
             fit_data_name='fit_signal'
         )
 
-        self.freq_729_dp=self.freq_729_dp-stark_shift(self.parameter_manager, self.freq_729_dp, self.freq_729_sp, self.Rabi_freq)/2.0
+        self.freq_729_dp=self.freq_729_dp-stark_shift(self.parameter_manager, self.freq_729_dp, self.Rabi_freq)/2.0
 
-        print(stark_shift(self.parameter_manager, self.freq_729_dp, self.freq_729_sp, self.Rabi_freq)/2.0)
+        print(stark_shift(self.parameter_manager, self.freq_729_dp, self.Rabi_freq)/2.0)
 
 
     @kernel
@@ -346,9 +310,7 @@ class RabiTimeScan(_ACFExperiment):
                     #     #self.rabi(self.PI_drive_time, self.freq_729_pi,0.0)
                     #     self.seq.rabi.run(self.PI_drive_time,
                     #                 self.freq_729_dp_pi,
-                    #                 self.freq_729_sp_pi,
                     #                 self.att_729_dp_pi,
-                    #                 self.att_729_sp_pi
                     #     )
                     #self.ttl_shuttling_awg_trigger.pulse(1*us)
                     #delay(300*us)
@@ -357,9 +319,8 @@ class RabiTimeScan(_ACFExperiment):
 
                     self.seq.rabi.run(rabi_t,
                                     self.freq_729_dp,
-                                    self.freq_729_sp,
                                     self.att_729_dp,
-                                    self.att_729_sp
+                                    self.att_729_dp
                     )
 
                     #qubit readout

@@ -23,13 +23,11 @@ class Sideband_FreqScanOffset(_ACFExperiment):
         self.add_arg_from_param("frequency/397_far_detuned") #
         self.add_arg_from_param("frequency/866_cooling")
         #self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("frequency/854_dp")
         self.add_arg_from_param("attenuation/397") #
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/866") #
         #self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
 
         self.setattr_argument(
             "samples_per_freq",
@@ -127,9 +125,7 @@ class Sideband_FreqScanOffset(_ACFExperiment):
 
                 self.seq.rabi.run(self.RSB_drive_time,
                                   self.freq_729_dp,
-                                  self.frequency_729_sp,
                                   self.att_729_dp,
-                                  self.attenuation_729_sp,
                                   0.0
                 )
 

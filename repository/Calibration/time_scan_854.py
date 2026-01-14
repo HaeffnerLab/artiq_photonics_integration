@@ -18,8 +18,6 @@ class TimeScan854(_ACFExperiment):
         self.setup_fit(fitting_func, 'Exp_decay', 20)
 
         self.add_arg_from_param("frequency/866_cooling")
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("attenuation/729_sp")
         self.add_arg_from_param("attenuation/866")
 
 
@@ -138,9 +136,8 @@ class TimeScan854(_ACFExperiment):
 
                 self.seq.rabi.run(self.PI_drive_time,
                                   self.PI_freq_729_dp,
-                                  self.frequency_729_sp,
                                   self.PI_att_729_dp,
-                                  self.attenuation_729_sp
+                                  self.PI_att_729_dp
                     )
                 delay(5*us)
 

@@ -38,7 +38,6 @@ class scan_lines(EnvExperiment):
                                      "randomize": False,  
                                      "ty": "RangeScan"
                                     },
-                "att_729_sp":att_sp,
                 "rabi_t": rabi_t*us,
                 "att_729_dp": att_dp
                 #"cooling_option": 'opticalpumping'

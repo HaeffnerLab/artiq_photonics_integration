@@ -32,8 +32,6 @@ class SideBandCool_Raman(Sequence):
         #729 optical pumping
         self.add_argument_from_parameter("Op_pump_freq_729_dp", "qubit/S1_2_Dm3_2")
         self.add_argument_from_parameter("Op_pump_att_729_dp", "sideband_Raman/att_729_dp")
-        self.add_argument_from_parameter("Op_pump_freq_729_sp", "frequency/729_sp")
-        self.add_argument_from_parameter("Op_pump_att_729_sp", "optical_pumping/att_729_sp")
 
         #sigma minus 397 light 
         self.add_argument("optical_pumping", EnumerationValue(["397_op", "729_op"], default="729_op"))
@@ -95,8 +93,6 @@ class SideBandCool_Raman(Sequence):
         
 
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
-        self.dds_729_sp_aux.sw.off()
         self.dds_397_sigma.sw.off()
         delay(2*us)
 
@@ -119,7 +115,6 @@ class SideBandCool_Raman(Sequence):
             if self.optical_pumping=="397_op" and i<int(3*self.SideBandCool_num_cycle/5) :
            
                 self.dds_729_dp.sw.off()
-                self.dds_729_sp.sw.off()
                 self.dds_397_sigma.set(self.optical_pumping_freq_397_sigma, amplitude=1.0)
                 self.dds_397_sigma.set_att(self.optical_pumping_att_397_sigma)
                 self.dds_397_sigma.sw.on()
@@ -128,13 +123,10 @@ class SideBandCool_Raman(Sequence):
                 self.dds_397_sigma.sw.off()
                 self.dds_729_dp.set(op_freq)
                 self.dds_729_dp.set_att(self.Op_pump_att_729_dp)
-                self.dds_729_sp.set_att(self.Op_pump_att_729_sp)
-                self.dds_729_sp.set(self.Op_pump_freq_729_sp)
                 delay(1*us)
                 self.dds_854_dp.set_att(att_854)
                 self.dds_866_dp.set_att(att_866)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
                 delay(1*us)
 
             
@@ -181,7 +173,6 @@ class SideBandCool_Raman(Sequence):
         self.dds_Raman_1.sw.off()
         self.dds_Raman_2.sw.off()
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
 
@@ -192,7 +183,6 @@ class SideBandCool_Raman(Sequence):
 
             # ground state optical pumping
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
             delay(10*us)
             self.dds_729_dp.sw.off()
             self.dds_854_dp.sw.on()
@@ -202,7 +192,6 @@ class SideBandCool_Raman(Sequence):
             self.dds_866_dp.sw.off()
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_dp.sw.off()
         
