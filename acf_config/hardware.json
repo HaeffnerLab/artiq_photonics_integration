@@ -45,8 +45,8 @@
     },
     {
       "name": "dds_866_dp",
-      "board": 1,
-      "channel": 2
+      "board": 2,
+      "channel": 0
     },
     {
       "name": "dds_729_dp",
