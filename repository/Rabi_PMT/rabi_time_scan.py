@@ -317,10 +317,10 @@ class RabiTimeScan(_ACFExperiment):
 
                     self.core.break_realtime()
 
-                    self.seq.rabi.run(rabi_t,
-                                    self.freq_729_dp,
-                                    self.att_729_dp,
-                                    self.att_729_dp
+                    self.seq.rabi.run(
+                        rabi_t,
+                        self.freq_729_dp,
+                        self.att_729_dp
                     )
 
                     #qubit readout

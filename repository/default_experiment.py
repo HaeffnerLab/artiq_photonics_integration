@@ -25,6 +25,10 @@ class DefaultExperiment(_ACFExperiment):
     def prepare(self):
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
 
+    @rpc(flags={"async"})
+    def submit_self(self):
+        self.scheduler.submit()
+
     # def turn_off_voltage_source(self):
     #     self.ser.write(b'OUTPut 0\n')
 
@@ -52,7 +56,7 @@ class DefaultExperiment(_ACFExperiment):
 
             
             if self.scheduler.check_pause():
-                self.scheduler.submit()
+                self.submit_self()
                 break
             #time.sleep(0.1)
             try:

@@ -1,7 +1,7 @@
 """
 Stark shift calculations for ion trap experiments.
 This module provides functions to calculate Stark shifts for different excitation schemes
-including single-pass, double-pass, and stimulated Raman transitions.
+including double-pass and stimulated Raman transitions.
 """
 
 from typing import Any
@@ -21,7 +21,7 @@ MATRIX_ELEMENTS = {
 RABI_FREQ_RANGE = 20
 
 
-def stark_shift(parameter_manager: Any, freq_dp: float, freq_sp: float, Rabi_freq: float) -> float:
+def stark_shift(parameter_manager: Any, freq_dp: float, Rabi_freq: float) -> float:
     """
     Calculate Stark shift for a given excitation configuration.
     
@@ -34,8 +34,6 @@ def stark_shift(parameter_manager: Any, freq_dp: float, freq_sp: float, Rabi_fre
         Object containing transition frequencies and other parameters.
     freq_dp : float
         Double-pass laser frequency in MHz.
-    freq_sp : float
-        Single-pass laser frequency in MHz.
     Rabi_freq : float
         Rabi frequency in MHz (without 2π).
         
@@ -51,7 +49,7 @@ def stark_shift(parameter_manager: Any, freq_dp: float, freq_sp: float, Rabi_fre
     Sm1_2_D3_2 = -parameter_manager.get_param("qubit/Sm1_2_D3_2")*2
     
     # Calculate AC frequency
-    freq_ac = -freq_sp - freq_dp*2
+    freq_ac = -freq_dp*2
     
     # Initialize delta_s_meta with constant term
     delta_s_meta = 2*MATRIX_ELEMENTS['b']*MATRIX_ELEMENTS['am1_2']
@@ -78,7 +76,6 @@ def stark_shift_kernel(
     qubit_Sm1_2_Dm1_2: float,
     qubit_Sm1_2_D3_2: float,
     freq_dp: float,
-    freq_sp: float,
     Rabi_freq: float
 ) -> float:
     """
@@ -97,8 +94,6 @@ def stark_shift_kernel(
         |S1/2⟩ to |D3/2⟩ transition frequency in MHz.
     freq_dp : float
         Double-pass laser frequency in MHz.
-    freq_sp : float
-        Single-pass laser frequency in MHz.
     Rabi_freq : float
         Rabi frequency in MHz (without 2π).
         
@@ -107,13 +102,13 @@ def stark_shift_kernel(
     float
         Calculated Stark shift in MHz.
     """
-    # Calculate transition frequencies relative to single-pass frequency
-    Sm1_2_Dm5_2 = -qubit_Sm1_2_Dm5_2*2 - freq_sp
-    Sm1_2_Dm1_2 = -qubit_Sm1_2_Dm1_2*2 - freq_sp
-    Sm1_2_D3_2 = -qubit_Sm1_2_D3_2*2 - freq_sp
+    # Calculate transition frequencies
+    Sm1_2_Dm5_2 = -qubit_Sm1_2_Dm5_2*2
+    Sm1_2_Dm1_2 = -qubit_Sm1_2_Dm1_2*2
+    Sm1_2_D3_2 = -qubit_Sm1_2_D3_2*2
     
     # Calculate AC frequency
-    freq_ac = -freq_sp - freq_dp*2
+    freq_ac = -freq_dp*2
     
     # Initialize delta_s_meta with constant term
     delta_s_meta = 2*MATRIX_ELEMENTS['b']*MATRIX_ELEMENTS['am1_2']

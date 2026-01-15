@@ -46,6 +46,10 @@ class SetDDS(_ACFExperiment):
     def prepare(self):
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
 
+    @rpc(flags={"async"})
+    def submit_self(self):
+        self.scheduler.submit()
+
     @kernel
     def run(self):  
         self.setup_run()
@@ -121,7 +125,7 @@ class SetDDS(_ACFExperiment):
 
             with parallel:
                 if self.scheduler.check_pause():
-                    self.scheduler.submit()
+                    self.submit_self()
                     break
 
             delay(100*ms)

@@ -5,11 +5,9 @@
 # configuration 1
 #                   frequency                            attenuation
 # double pass:      line_freq+vib                        att1
-# single pass:      default_sp+vib*2 default_sp-vib*2    default attenuation
 
 # configuration 2
 # double pass:      line_freq-vib                        att2
-# single pass:      default_sp+vib*2 default_sp-vib*2    default attenuation
 
 # step 1:
 # single tone, manually change double pass frequency between line_freq+vib & line_freq-vib

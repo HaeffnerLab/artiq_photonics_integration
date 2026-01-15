@@ -134,7 +134,6 @@ class Sigma_Calibrate(_ACFExperiment):
                 self.dds_729_dp.set(self.frequency_729_dp)
                 self.dds_729_dp.set_att(self.attenuation_729_dp)
 
-                #single pass 729
                 delay(5*us)
                 
                 # Attempt Rabi flop
