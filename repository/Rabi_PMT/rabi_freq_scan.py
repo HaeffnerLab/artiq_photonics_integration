@@ -218,7 +218,6 @@ class RabiFreqScan(_ACFExperiment):
                     # Attempt Rabi flop
                     self.seq.rabi.run(self.rabi_t,
                                     freq_729_dp,
-                                    self.att_729_dp,
                                     self.att_729_dp
                     )
 
