@@ -5,7 +5,7 @@ class ResetDDS(EnvExperiment):
         self.setattr_device("core")
         self.dv=[]
 
-        for board in range(0,2):
+        for board in range(0,3):
             for channel in range(4):
                 self.setattr_device(f"urukul{board}_ch{channel}")      
                 eval(f"self.dv.append(self.urukul{board}_ch{channel})")
