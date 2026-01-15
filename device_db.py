@@ -348,120 +348,120 @@ device_db["urukul1_ch3"] = {
     }
 }
 
-# device_db["eeprom_urukul2"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.kasli_i2c",
-#     "class": "KasliEEPROM",
-#     "arguments": {"port": "EEM6"}
-# }
+device_db["eeprom_urukul2"] = {
+    "type": "local",
+    "module": "artiq.coredevice.kasli_i2c",
+    "class": "KasliEEPROM",
+    "arguments": {"port": "EEM6"}
+}
 
-# device_db["spi_urukul2"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.spi2",
-#     "class": "SPIMaster",
-#     "arguments": {"channel": 0x000014}
-# }
+device_db["spi_urukul2"] = {
+    "type": "local",
+    "module": "artiq.coredevice.spi2",
+    "class": "SPIMaster",
+    "arguments": {"channel": 0x000014}
+}
 
-# device_db["ttl_urukul2_io_update"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ttl",
-#     "class": "TTLOut",
-#     "arguments": {"channel": 0x000015}
-# }
+device_db["ttl_urukul2_io_update"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ttl",
+    "class": "TTLOut",
+    "arguments": {"channel": 0x000015}
+}
 
-# device_db["ttl_urukul2_sw0"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ttl",
-#     "class": "TTLOut",
-#     "arguments": {"channel": 0x000016}
-# }
+device_db["ttl_urukul2_sw0"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ttl",
+    "class": "TTLOut",
+    "arguments": {"channel": 0x000016}
+}
 
-# device_db["ttl_urukul2_sw1"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ttl",
-#     "class": "TTLOut",
-#     "arguments": {"channel": 0x000017}
-# }
+device_db["ttl_urukul2_sw1"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ttl",
+    "class": "TTLOut",
+    "arguments": {"channel": 0x000017}
+}
 
-# device_db["ttl_urukul2_sw2"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ttl",
-#     "class": "TTLOut",
-#     "arguments": {"channel": 0x000018}
-# }
+device_db["ttl_urukul2_sw2"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ttl",
+    "class": "TTLOut",
+    "arguments": {"channel": 0x000018}
+}
 
-# device_db["ttl_urukul2_sw3"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ttl",
-#     "class": "TTLOut",
-#     "arguments": {"channel": 0x000019}
-# }
+device_db["ttl_urukul2_sw3"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ttl",
+    "class": "TTLOut",
+    "arguments": {"channel": 0x000019}
+}
 
-# device_db["urukul2_cpld"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.urukul",
-#     "class": "CPLD",
-#     "arguments": {
-#         "spi_device": "spi_urukul2",
-#         "sync_device": None,
-#         "io_update_device": "ttl_urukul2_io_update",
-#         "refclk": 125000000.0,
-#         "clk_sel": 2,
-#         "clk_div": 0
-#     }
-# }
+device_db["urukul2_cpld"] = {
+    "type": "local",
+    "module": "artiq.coredevice.urukul",
+    "class": "CPLD",
+    "arguments": {
+        "spi_device": "spi_urukul2",
+        "sync_device": None,
+        "io_update_device": "ttl_urukul2_io_update",
+        "refclk": 125000000.0,
+        "clk_sel": 2,
+        "clk_div": 0
+    }
+}
 
-# device_db["urukul2_ch0"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ad9910",
-#     "class": "AD9910",
-#     "arguments": {
-#         "pll_n": 32,
-#         "pll_en": 1,
-#         "chip_select": 4,
-#         "cpld_device": "urukul2_cpld",
-#         "sw_device": "ttl_urukul2_sw0"
-#     }
-# }
+device_db["urukul2_ch0"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ad9910",
+    "class": "AD9910",
+    "arguments": {
+        "pll_n": 32,
+        "pll_en": 1,
+        "chip_select": 4,
+        "cpld_device": "urukul2_cpld",
+        "sw_device": "ttl_urukul2_sw0"
+    }
+}
 
-# device_db["urukul2_ch1"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ad9910",
-#     "class": "AD9910",
-#     "arguments": {
-#         "pll_n": 32,
-#         "pll_en": 1,
-#         "chip_select": 5,
-#         "cpld_device": "urukul2_cpld",
-#         "sw_device": "ttl_urukul2_sw1"
-#     }
-# }
+device_db["urukul2_ch1"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ad9910",
+    "class": "AD9910",
+    "arguments": {
+        "pll_n": 32,
+        "pll_en": 1,
+        "chip_select": 5,
+        "cpld_device": "urukul2_cpld",
+        "sw_device": "ttl_urukul2_sw1"
+    }
+}
 
-# device_db["urukul2_ch2"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ad9910",
-#     "class": "AD9910",
-#     "arguments": {
-#         "pll_n": 32,
-#         "pll_en": 1,
-#         "chip_select": 6,
-#         "cpld_device": "urukul2_cpld",
-#         "sw_device": "ttl_urukul2_sw2"
-#     }
-# }
+device_db["urukul2_ch2"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ad9910",
+    "class": "AD9910",
+    "arguments": {
+        "pll_n": 32,
+        "pll_en": 1,
+        "chip_select": 6,
+        "cpld_device": "urukul2_cpld",
+        "sw_device": "ttl_urukul2_sw2"
+    }
+}
 
-# device_db["urukul2_ch3"] = {
-#     "type": "local",
-#     "module": "artiq.coredevice.ad9910",
-#     "class": "AD9910",
-#     "arguments": {
-#         "pll_n": 32,
-#         "pll_en": 1,
-#         "chip_select": 7,
-#         "cpld_device": "urukul2_cpld",
-#         "sw_device": "ttl_urukul2_sw3"
-#     }
-# }
+device_db["urukul2_ch3"] = {
+    "type": "local",
+    "module": "artiq.coredevice.ad9910",
+    "class": "AD9910",
+    "arguments": {
+        "pll_n": 32,
+        "pll_en": 1,
+        "chip_select": 7,
+        "cpld_device": "urukul2_cpld",
+        "sw_device": "ttl_urukul2_sw3"
+    }
+}
 
 device_db["spi_zotino0"] = {
     "type": "local",
