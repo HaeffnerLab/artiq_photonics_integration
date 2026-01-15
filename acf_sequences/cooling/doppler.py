@@ -56,8 +56,6 @@ class DopplerCool(Sequence):
                        doppler_cooling_time):
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.on()
-        self.dds_729_sp_aux.sw.off()
         delay(1*ms)  # Ensure proper initialization timing with larger buffer
 
         #set initial parameters for all the lasers

@@ -1,4 +1,4 @@
-.0.........................from artiq.experiment import *
+from artiq.experiment import *
 from trapped_ions_control.experiment_data import ExperimentData
 from tic_setup.hardware_definition import hardware_setup
 from tic_setup.arguments_definition import argument_manager
@@ -20,17 +20,11 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
             "freq_397_cooling",
             "freq_397_far_detuned",
             "freq_866_cooling",
-            "freq_729_sp",
-            "freq_729_sp_aux",
             "freq_854_dp",
             "attenuation_397",
             "attenuation_397_far_detuned",
             "attenuation_866",
             "attenuation_729_dp",
-            "attenuation_729_sp",
-            "attenuation_729_sp_aux",
-            "phase_729_sp",
-            "phase_729_sp_aux",
             "attenuation_854_dp",
             "doppler_cooling_time",
             "pmt_sampling_time",
@@ -138,8 +132,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
         self.dds_397_far_detuned.init()
         self.dds_866_dp.init()
         self.dds_729_dp.init()
-        self.dds_729_sp.init()
-        self.dds_729_sp_aux.init()
         self.dds_854_dp.init()
 
         axialmodes = np.array([0.089,0.153,0.214,0.272,0.326,0.380,0.432,0.482,0.532])
@@ -147,22 +139,16 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
         sbc_freq = (239.71)
         freq_offset = (0.26)
         op_freq = (241.73)
-        # print(self.phase_729_sp)
-        # print(self.phase_729_sp_aux)
 
         # Set attenuations
         self.dds_397_dp.set_att(self.attenuation_397)
         self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned)
         self.dds_866_dp.set_att(self.attenuation_866)
         self.dds_729_dp.set_att(self.attenuation_729_dp)
-        self.dds_729_sp.set_att(self.attenuation_729_sp)
-        self.dds_729_sp_aux.set_att(self.attenuation_729_sp_aux)
         self.dds_854_dp.set_att(self.attenuation_854_dp)
         delay(1*ms)
 
         # Set frequencies
-        self.dds_729_sp.set(self.freq_729_sp)
-        self.dds_729_sp_aux.set(self.freq_729_sp_aux)
         self.dds_729_dp.set(self.freq_729_dp)
         self.dds_854_dp.set(self.freq_854_dp)
         delay(1*ms)
@@ -192,7 +178,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 self.dds_854_dp.set_att(3*dB)
                 for OP_num in range(self.OP_cycle):
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(5*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -204,7 +189,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                     self.dds_729_dp.set((sbc_freq+freq_offset*2)*MHz)
                     self.dds_729_dp.set_att(15*dB)
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -220,7 +204,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for OP_num in range(20):
             
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -234,25 +217,16 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
 
                 for GSC in range(50):
                     self.dds_729_dp.set((sbc_freq)*MHz)
-                    self.dds_729_sp.set((80+0.515)*MHz)
-                    self.dds_729_sp_aux.set((80+0.515*np.sqrt(3.))*MHz)
                     self.dds_729_dp.set_att(20*dB)
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
-                    self.dds_729_sp_aux.sw.on()
                     delay(12*us)
                     self.dds_729_dp.sw.off()
-                    self.dds_729_sp_aux.sw.off()
                     self.dds_854_dp.sw.on()
                     self.dds_866_dp.sw.on()
                     delay(5*us)
                     self.dds_854_dp.sw.off()
                     self.dds_866_dp.sw.off()
-                
-
-                self.dds_729_sp.set(80*MHz)
-                self.dds_729_sp_aux.set(80*MHz)
-                    
+                                    
                                   # OP on resonant
                 self.dds_729_dp.set(op_freq*MHz)
                 self.dds_729_dp.set_att(18*dB)
@@ -260,7 +234,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for OP_num in range(30):
             
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -274,7 +247,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                     self.dds_729_dp.set((sbc_freq+freq_offset*2)*MHz)
                     self.dds_729_dp.set_att(15*dB)
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -290,7 +262,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for OP_num in range(20):
             
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -304,7 +275,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                     self.dds_729_dp.set((sbc_freq+freq_offset*2)*MHz)
                     self.dds_729_dp.set_att(15*dB)
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -320,7 +290,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for OP_num in range(20):
             
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -333,15 +302,10 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for Iteration in range(5):
                     for GSC in range(20):
                         self.dds_729_dp.set((sbc_freq)*MHz)
-                        self.dds_729_sp.set((80+0.515)*MHz)
-                        self.dds_729_sp_aux.set((80+0.515*np.sqrt(3.))*MHz)
                         self.dds_729_dp.set_att(15*dB)
                         self.dds_729_dp.sw.on()
-                        self.dds_729_sp.sw.on()
-                        self.dds_729_sp_aux.sw.on()
                         delay(12*us)
                         self.dds_729_dp.sw.off()
-                        self.dds_729_sp_aux.sw.off()
                         self.dds_854_dp.sw.on()
                         self.dds_866_dp.sw.on()
                         delay(5*us)
@@ -349,9 +313,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                         self.dds_866_dp.sw.off()
                     
 
-                    self.dds_729_sp.set(80*MHz)
-                    self.dds_729_sp_aux.set(80*MHz)
-                        
                                     # OP on resonant
                     self.dds_729_dp.set(op_freq*MHz)
                     self.dds_729_dp.set_att(18*dB)
@@ -359,7 +320,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                     for OP_num in range(8):
                 
                         self.dds_729_dp.sw.on()
-                        self.dds_729_sp.sw.on()
                         delay(7*us)
                         self.dds_729_dp.sw.off()
                         self.dds_854_dp.sw.on()
@@ -371,7 +331,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 for OP_num in range(15):
                 
                     self.dds_729_dp.sw.on()
-                    self.dds_729_sp.sw.on()
                     delay(7*us)
                     self.dds_729_dp.sw.off()
                     self.dds_854_dp.sw.on()
@@ -385,7 +344,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 # self.dds_729_dp.set_att(18*dB)
                 # self.dds_854_dp.set_att(30*dB) # change 854 detuning for optimal quench
                 # self.dds_729_dp.sw.on()
-                # self.dds_729_sp.sw.on()
                 # self.dds_854_dp.sw.on()
                 # self.dds_866_dp.sw.on()
                 # delay(1*ms) # change delay for different cooling time
@@ -403,7 +361,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 # for OP_num in range(50):
             
                 #     self.dds_729_dp.sw.on()
-                #     self.dds_729_sp.sw.on()
                 #     delay(7*us)
                 #     self.dds_729_dp.sw.off()
                 #     self.dds_854_dp.sw.on()
@@ -421,7 +378,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #         self.dds_729_dp.set((239.69+2*axialmodes[i])*MHz)
                 #         self.dds_729_dp.set_att(15*dB)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         delay(12*us)
                 #         self.dds_729_dp.sw.off()
                 #         self.dds_854_dp.sw.on()
@@ -433,7 +389,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #     for OP_num in range(5):
                 #         self.dds_729_dp.set((241.7)*MHz)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         delay(7*us)
                 #         self.dds_729_dp.sw.off()
                 #         self.dds_854_dp.sw.on()
@@ -447,7 +402,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #         self.dds_729_dp.set((239.69+axialmodes[i])*MHz)
                 #         self.dds_729_dp.set_att(18*dB)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         #delay(10*np.sqrt(axialmodes[i]/axialmodes[0])*us)
                 #         delay(15*us)
                 #         self.dds_729_dp.sw.off()
@@ -461,7 +415,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #     for OP_num in range(5):
                 #         self.dds_729_dp.set((241.7)*MHz)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         delay(7*us)
                 #         self.dds_729_dp.sw.off()
                 #         self.dds_854_dp.sw.on()
@@ -474,7 +427,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #         self.dds_729_dp.set((239.69+axialmodes[0])*MHz)
                 #         self.dds_729_dp.set_att(18*dB)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         delay(18*us)
                 #         self.dds_729_dp.sw.off()
                 #         self.dds_854_dp.sw.on()
@@ -489,7 +441,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 #     for OP_num in range(5):
                 #         self.dds_729_dp.set((241.7)*MHz)
                 #         self.dds_729_dp.sw.on()
-                #         self.dds_729_sp.sw.on()
                 #         delay(7*us)
                 #         self.dds_729_dp.sw.off()
                 #         self.dds_854_dp.sw.on()
@@ -503,7 +454,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 # self.dds_729_dp.set_att(9*dB)
                 # self.dds_854_dp.set_att(27*dB) # change 854 detuning for optimal quench
                 # self.dds_729_dp.sw.on()
-                # self.dds_729_sp.sw.on()
                 # self.dds_854_dp.sw.on()
                 # self.dds_866_dp.sw.on()
                 # delay(1*ms) # change delay for different cooling time
@@ -520,7 +470,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
                 # for OP_num in range(30):
             
                 #     self.dds_729_dp.sw.on()
-                #     self.dds_729_sp.sw.on()
                 #     delay(7*us)
                 #     self.dds_729_dp.sw.off()
                 #     self.dds_854_dp.sw.on()
@@ -539,31 +488,21 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
 
                 # Attempt MS Gate
                 self.dds_729_dp.set(self.freq_729_dp)
-                self.dds_729_sp.set((80+0.515)*MHz+self.MS_detuning, phase=self.phase_729_sp)
-                self.dds_729_sp_aux.set((80-0.515)*MHz-self.MS_detuning, phase=self.phase_729_sp_aux)
                 self.dds_729_dp.set_att(self.attenuation_729_dp)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
-                self.dds_729_sp_aux.sw.on()
 
                 delay(self.MS_time)
 
                 self.dds_729_dp.sw.off()
-                self.dds_729_sp.sw.off()
-                self.dds_729_sp_aux.sw.off()
 
 
                 # analysis pulse
                 self.dds_729_dp.set_att(20*dB)
-                self.dds_729_sp.set_att(8*dB)
-                self.dds_729_sp.set(80*MHz,phase = sq_phase)
                 self.dds_729_dp.sw.on()
-                self.dds_729_sp.sw.on()
 
                 delay(self.sq_pi_2_time)
 
                 self.dds_729_dp.sw.off()
-                self.dds_729_sp.sw.off()
 
 
 
@@ -613,7 +552,6 @@ class RabiTimeScannThresholded_withMSparity(EnvExperiment):
             delay(30*ms)
 
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.set_att(10*dB)
         self.dds_854_dp.sw.on()
 

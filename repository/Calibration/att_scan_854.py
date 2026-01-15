@@ -20,13 +20,11 @@ class AttScan854(_ACFExperiment):
         self.add_arg_from_param("frequency/397_far_detuned") #
         self.add_arg_from_param("frequency/866_cooling")
         #self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("frequency/854_dp")
         self.add_arg_from_param("attenuation/397") #
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/866") #
         #self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
         #self.add_arg_from_param("attenuation/854_dp")
         self.add_arg_from_param("readout/pmt_sampling_time")
 
@@ -130,13 +128,11 @@ class AttScan854(_ACFExperiment):
                 #see how good the pump is, for good sideband cooling, the population should be half
                 self.dds_729_dp.set_att(self.att_729_dp)
                 self.dds_729_dp.set(self.freq_729_dp)
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 self.dds_854_dp.sw.on()
                 self.dds_866_dp.sw.on()
                 delay(100*us)
 
-                #self.dds_729_sp.sw.off()
                 self.dds_729_dp.sw.off()
 
                 delay(200*us)

@@ -19,15 +19,15 @@ class DefaultExperiment(_ACFExperiment):
         self.add_arg_from_param("frequency/729_dp")
         self.add_arg_from_param("attenuation/729_dp")
 
-        #729 sp
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("attenuation/729_sp")
-
         #self.ser= serial.Serial('/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_AZBRb132J02-if00-port0', 9600) #//port & baud rate
 
 
     def prepare(self):
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
+
+    @rpc(flags={"async"})
+    def submit_self(self):
+        self.scheduler.submit()
 
     # def turn_off_voltage_source(self):
     #     self.ser.write(b'OUTPut 0\n')
@@ -47,11 +47,6 @@ class DefaultExperiment(_ACFExperiment):
         self.dds_729_dp.set_att(self.attenuation_729_dp)
         self.dds_729_dp.sw.off()
 
-        #set 729 sp
-        self.dds_729_sp.set(self.frequency_729_sp)
-        self.dds_729_sp.set_att(self.attenuation_729_sp)
-        self.dds_729_sp.sw.off()
-
         time.sleep(1)
         
         while True:
@@ -61,7 +56,7 @@ class DefaultExperiment(_ACFExperiment):
 
             
             if self.scheduler.check_pause():
-                self.scheduler.submit()
+                self.submit_self()
                 break
             #time.sleep(0.1)
             try:

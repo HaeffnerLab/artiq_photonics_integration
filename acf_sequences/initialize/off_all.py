@@ -15,8 +15,6 @@ class Off_DDS(Sequence):
         self.dds_729_radial_dp.sw.off()
         self.dds_729_radial_sp.cfg_sw(False)
     
-        self.dds_729_sp.sw.off()
-        self.dds_729_sp_aux.sw.off()
         self.dds_729_dp.sw.off()
         delay(1*us)
         self.dds_854_dp.sw.off()

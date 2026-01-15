@@ -17,8 +17,6 @@ class SetDDS(_ACFExperiment):
         self.add_arg_from_param("frequency/397_sigma")
         self.add_arg_from_param("frequency/866_cooling")
         self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("frequency/729_sp_aux")
         self.add_arg_from_param("frequency/854_dp")
         self.add_arg_from_param("frequency/RF")
 
@@ -28,7 +26,6 @@ class SetDDS(_ACFExperiment):
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/866")
         self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
         self.add_arg_from_param("attenuation/854_dp")
         self.add_arg_from_param("attenuation/RF")
 
@@ -49,6 +46,10 @@ class SetDDS(_ACFExperiment):
     def prepare(self):
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
 
+    @rpc(flags={"async"})
+    def submit_self(self):
+        self.scheduler.submit()
+
     @kernel
     def run(self):  
         self.setup_run()
@@ -61,16 +62,10 @@ class SetDDS(_ACFExperiment):
         # =============== 729 nm Laser Control ===============
         if self.enable_729:
             self.dds_729_dp.set_att(self.attenuation_729_dp)
-            self.dds_729_sp.set_att(self.attenuation_729_sp)
-            self.dds_729_sp_aux.set_att(self.attenuation_729_sp)
 
             self.dds_729_dp.set(self.frequency_729_dp)
-            self.dds_729_sp.set(self.frequency_729_sp)
-            self.dds_729_sp_aux.set(self.frequency_729_sp_aux)
 
             self.dds_729_dp.sw.on()
-            self.dds_729_sp.sw.on()
-            self.dds_729_sp_aux.sw.off()
 
         # =============== 397 nm Laser Control ===============
         if self.enable_397:
@@ -118,17 +113,10 @@ class SetDDS(_ACFExperiment):
 
         # =============== 729 Radial Control ===============
         if self.enable_729_radial:
-            self.dds_729_radial_sp.set_att(10*dB)
             self.dds_729_radial_dp.set_att(10*dB)
-            self.dds_729_radial_sp_aux.set_att(10*dB)
             
-            self.dds_729_radial_sp.set(self.frequency_729_sp)
             self.dds_729_radial_dp.set(self.frequency_729_dp)
-            self.dds_729_radial_sp_aux.set(self.frequency_729_sp_aux+10.*MHz)
-            
             self.dds_729_radial_dp.sw.on()
-            self.dds_729_radial_sp.cfg_sw(True)
-            self.dds_729_radial_sp_aux.cfg_sw(False)
 
         # Main loop
         while True:
@@ -137,7 +125,7 @@ class SetDDS(_ACFExperiment):
 
             with parallel:
                 if self.scheduler.check_pause():
-                    self.scheduler.submit()
+                    self.submit_self()
                     break
 
             delay(100*ms)

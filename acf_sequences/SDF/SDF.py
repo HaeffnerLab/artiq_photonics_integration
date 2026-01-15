@@ -21,44 +21,12 @@ class SDF_single_ion(Sequence):
             group='Readout Mode Single Ion'
         )
 
-        self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")-self.parameter_manager.get_param("VdP1mode/vib_freq")+self.del_s-self.del_m, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode Single Ion'
-        )
-
-        self.setattr_argument(
-            "freq_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")+self.parameter_manager.get_param("VdP1mode/vib_freq")+self.del_s+self.del_m, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode Single Ion'
-        )
-
-        self.setattr_argument(
-            "amp_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode_single_ion/amp_729_sp"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode Single Ion'
-        )
-        
-        self.setattr_argument(
-            "amp_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode_single_ion/amp_729_sp_aux"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode Single Ion'
-        )
-
     @kernel
     def prepare(self, use_motion_tracking=False):
         if use_motion_tracking:
             vib_freq=self.exp.seq.calibrate_motion.get_motional_freq_tracker(mode='mode_single_ion')
         else:
             vib_freq=self.parameter_manager.get_float_param("VdP1mode/vib_freq")
-        freq_729_sp=self.parameter_manager.get_float_param("frequency/729_sp")
-
-        self.freq_729_sp=freq_729_sp-vib_freq+self.del_s
-        self.freq_729_sp_aux=freq_729_sp+vib_freq+self.del_s
 
     @kernel
     def run(self, pulse_length, att_729_dp=-1.0):
@@ -66,7 +34,6 @@ class SDF_single_ion(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)
         delay(2*us)
@@ -95,44 +62,12 @@ class SDF_mode1(Sequence):
             group='Readout Mode 1'
         )
 
-        self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")-self.parameter_manager.get_param("VdP2mode/vib_freq1")+self.del_s1-self.del_m1, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode 1'
-        )
-
-        self.setattr_argument(
-            "freq_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")+self.parameter_manager.get_param("VdP2mode/vib_freq1")+self.del_s1+self.del_m1, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode 1'
-        )
-
-        self.setattr_argument(
-            "amp_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode1/amp_729_sp"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode 1'
-        )
-        
-        self.setattr_argument(
-            "amp_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode1/amp_729_sp_aux"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode 1'
-        )
-
     @kernel
     def prepare(self, use_motion_tracking=False):
         if use_motion_tracking:
             vib_freq=self.exp.seq.calibrate_motion.get_motional_freq_tracker(mode='mode1')
         else:
             vib_freq=self.parameter_manager.get_float_param("VdP2mode/vib_freq1")
-        freq_729_sp=self.parameter_manager.get_float_param("frequency/729_sp")
-
-        self.freq_729_sp=freq_729_sp-vib_freq+self.del_s1
-        self.freq_729_sp_aux=freq_729_sp+vib_freq+self.del_s1
 
     @kernel
     def run(self, pulse_length, att_729_dp=-1.0):
@@ -140,7 +75,6 @@ class SDF_mode1(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)
         delay(2*us)
@@ -168,44 +102,12 @@ class SDF_mode2(Sequence):
             group='Readout Mode 2'
         )
 
-        self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")-self.parameter_manager.get_param("VdP2mode/vib_freq2")+self.del_s2-self.del_m2, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode 2'
-        )
-
-        self.setattr_argument(
-            "freq_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp")+self.parameter_manager.get_param("VdP2mode/vib_freq2")+self.del_s2+self.del_m2, min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Readout Mode 2'
-        )
-
-        self.setattr_argument(
-            "amp_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode2/amp_729_sp"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode 2'
-        )
-        
-        self.setattr_argument(
-            "amp_729_sp_aux",
-            NumberValue(default=self.parameter_manager.get_param("SDF/mode2/amp_729_sp_aux"), min=1e-7, max=0.8, precision=8),
-            tooltip="729 single pass attenuation",
-            group='Readout Mode 2'
-        )
-
     @kernel
     def prepare(self, use_motion_tracking=False):
         if use_motion_tracking:
             vib_freq=self.exp.seq.calibrate_motion.get_motional_freq_tracker(mode='mode2')
         else:
             vib_freq=self.parameter_manager.get_float_param("VdP2mode/vib_freq2")
-        freq_729_sp=self.parameter_manager.get_float_param("frequency/729_sp")
-
-        self.freq_729_sp=freq_729_sp-vib_freq+self.del_s2
-        self.freq_729_sp_aux=freq_729_sp+vib_freq+self.del_s2
 
     @kernel
     def run(self, pulse_length, att_729_dp=-1.0):
@@ -213,7 +115,6 @@ class SDF_mode2(Sequence):
             self.dds_729_dp.set_att(att_729_dp)
         else:
             self.dds_729_dp.set_att(self.att_729_dp)
-        self.ttl_rf_switch_AWG_729SP.on()
 
         #turn on 
         self.ttl_awg_trigger.pulse(1*us)

@@ -20,14 +20,12 @@ class Doppler_ScanTime(_ACFExperiment):
         self.add_arg_from_param("frequency/397_far_detuned") #
         self.add_arg_from_param("frequency/866_cooling")
         self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("frequency/854_dp")
         
         self.add_arg_from_param("attenuation/397_far_detuned")
         self.add_arg_from_param("attenuation/866") #
         self.add_arg_from_param("attenuation/397")
         self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
         self.add_arg_from_param("attenuation/854_dp")
         self.add_arg_from_param("readout/pmt_sampling_time")
 
@@ -124,9 +122,7 @@ class Doppler_ScanTime(_ACFExperiment):
 
                 self.seq.rabi.run(self.RSB_drive_time,
                                   self.RSB_freq_729_dp,
-                                  self.frequency_729_sp,
                                   self.RSB_att_729_dp,
-                                  self.attenuation_729_sp,
                                   0.0
                 )
                 

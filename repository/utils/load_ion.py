@@ -121,7 +121,6 @@ class Load_Ion(_ACFExperiment):
         self.dds_397_far_detuned.sw.on()
         
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
         self.dds_854_dp.sw.off()
         self.dds_866_addressing.sw.off()
 

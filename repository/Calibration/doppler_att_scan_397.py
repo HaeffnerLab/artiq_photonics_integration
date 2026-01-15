@@ -36,18 +36,6 @@ class Doppler_AttScan397(_ACFExperiment):
         )
 
         self.setattr_argument(
-            "freq_729_sp",
-            NumberValue(default=self.parameter_manager.get_param("frequency/729_sp"), min=20*MHz, max=250*MHz, unit="MHz", precision=8),
-            tooltip="729 double pass frequency",
-            group='Side_Band'
-        )
-        self.setattr_argument(
-            "att_729_sp",
-            NumberValue(default=20*dB, min=10*dB, max=30*dB, unit="dB", precision=8),
-            group='Side_Band'
-        )
-
-        self.setattr_argument(
             "drive_time",
             NumberValue(default=500*us, min=0.*us, max=1000*us, unit='us'),
             tooltip="Drive time for RSB excitation",
@@ -123,9 +111,7 @@ class Doppler_AttScan397(_ACFExperiment):
                 self.seq.doppler_cool.run(att_397=att_397)
                 self.seq.rabi.run(self.drive_time,
                                   self.RSB_freq_729_dp,
-                                  self.freq_729_sp,
                                   self.att_729_dp,
-                                  self.att_729_sp,
                                   0.0
                 )
 
@@ -147,9 +133,7 @@ class Doppler_AttScan397(_ACFExperiment):
                 self.seq.doppler_cool.run(att_397=att_397)
                 self.seq.rabi.run(self.drive_time,
                                   self.BSB_freq_729_dp,
-                                  self.freq_729_sp,
                                   self.att_729_dp,
-                                  self.att_729_sp,
                                   0.0
                 )
 

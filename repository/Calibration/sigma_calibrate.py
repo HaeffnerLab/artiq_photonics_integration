@@ -23,9 +23,7 @@ class Sigma_Calibrate(_ACFExperiment):
         self.setup_fit(fitting_func, 'Sin' ,-1)
 
         self.add_arg_from_param("frequency/729_dp")
-        self.add_arg_from_param("frequency/729_sp")
         self.add_arg_from_param("attenuation/729_dp")
-        self.add_arg_from_param("attenuation/729_sp")
 
         self.add_arg_from_param("EIT_cooling/freq_397_sigma")
         self.add_arg_from_param("EIT_cooling/att_397_sigma")
@@ -98,8 +96,6 @@ class Sigma_Calibrate(_ACFExperiment):
 
         #set dds to tracking mode
         self.dds_729_dp.set_phase_mode(PHASE_MODE_TRACKING)
-        self.dds_729_sp.set_phase_mode(PHASE_MODE_TRACKING)
-        self.dds_729_sp_aux.set_phase_mode(PHASE_MODE_TRACKING)
 
         delay(50*us)
         for time_i in range(len(self.Ramsey_wait_time.sequence)): 
@@ -137,14 +133,10 @@ class Sigma_Calibrate(_ACFExperiment):
              
                 self.dds_729_dp.set(self.frequency_729_dp)
                 self.dds_729_dp.set_att(self.attenuation_729_dp)
-                self.dds_729_sp.set_att(self.attenuation_729_sp)
 
-                #single pass 729
                 delay(5*us)
-                #self.dds_729_sp.set(self.frequency_729_sp, ref_time_mu=start_time_mu, phase=0.0)
                 
                 # Attempt Rabi flop
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 delay(self.Ramsey_pulse_time)
                 self.dds_729_dp.sw.off()
@@ -157,13 +149,11 @@ class Sigma_Calibrate(_ACFExperiment):
                 #tmp_now = now_mu()
                 #at_mu(now_mu() & ~7)
                 #set pi/2 & Attempt Rabi flop
-                #self.dds_729_sp.set(self.frequency_729_sp, ref_time_mu=start_time_mu, phase=self.Ramsey_phase)
                 #at_mu(tmp_now)
                 delay(2.0*us)
                 self.dds_397_sigma.sw.off()
 
 
-                self.dds_729_sp.sw.on()
                 self.dds_729_dp.sw.on()
                 delay(self.Ramsey_pulse_time)
                 self.dds_729_dp.sw.off()

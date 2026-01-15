@@ -30,8 +30,6 @@ class Repump854(Sequence):
 
         # Turn off potentially conflicting outputs first
         self.dds_729_dp.sw.off()
-        self.dds_729_sp.sw.off()
-        self.dds_729_sp_aux.sw.off()
         self.dds_397_dp.sw.off()
         self.dds_397_far_detuned.sw.off()
         delay(2*us)

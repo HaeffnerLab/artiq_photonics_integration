@@ -19,8 +19,6 @@ class Sideband_AttScan729dp(_ACFExperiment):
         self.seq.rabi.add_arguments_to_gui()
 
        
-        self.add_arg_from_param("frequency/729_sp")
-        self.add_arg_from_param("attenuation/729_sp")
 
         self.setattr_argument(
             "samples_per_freq",
@@ -122,9 +120,7 @@ class Sideband_AttScan729dp(_ACFExperiment):
 
                 self.seq.rabi.run(self.RSB_drive_time,
                                   self.RSB_freq_729_dp,
-                                  self.frequency_729_sp,
                                   self.RSB_att_729_dp,
-                                  self.attenuation_729_sp,
                                   0.0
                 )
 

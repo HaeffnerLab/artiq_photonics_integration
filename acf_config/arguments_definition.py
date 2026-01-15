@@ -97,61 +97,6 @@ argument_manager.add_argument(
     tooltip="Attenuation for the 866 addressing RF signal."
 )
 
-# 729
-argument_manager.add_argument(
-    "freq_729_sp",
-    default_value=80*MHz,
-    unit="MHz",
-    min=60*MHz, 
-    max=90*MHz,
-    tooltip="Frequency for the 729 single pass RF signal."
-)
-
-argument_manager.add_argument(
-    "attenuation_729_sp",
-    default_value=7*dB,
-    unit="dB",
-    min=6*dB,
-    tooltip="Attenuation for the 729 single pass RF signal."
-)
-
-
-argument_manager.add_argument(
-    "phase_729_sp",
-    default_value=0.0,
- 
-    min=0.0,
-    max = 1.0,
-    tooltip="Phase for the 729 single pass RF signal."
-)
-
-argument_manager.add_argument(
-    "freq_729_sp_aux",
-    default_value=80*MHz,
-    unit="MHz",
-    min=60*MHz, 
-    max=90*MHz,
-    tooltip="Frequency for the 729 single pass aux RF signal."
-)
-
-
-argument_manager.add_argument(
-    "attenuation_729_sp_aux",
-    default_value=7.0*dB,
-    unit="dB",
-    min=6.0*dB,
-    tooltip="Attenuation for the 729 single pass aux RF signal."
-)
-
-argument_manager.add_argument(
-    "phase_729_sp_aux",
-    default_value= 0.53,
- 
-    min=0,
-    max = 1.0,
-    tooltip="Phase for the 729 single pass RF signal."
-)
-
 
 argument_manager.add_argument(
     "attenuation_729_dp",

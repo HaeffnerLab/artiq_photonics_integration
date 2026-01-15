@@ -13,14 +13,12 @@ class Init_Device(Sequence):
         self.add_parameter("frequency/866_cooling")
 
         self.add_parameter("frequency/729_dp")
-        self.add_parameter("frequency/729_sp")
         self.add_parameter("frequency/854_dp")
 
         self.add_parameter("attenuation/397")
         self.add_parameter("attenuation/397_far_detuned")
         self.add_parameter("attenuation/866")
         self.add_parameter("attenuation/729_dp")
-        self.add_parameter("attenuation/729_sp")
         self.add_parameter("attenuation/854_dp")
 
 
@@ -34,7 +32,6 @@ class Init_Device(Sequence):
         # self.dds_866_dp.init()
         #delay(2*us)
         # self.dds_729_dp.init()
-        # self.dds_729_sp.init()
         # self.dds_854_dp.init()
         # self.dds_Raman_1.init()
         # self.dds_Raman_2.init()
@@ -47,8 +44,6 @@ class Init_Device(Sequence):
         # delay(2*us)
 
         # self.dds_729_dp.set_att(self.attenuation_729_dp)
-        # self.dds_729_sp.set_att(self.attenuation_729_sp)
-        # self.dds_729_sp_aux.set_att(self.attenuation_729_sp)
         # self.dds_854_dp.set_att(self.attenuation_854_dp)
         delay(5*us)
 
@@ -59,15 +54,11 @@ class Init_Device(Sequence):
         # delay(2*us)
         
         # self.dds_729_dp.set(self.frequency_729_dp)
-        # self.dds_729_sp.set(self.frequency_729_sp)
-        # self.dds_729_sp_aux.set(self.frequency_729_sp)
 
         # self.dds_854_dp.set(self.frequency_854_dp)
         
         delay(5*us)
 
-        # self.dds_729_sp.sw.off()
-        # self.dds_729_sp_aux.sw.off()
         # self.dds_729_dp.sw.off()
         # self.dds_854_dp.sw.off()
         delay(2*us)
@@ -79,7 +70,6 @@ class Init_Device(Sequence):
         # self.dds_Raman_2.sw.off()
 
         # self.dds_729_radial_dp.sw.off()
-        # self.dds_729_radial_sp.cfg_sw(False)
         delay(5*us)
         
 
