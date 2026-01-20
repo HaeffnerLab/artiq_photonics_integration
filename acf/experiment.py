@@ -1,4 +1,4 @@
-from artiq.experiment import EnvExperiment, kernel, NumberValue
+from artiq.experiment import EnvExperiment, kernel, NumberValue, delay, ms
 from acf.hardware_setup import HardwareSetup
 from acf.experiment_data import ExperimentData
 from acf.parameter_manager import ParameterManager
@@ -33,10 +33,13 @@ class _ACFExperiment(EnvExperiment):
         self.core.break_realtime()
 
 
-        # Init all DDSs
+        # Init CPLDs once per board, then DDS channels.
+        for cpld in self.hardware.get_all_cpld():
+            cpld.init()
+            delay(1*ms)
         for dds in self.hardware.get_all_dds():
            dds.init()
-           dds.cpld.init()
+           delay(1*ms)
         
         # Init all devices / turn off all devices / set them to initial value
 
