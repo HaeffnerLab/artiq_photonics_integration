@@ -11,6 +11,7 @@ class HardwareSetup:
 
         """
         self.hardware = {}
+        self.urukul_boards = []
         self.init_from_file()
 
     def init_from_file(self):
@@ -77,6 +78,8 @@ class HardwareSetup:
             "type": "dds",
             "device_str": f"urukul{board_num}_ch{channel}",
         }
+        if board_num not in self.urukul_boards:
+            self.urukul_boards.append(board_num)
 
     def initialize(self, exp):
         """Initialize all of the hardware and set names in the calling exp class.
@@ -88,9 +91,14 @@ class HardwareSetup:
         """
         self.exp = exp
         self.dds_devices = []
+        self.cpld_devices = []
 
         self.exp.setattr_device("core")
         self.exp.setattr_device("scheduler")
+        for board_num in sorted(self.urukul_boards):
+            cpld_name = f"urukul{board_num}_cpld"
+            self.exp.setattr_device(cpld_name)
+            self.cpld_devices.append(getattr(self.exp, cpld_name))
         for device_name in self.hardware:
 
             # Register device with Artiq
@@ -130,6 +138,11 @@ class HardwareSetup:
         Returns: List of dds devices.
         """
         return self.dds_devices
+
+    @kernel
+    def get_all_cpld(self):
+        """Get all CPLD devices for Urukul boards."""
+        return self.cpld_devices
 
     def shutdown(self):
         """Turn off output on all of the hardware."""
