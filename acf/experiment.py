@@ -31,15 +31,17 @@ class _ACFExperiment(EnvExperiment):
         """Setup to run at the beginning of the run method."""
         self.core.reset()
         self.core.break_realtime()
-
+        delay(50*ms)
 
         # Init CPLDs once per board, then DDS channels.
         for cpld in self.hardware.get_all_cpld():
+            self.core.break_realtime()
             cpld.init()
-            delay(1*ms)
+            delay(5*ms)
         for dds in self.hardware.get_all_dds():
-           dds.init()
-           delay(1*ms)
+            self.core.break_realtime()
+            dds.init()
+            delay(5*ms)
         
         # Init all devices / turn off all devices / set them to initial value
 
