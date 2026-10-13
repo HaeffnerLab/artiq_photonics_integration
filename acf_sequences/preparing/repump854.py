@@ -26,7 +26,11 @@ class Repump854(Sequence):
         self.core.break_realtime()
         delay(1*ms)
         # Explicitly move the software timeline into the future relative to hardware time
-        at_mu(self.core.get_rtio_counter_mu() + 500000)
+        # Only move the timeline forward: a backward jump queues events earlier than
+        # ones already submitted -> RTIO sequence/busy errors.
+        target_mu = self.core.get_rtio_counter_mu() + 500000
+        if target_mu > now_mu():
+            at_mu(target_mu)
 
         # Turn off potentially conflicting outputs first
         self.dds_729_dp.sw.off()
@@ -37,7 +41,9 @@ class Repump854(Sequence):
         # Add additional slack before issuing SPI-heavy DDS configuration
         self.core.break_realtime()
         delay(1*ms)
-        at_mu(self.core.get_rtio_counter_mu() + 500000)
+        target_mu = self.core.get_rtio_counter_mu() + 500000
+        if target_mu > now_mu():
+            at_mu(target_mu)
         # 854 repump
         self.dds_854_dp.set(self.frequency_854_dp)
         delay(200*us)
