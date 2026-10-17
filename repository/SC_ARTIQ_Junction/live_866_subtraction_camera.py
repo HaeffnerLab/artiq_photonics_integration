@@ -11,7 +11,9 @@ from acf_sequences.sequences import sequences
 
 WINDOW_NAME = "866 On - 866 Off (Ion Only)"
 DEFAULT_CAMERA_PYTHON = r"C:\Users\artiq\.conda\envs\camera_env\python.exe"
-DEFAULT_CAMERA_SCRIPTS_DIR = r"C:\Users\artiq\Documents\SC_Temp\SC_Active_Code\SC_Camera_Scripts"
+DEFAULT_CAMERA_SCRIPTS_DIR = str(
+    Path(__file__).resolve().parent.parent / "SC_Camera_Scripts"
+)
 
 
 CAMERA_WORKER_CODE = r"""

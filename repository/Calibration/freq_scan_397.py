@@ -42,11 +42,11 @@ class FreqScan397(_ACFExperiment):
             tooltip="Scan parameters for sweeping the 397 laser."
         )     
         
-        # self.setattr_argument(
-        #    "far_detuned_on",
-        #     BooleanValue(default=False),
-        #     tooltip="Whether to prompt for a result at the end"
-        # )
+        self.setattr_argument(
+            "far_detuned_on",
+            BooleanValue(default=False),
+            tooltip="Update the Stark-shifted cooling frequency during analysis"
+        )
 
         self.setattr_argument("enable_diff_mode", BooleanValue(True))
 

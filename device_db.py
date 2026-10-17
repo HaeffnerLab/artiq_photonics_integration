@@ -26,6 +26,9 @@ device_db = {
         "host": "::1",
         "port_proxy": 1383,
         "port": 1384,
+        # Keep recovery prompt even after a long core/network outage.
+        "retry_timer": 5.0,
+        "retry_timer_backoff": 1.0,
         "command": "aqctl_moninj_proxy --port-proxy {port_proxy} --port-control {port} --bind {bind} " + core_addr
     },
     "core_analyzer": {

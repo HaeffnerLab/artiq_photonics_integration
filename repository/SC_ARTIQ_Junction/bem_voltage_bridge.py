@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 # Python of the conda env that can import bem_voltage_streamlined (bem, pyvista, ...).
 BEM_PYTHON_EXE = r"C:\Users\artiq\.conda\envs\bem39\python.exe"
 # Folder holding voltage_database_manipulation.py, BEM_Voltage_Cache/ and BEM_Field_Cache/.
-BEM_CODE_DIR = r"C:\Users\artiq\Documents\SC_Temp\SC_Active_Code\SC_Batch_BEM"
+BEM_CODE_DIR = Path(__file__).resolve().parent.parent / "SC_Batch_BEM"
 BEM_SPECIALIZED_CLASS = "Gen3"  # Class name in bem_voltage_streamlined.py
 BEM_TRAP_NAME = "gen3"
 BEM_RESOLUTION = "LOW"  # "LOW" or "HIGH" (member of bem_voltage_streamlined.Resolution)
