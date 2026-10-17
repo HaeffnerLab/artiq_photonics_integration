@@ -15,19 +15,37 @@ class PulseDDS(_ACFExperiment):
         self.setattr_argument(
             "if_pulse",
             BooleanValue(default=True),
-            tooltip="Is pulsing effect on"
+            tooltip="Alternate background and ion-plus-background PMT count rates"
         )
 
         self.setattr_argument(
             "on_secs",
-            NumberValue(default=0.02*s, unit="s", min=0*s, precision=8),
-            tooltip="Seconds on"
+            NumberValue(default=0.05*s, unit="s", min=1*ms, precision=8),
+            tooltip="PMT integration time with 866 on (ion plus background)"
         )
 
         self.setattr_argument(
             "off_secs",
-            NumberValue(default=0.02*s, unit="s", min=0*s, precision=8),
-            tooltip="Seconds off"
+            NumberValue(default=0.01*s, unit="s", min=1*ms, max=20*ms, precision=8),
+            tooltip="Total 866-off time, including settling and background counting (maximum 20 ms)"
+        )
+
+        self.setattr_argument(
+            "background_settle_secs",
+            NumberValue(default=100*us, unit="us", min=0*us, precision=1),
+            tooltip="Wait after switching 866 off before counting; included in off_secs"
+        )
+
+        self.setattr_argument(
+            "display_hold_secs",
+            NumberValue(default=0.3*s, unit="s", min=0.1*s, precision=3),
+            tooltip="Hold each displayed count rate while 866 is on and the ion cools"
+        )
+
+        self.setattr_argument(
+            "initial_cooling_secs",
+            NumberValue(default=100*ms, unit="ms", min=1*ms, precision=1),
+            tooltip="Cooling before the first background measurement and after DC voltage changes"
         )
 
         self.setattr_argument(
@@ -149,6 +167,34 @@ class PulseDDS(_ACFExperiment):
             print("Prepared voltage set {}: {}".format(i, voltages))
 
     def prepare(self):
+        if not 1*ms <= self.off_secs <= 20*ms:
+            raise ValueError("off_secs must be between 1 ms and 20 ms, including settling.")
+        if not 0 <= self.background_settle_secs < self.off_secs:
+            raise ValueError("background_settle_secs must be nonnegative and shorter than off_secs.")
+        if not self.on_secs >= 1*ms:
+            raise ValueError("on_secs must be at least 1 ms.")
+        if not self.display_hold_secs >= 0.1*s:
+            raise ValueError("display_hold_secs must be at least 0.1 s.")
+        if not self.initial_cooling_secs >= 1*ms:
+            raise ValueError("initial_cooling_secs must be at least 1 ms.")
+
+        # Normalize by the actual gate durations after conversion to RTIO units.
+        self.on_gate_mu = self.core.seconds_to_mu(self.on_secs)
+        self.off_duration_mu = self.core.seconds_to_mu(self.off_secs)
+        self.background_settle_mu = self.core.seconds_to_mu(self.background_settle_secs)
+        self.background_gate_mu = self.off_duration_mu - self.background_settle_mu
+        if self.on_gate_mu <= 0 or self.background_gate_mu <= 0:
+            raise ValueError("Both PMT gates must be at least one RTIO machine unit long.")
+        self.on_gate_seconds = self.core.mu_to_seconds(self.on_gate_mu)
+        self.background_gate_seconds = self.core.mu_to_seconds(self.background_gate_mu)
+
+        # Convert voltages on the host; converting all 32 channels inside the
+        # kernel can exhaust the RTIO slack before the first SPI write.
+        self.voltage_sets_mu = [
+            [self.zotino0.voltage_to_mu(voltage) for voltage in voltage_set]
+            for voltage_set in self.voltage_sets
+        ]
+
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
         # Set initial voltage set based on user parameter
         self.current_voltage_set = self.initial_voltage_set
@@ -156,6 +202,15 @@ class PulseDDS(_ACFExperiment):
         if self.current_voltage_set >= len(self.voltage_sets):
             self.current_voltage_set = 0
             print(f"Warning: Initial voltage set {self.initial_voltage_set} is out of range. Using 0 instead.")
+
+    @kernel
+    def apply_voltage_set(self):
+        # set_dac_mu schedules the SPI transfers before the current timestamp.
+        # Add headroom after break_realtime for that rewind and kernel execution.
+        self.core.break_realtime()
+        delay(10*ms)
+        self.zotino0.set_dac_mu(self.voltage_sets_mu[self.current_voltage_set], self.channels)
+        delay(10*ms)  # Allow the DAC outputs to settle before continuing.
 
     @kernel
     def run(self):
@@ -173,11 +228,7 @@ class PulseDDS(_ACFExperiment):
 
         # Apply initial voltage set
         if self.scan_dc_voltages:
-            delay(1.0*ms)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            self.core.break_realtime() #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            self.zotino0.set_dac(self.voltage_sets[self.current_voltage_set], self.channels)
-            delay(1.0*ms)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            delay(10*ms)
+            self.apply_voltage_set()
 
         self.dds_397_dp.set(self.frequency_397_cooling)
         self.dds_397_dp.set_att(self.attenuation_397)
@@ -227,98 +278,56 @@ class PulseDDS(_ACFExperiment):
 
         if self.if_pulse:
             try:
-                # Scan frequencies: original + 5 MHz, original - 5 MHz, original
-                frequencies = [
-                    # self.frequency_397_far_detuned + 5*MHz,
-                    # self.frequency_397_far_detuned - 5*MHz,
-                    self.frequency_397_far_detuned
-                ]
-                
-                current_freq_index = 0
-                current_freq_start_time = now_mu()
-                freq_duration = 20*s  # 20 seconds for each frequency
-                
-                self.dds_397_far_detuned.set(frequencies[current_freq_index])
-                
-                # Add period counter for DC voltage scanning
+                # All beams except 866 retain their settings during both gates.
+                # Display holds are cooling periods, not additional 866-off time.
                 period_counter = 0
-                save_on_cycle = 1
-                
+                delay(self.initial_cooling_secs)
+
                 while True:
-                    # Check if it's time to switch frequency
-                    elapsed_time = self.core.get_rtio_counter_mu() - current_freq_start_time
-                    if elapsed_time >= self.core.seconds_to_mu(freq_duration):
-                        # Move to next frequency
-                        current_freq_index = (current_freq_index + 1) % len(frequencies)
-                        # self.dds_397_far_detuned.set(frequencies[current_freq_index])
-                        # self.dds_397_far_detuned.set(200*MHz)
-                        current_freq_start_time = now_mu()
-                    
-                    # Handle 866 blinking
-                    # self.dds_397_far_detuned.set(200*MHz)
-                    self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned)
-                    self.dds_866_dp.set_att(self.attenuation_866)
-                    self.dds_854_dp.set_att(self.attenuation_854_dp)
-                    self.dds_866_dp.sw.on()
-                    self.dds_397_dp.sw.on()
-                    delay(self.on_secs)
-
-                    self.dds_866_dp.set_att(self.attenuation_866 * 1.0) # If 1.0, then 100% attenuation and no blinking
-                    self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
-                    delay(self.off_secs)
-
+                    # Queue the entire short dark interval before any blocking
+                    # read or host RPC, so neither can extend the 866-off time.
                     self.core.break_realtime()
+                    self.dds_866_dp.sw.off()
+                    delay_mu(self.background_settle_mu)
+                    background_end = self.ttl_pmt_input.gate_rising_mu(self.background_gate_mu)
                     self.dds_866_dp.sw.on()
-                    self.dds_397_dp.sw.on()
-                    # self.dds_397_far_detuned.set(205*MHz)
-                    self.dds_397_far_detuned.set_att(self.attenuation_397_far_detuned * 1.0)
-                    self.dds_854_dp.set_att(self.attenuation_854_dp * 1.0)
-                    num_pmt_pulses_on = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(50.0*ms)
-                    )
-                    delay(1.0*ms)
-                    # self.dds_866_dp.sw.off()
-                    # self.dds_397_dp.sw.off()
-                    # self.dds_854_dp.sw.off()
-                    # self.dds_729_dp.sw.off()
-                    num_pmt_pulses_off = self.ttl_pmt_input.count(
-                        self.ttl_pmt_input.gate_rising(50.0*ms)
-                    )
-                    delay(1.0*ms)
-                    if save_on_cycle == 1:
-                        num_pmt_pulses = 20 * (num_pmt_pulses_on) / 1.0
-                    else:   
-                        num_pmt_pulses = 20  * (num_pmt_pulses_off) / 1.0
-                    self.experiment_data.insert_nd_dataset("PMT_count", 0, num_pmt_pulses)
-                    save_on_cycle = 1 - save_on_cycle
+                    background_count = self.ttl_pmt_input.count(background_end)
+                    background_cps = background_count / self.background_gate_seconds
+                    self.experiment_data.insert_nd_dataset("PMT_count", 0, background_cps)
+
+                    # Keep the background result visible while recooling, then
+                    # acquire ion plus background with 866 still on.
                     self.core.break_realtime()
-                    self.dds_866_dp.sw.on()
-                    self.dds_397_dp.sw.on()
-                    self.dds_854_dp.sw.on()
-                    self.dds_729_dp.sw.on()
-                    delay(3.0*ms)
-                    
-                    # Increment period counter
+                    delay(self.display_hold_secs)
+                    total_end = self.ttl_pmt_input.gate_rising_mu(self.on_gate_mu)
+                    total_count = self.ttl_pmt_input.count(total_end)
+                    total_cps = total_count / self.on_gate_seconds
+                    self.experiment_data.insert_nd_dataset("PMT_count", 0, total_cps)
+
+                    # Let the high result reach the applet before the next low
+                    # update; 866 stays on throughout this display hold too.
+                    self.core.break_realtime()
+                    delay(self.display_hold_secs)
+                    self.core.wait_until_mu(now_mu())
+                    if self.scheduler.check_pause():
+                        raise TerminationRequested
+
+                    # Change voltages only after a complete background/total pair.
                     period_counter += 1
-                    
-                    # Check if we should change DC voltage set (every 10 periods)
                     if self.scan_dc_voltages and period_counter >= 10:
-                        period_counter = 0  # Reset counter
-                        
-                        # Move to next voltage set
+                        period_counter = 0
                         self.current_voltage_set = (self.current_voltage_set + 1) % len(self.voltage_sets)
-                        
-                        # Apply new voltage set
-                        delay(1.0*ms) #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        self.core.break_realtime() #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        self.zotino0.set_dac(self.voltage_sets[self.current_voltage_set], self.channels)
-                        delay(1.0*ms)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        
-                        # Add small delay to ensure voltages are set
-                        delay(10*ms)
-                        
+
+                        self.apply_voltage_set()
+                        self.core.wait_until_mu(now_mu())
                         print("Changed to voltage set", self.current_voltage_set)
                         print("Current voltages:", self.voltage_sets[self.current_voltage_set])
-            
+                        self.core.break_realtime()
+                        delay(self.initial_cooling_secs)
+
             except TerminationRequested:
                 pass
+            finally:
+                self.core.break_realtime()
+                self.dds_866_dp.sw.on()
+                self.core.wait_until_mu(now_mu())
