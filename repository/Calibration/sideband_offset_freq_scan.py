@@ -125,8 +125,7 @@ class Sideband_FreqScanOffset(_ACFExperiment):
 
                 self.seq.rabi.run(self.RSB_drive_time,
                                   self.freq_729_dp,
-                                  self.att_729_dp,
-                                  0.0
+                                  self.att_729_dp
                 )
 
                 delay(5*us)

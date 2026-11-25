@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Plot PMT_count against PMT_count_time in a fixed ten-second window.
+"""Plot PMT counts against PMT_count_time in a fixed ten-second window.
 
-Run directly as an ARTIQ applet; it defaults to PMT_count and
-PMT_count_time. Use --y and --x to select different datasets.
+The PMT_count y-axis unit follows PMT_count_is_cps. PMT_count_rate is always
+shown in counts per second. Use --y and --x to select different datasets.
 """
 
 import numpy as np
@@ -27,7 +27,8 @@ class PMTSlidingPlot(pyqtgraph.PlotWidget):
         self.curve.setSymbolSize(5)
         self.curve.setSymbolBrush((255, 0, 0))
         self.setLabel("bottom", "Time", units="s")
-        self.setLabel("left", "PMT count")
+        self.setLabel("left", "PMT count", units="counts/gate")
+        self.getPlotItem().getAxis("left").enableAutoSIPrefix(False)
         self.showGrid(x=True, y=True, alpha=0.3)
         self.setTitle("Live PMT count (last 10 seconds)")
         self.enableAutoRange(axis=pyqtgraph.ViewBox.XAxis, enable=False)
@@ -37,17 +38,27 @@ class PMTSlidingPlot(pyqtgraph.PlotWidget):
         try:
             times = np.asarray(value[self.args.x], dtype=float)
             counts = np.asarray(value[self.args.y], dtype=float)
+            is_cps = self.args.y == "PMT_count_rate" or (
+                self.args.y == "PMT_count"
+                and bool(value.get(self.args.mode, False))
+            )
         except KeyError:
             return
         except (TypeError, ValueError):
             self.setTitle("Invalid PMT plot datasets")
             return
 
+        if is_cps:
+            self.setLabel("left", "PMT count rate", units="counts/s")
+            self.setTitle("Live PMT count rate (last 10 seconds)")
+        else:
+            self.setLabel("left", "PMT count", units="counts/gate")
+            self.setTitle("Live PMT count (last 10 seconds)")
+
         if times.ndim != 1 or counts.ndim != 1 or len(times) != len(counts):
-            self.setTitle("PMT count and time datasets must be matching 1D arrays")
+            self.setTitle("PMT value and time datasets must be matching 1D arrays!!!!!!!!!!!")
             return
 
-        self.setTitle("Live PMT count (last 10 seconds)")
         if not len(times):
             self.curve.setData([], [])
             return
@@ -72,9 +83,14 @@ class PMTSlidingPlot(pyqtgraph.PlotWidget):
 
 def main():
     applet = SimpleApplet(PMTSlidingPlot)
-    applet.add_dataset("y", "PMT count values", required=False)
+    applet.add_dataset("y", "PMT counts or count rates", required=False)
     applet.add_dataset("x", "PMT sample times in seconds", required=False)
-    applet.argparser.set_defaults(y="PMT_count", x="PMT_count_time")
+    applet.add_dataset("mode", "PMT_count counts-per-second mode", required=False)
+    applet.argparser.set_defaults(
+        y="PMT_count",
+        x="PMT_count_time",
+        mode="PMT_count_is_cps",
+    )
     applet.run()
 
 

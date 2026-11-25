@@ -9,6 +9,9 @@ Broadcasts real-time readings to 'PMT_count' and elapsed sample times to
 also compatible with:
   - acf/applets/pmt_plot_monitor.py (live scrolling chart)
   - acf/applets/pmt_monitor.py (numerical display)
+
+PMT_count_rate provides an always-normalized counts-per-second series;
+PMT_count_time provides its elapsed sample times.
 """
 
 import sys
@@ -73,7 +76,7 @@ class Live866SubtractionPMT(_ACFExperiment):
         self.setattr_argument(
             "enable_diff_mode",
             BooleanValue(default=True),
-            tooltip="Enable differential mode (866 ON - 866 OFF). If disabled, outputs raw 866 ON counts.",
+            tooltip="Enable differential mode (866 ON - 866 OFF). If disabled, uses only 866 ON counts.",
             group="Subtraction",
         )
         self.setattr_argument(
@@ -87,13 +90,13 @@ class Live866SubtractionPMT(_ACFExperiment):
         self.setattr_argument(
             "display_gain",
             NumberValue(default=1.0, precision=2, step=0.1, min=0.01),
-            tooltip="Multiplier applied to the difference signal",
+            tooltip="Multiplier applied to the selected PMT signal before rate conversion",
             group="Display",
         )
         self.setattr_argument(
             "display_as_cps",
             BooleanValue(default=False),
-            tooltip="Convert and broadcast counts in counts per second (cps) instead of raw counts per gate",
+            tooltip="Broadcast PMT_count in counts per second instead of counts per gate; the graph rate is always counts per second",
             group="Display",
         )
         self.setattr_argument(
@@ -118,7 +121,13 @@ class Live866SubtractionPMT(_ACFExperiment):
     def prepare(self):
         # Set list dataset for PMT_count to integrate with pmt_plot_monitor and pmt_monitor
         self.experiment_data.set_list_dataset("PMT_count", 1, broadcast=True)
+        self.experiment_data.set_list_dataset("PMT_count_rate", 1, broadcast=True)
         self.experiment_data.set_list_dataset("PMT_count_time", 1, broadcast=True)
+        self.set_dataset(
+            "PMT_count_is_cps",
+            bool(self.display_as_cps),
+            broadcast=True,
+        )
         self.plot_window_s = max(float(self.plot_window), 10.0)
         self.pmt_time_origin = time.monotonic()
         self.pmt_history = deque()
@@ -170,19 +179,26 @@ class Live866SubtractionPMT(_ACFExperiment):
 
         val = val * float(self.display_gain)
 
-        if self.display_as_cps and self.gate_time_s > 0.0:
-            val = val / self.gate_time_s
-
         if self.clip_negative_to_zero and val < 0.0:
             val = 0.0
 
-        self.pmt_history.append((timestamp, val))
+        rate = val / self.gate_time_s if self.gate_time_s > 0.0 else 0.0
+        count_value = val
+        if self.display_as_cps and self.gate_time_s > 0.0:
+            count_value = rate
+
+        self.pmt_history.append((timestamp, count_value, rate))
         cutoff = timestamp - self.plot_window_s
         while self.pmt_history and self.pmt_history[0][0] < cutoff:
             self.pmt_history.popleft()
         self.set_dataset(
             "PMT_count",
             [sample[1] for sample in self.pmt_history],
+            broadcast=True,
+        )
+        self.set_dataset(
+            "PMT_count_rate",
+            [sample[2] for sample in self.pmt_history],
             broadcast=True,
         )
         self.set_dataset(

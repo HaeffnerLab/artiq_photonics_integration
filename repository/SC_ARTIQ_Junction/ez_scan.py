@@ -21,20 +21,24 @@ except ImportError:
 SCAN_ORDERING = "linear"
 
 # ez (V/mm). Inclusive on both ends; step must divide the range.
-EZ_START_V_PER_MM = -0.5
-EZ_STOP_V_PER_MM = 0.5
+EZ_START_V_PER_MM = -1.0
+EZ_STOP_V_PER_MM = 1.0
 EZ_STEP_V_PER_MM = 0.1
 
 # Fixed parameters, held constant during the ez scan. zl in um, ex/ey in V/mm, u1..u5 in V/mm^2.
 FIXED_PARAMETERS = {
-    "zl": 680.0,
+    "zl": 740.0,
     "ex": 0.0,
-    "ey": 3.0,
+    "ey": 2.0,
     "u1": 0.0,
     "u2": 6.0,
     "u3": 2.0,  # (1/3) * u2
     "u4": 0.0,
     "u5": 0.0,
+    "max_voltage": 49.5,
+    "free_multipoles": ("U4", "U5"),
+    "trap_name": "gen3",
+    "resolution": "LOW",
 }
 # =============================================================================
 

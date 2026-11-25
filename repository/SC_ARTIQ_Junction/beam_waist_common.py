@@ -20,20 +20,24 @@ except ImportError:
 SCAN_ORDERING = "linear"
 
 # Ion axial position zl (um). Inclusive on both ends; step must divide the range.
-ZL_START_UM = 670.0
-ZL_STOP_UM = 690.0
-ZL_STEP_UM = 2.0
+ZL_START_UM = 740 - 15.0
+ZL_STOP_UM = 740 + 15.0
+ZL_STEP_UM = 0.5
 
 # Fixed parameters, held constant during the zl scan. ex/ey/ez in V/mm, u1..u5 in V/mm^2.
 FIXED_PARAMETERS = {
     "ex": 0.0,
-    "ey": 3.0,
+    "ey": 2.0,
     "ez": 0.0,
     "u1": 0.0,
     "u2": 6.0,
     "u3": 2.0,  # (1/3) * u2
     "u4": 0.0,
     "u5": 0.0,
+    "max_voltage": 49.5,
+    "free_multipoles": ("U4", "U5"),
+    "trap_name": "gen3",
+    "resolution": "LOW",
 }
 # =============================================================================
 
