@@ -113,8 +113,7 @@ class Doppler_FreqScan397(_ACFExperiment):
                 self.seq.doppler_cool.run(freq_397=freq_397)
                 self.seq.rabi.run(self.drive_time,
                                   self.RSB_freq_729_dp,
-                                  self.att_729_dp,
-                                  0.0
+                                  self.att_729_dp
                 )
 
                 delay(5*us)
@@ -135,8 +134,7 @@ class Doppler_FreqScan397(_ACFExperiment):
                 self.seq.doppler_cool.run(freq_397=freq_397)
                 self.seq.rabi.run(self.drive_time,
                                   self.BSB_freq_729_dp,
-                                  self.att_729_dp,
-                                  0.0
+                                  self.att_729_dp
                 )
 
                 delay(5*us)

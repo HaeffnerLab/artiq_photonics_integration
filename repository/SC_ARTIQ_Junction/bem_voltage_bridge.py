@@ -23,6 +23,7 @@ calculation) re-imports this file in each worker process. Keep it compatible wit
 both the ARTIQ Python (3.11) and the BEM Python (3.9).
 """
 
+import collections
 import json
 import logging
 import math
@@ -32,8 +33,9 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
-from typing import Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +61,18 @@ BEM_TIMEOUT_S = 2 * 3600
 
 # Seed for SCAN_ORDERING == "random". None gives a different order on every submission.
 RANDOM_SEED = None
+
+# Level of this module's messages (scan values, [BEM] progress lines). Set on this
+# logger directly, so the messages reach the ARTIQ log even when the dashboard's
+# submission "Log level" is the default WARNING. None: follow the dashboard level.
+BRIDGE_LOG_LEVEL = logging.INFO
+# search_and_fill verbosity. 1: summary lines. 2: also one line per computed point
+# and per zl field calculation.
+BEM_VERBOSE = 2
 # =============================================================================
+
+if BRIDGE_LOG_LEVEL is not None:
+    logger.setLevel(BRIDGE_LOG_LEVEL)
 
 
 # =============================================================================
@@ -71,16 +84,40 @@ DC_CLAMP_V = 9.9 * 5       # Same clamp as pulse_dds.py
 NUM_DC_ELECTRODES = 21
 NUM_DAC_CHANNELS = 32
 
-# Key order of the voltage database: (zl, ex, ey, ez, u1, u2, u3, u4, u5).
-BEM_PARAMETERS = ("zl", "ex", "ey", "ez", "u1", "u2", "u3", "u4", "u5")
-# Any permutation of BEM_PARAMETERS is valid here because only one parameter varies.
-BEM_SCAN_ORDER = ["zl", "u5", "u4", "u3", "u2", "u1", "ez", "ex", "ey"]
+# Key order of the voltage database: (zl, ex, ey, ez, u1, u2, u3, u4, u5, max_voltage, free_multipoles, trap_name, resolution).
+BEM_PARAMETERS = (
+    "zl", "ex", "ey", "ez", "u1", "u2", "u3", "u4", "u5",
+    "max_voltage", "free_multipoles", "trap_name", "resolution"
+)
+BEM_SCAN_ORDER = [
+    "trap_name", "resolution", "max_voltage", "free_multipoles",
+    "zl", "u5", "u4", "u3", "u2", "u1", "ez", "ex", "ey"
+]
+BEM_DEFAULTS = {
+    "trap_name": BEM_TRAP_NAME,
+    "resolution": BEM_RESOLUTION,
+    "max_voltage": BEM_MAX_VOLTAGE,
+    "free_multipoles": BEM_FREE_MULTIPOLES,
+    "zl": 740.0,
+    "ex": 0.0,
+    "ey": 2.0,
+    "ez": 0.0,
+    "u1": 0.0,
+    "u2": 6.0,
+    "u3": 2.0,  # (1/3) * u2
+    "u4": 0.0,
+    "u5": 0.0,
+}
 SCAN_ORDERINGS = ("linear", "outwards", "random")
 # batch_bem_voltage rounds range values to 12 digits; database keys only match if we do too.
 VALUE_ROUND_DIGITS = 12
 BRIDGE_SCRIPT = Path(__file__).resolve()
 # The BEM code calls IPython's clear_output, which prints terminal escape codes.
 ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
+# BEM subprocess lines logged at INFO; every other line (solver output) is logged at DEBUG.
+BEM_PROGRESS_LINE = re.compile(
+    r"^(\[(bridge|search_and_fill|compute_voltages)\]|BEM |Traceback|\w+(Error|Exception|Warning)\b)"
+)
 
 EXIT_USAGE = 2
 EXIT_MISSING_ENTRIES = 3
@@ -94,16 +131,19 @@ REQUIRED_REQUEST_KEYS = (
 # Scan values
 # =============================================================================
 def _as_value(value: object, name: str) -> float:
-    """Validate a user-supplied number and round it the same way the database keys are."""
+    """Validate a user-supplied number and return a clean finite float.
+
+    Note: Value rounding is handled on the BEM side by search_and_fill(value_round_digits=...).
+    """
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise TypeError(f"{name} must be a number, got {value!r} ({type(value).__name__}).")
     if not math.isfinite(value):
         raise ValueError(f"{name} must be finite, got {value!r}.")
     # "+ 0.0" turns -0.0 into 0.0 so datasets and log messages never show "-0.0".
-    return round(float(value), VALUE_ROUND_DIGITS) + 0.0
+    return float(value) + 0.0
 
 
-def make_linear_values(start: float, stop: float, step: float, name: str) -> list[float]:
+def make_linear_values(start: float, stop: float, step: float, name: str = "scan") -> list[float]:
     """Inclusive ascending range, identical to batch_bem_voltage.make_linear_range."""
     start = _as_value(start, f"{name} start")
     stop = _as_value(stop, f"{name} stop")
@@ -117,7 +157,11 @@ def make_linear_values(start: float, stop: float, step: float, name: str) -> lis
     n_steps = round(step_count)
     if not math.isclose(step_count, n_steps, rel_tol=0.0, abs_tol=1e-9):
         raise ValueError(f"{name} step ({step}) must divide the range [{start}, {stop}] exactly.")
-    return [_as_value(start + i * step, name) for i in range(n_steps + 1)]
+    return [_as_value(round(start + i * step, VALUE_ROUND_DIGITS) + 0.0, name) for i in range(n_steps + 1)]
+
+
+# Alias matching batch_bem_voltage.make_linear_range to resolve naming discrepancy
+make_linear_range = make_linear_values
 
 
 def make_outward_values(values: Sequence[float]) -> list[float]:
@@ -190,32 +234,117 @@ def _bem_subprocess_env() -> dict[str, str]:
     return env
 
 
+def _run_bem_subprocess(cmd: list[str], cwd: Path) -> tuple[int, list[str]]:
+    """Run the BEM Python, logging each output line as it arrives.
+
+    stderr is merged into stdout. Returns (exit code, last output lines). The
+    process is killed after BEM_TIMEOUT_S.
+    """
+    logger.info("Starting BEM voltage lookup in %s", BEM_PYTHON_EXE)
+    proc = subprocess.Popen(
+        cmd,
+        cwd=str(cwd),
+        env=_bem_subprocess_env(),
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        bufsize=1,
+        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+    )
+    timed_out = threading.Event()
+
+    def _kill_on_timeout() -> None:
+        timed_out.set()
+        proc.kill()
+
+    timer = threading.Timer(BEM_TIMEOUT_S, _kill_on_timeout)
+    timer.daemon = True
+    timer.start()
+    tail = collections.deque(maxlen=40)
+    try:
+        # Text mode turns the "\r" of clear_output into line breaks; blank lines are skipped.
+        for raw_line in proc.stdout:
+            line = ANSI_ESCAPE.sub("", raw_line).strip()
+            if line:
+                tail.append(line)
+                # Solver chatter (C_k..., mesh statistics) goes to DEBUG; progress and errors to INFO.
+                level = logging.INFO if BEM_PROGRESS_LINE.match(line) else logging.DEBUG
+                logger.log(level, "[BEM] %s", line)
+        returncode = proc.wait()
+    finally:
+        timer.cancel()
+        if proc.poll() is None:
+            proc.kill()
+            proc.wait()
+        proc.stdout.close()
+    if timed_out.is_set():
+        raise RuntimeError(f"BEM voltage lookup timed out after {BEM_TIMEOUT_S} s (BEM_TIMEOUT_S).")
+    return returncode, list(tail)
+
+
+PARAM_ALIASES = {
+    "z": "zl",
+    "z_vals": "zl",
+    "zl_vals": "zl",
+    "max_voltages": "max_voltage",
+    "max_voltage_vals": "max_voltage",
+    "trap_names": "trap_name",
+    "resolutions": "resolution",
+    "free_multipoles_vals": "free_multipoles",
+}
+
+
 def fetch_voltage_dicts(
     scan_parameter: str,
-    scan_values: Sequence[float],
-    fixed_parameters: Mapping[str, float],
+    scan_values: Sequence[Any],
+    fixed_parameters: Mapping[str, Any],
 ) -> list[dict[str, float]]:
     """Return one {"DC1": V, ..., "DC21": V} dict per scan value, in scan_values order.
+
+    Supports scanning ANY of the 13 parameters:
+    (zl, ex, ey, ez, u1, u2, u3, u4, u5, max_voltage, free_multipoles, trap_name, resolution).
 
     Runs this file's main() in the BEM conda env, which calls
     voltage_database_manipulation.search_and_fill. Points missing from the database
     are computed and appended (if ALLOW_BEM_COMPUTE).
     """
-    if scan_parameter not in BEM_PARAMETERS:
+    scan_param = PARAM_ALIASES.get(scan_parameter.lower(), scan_parameter)
+    if scan_param not in BEM_PARAMETERS:
         raise ValueError(f"scan_parameter must be one of {list(BEM_PARAMETERS)}, got {scan_parameter!r}.")
     if len(scan_values) == 0:
         raise ValueError("No scan values to look up.")
 
-    expected_fixed = set(BEM_PARAMETERS) - {scan_parameter}
-    if set(fixed_parameters) != expected_fixed:
-        missing = sorted(expected_fixed - set(fixed_parameters))
-        extra = sorted(set(fixed_parameters) - expected_fixed)
-        raise ValueError(
-            f"FIXED_PARAMETERS must contain exactly {sorted(expected_fixed)} "
-            f"(the scanned {scan_parameter!r} is excluded). Missing: {missing}, extra: {extra}."
-        )
-    fixed = {p: _as_value(v, f"FIXED_PARAMETERS[{p!r}]") for p, v in fixed_parameters.items()}
-    scan = [_as_value(v, scan_parameter) for v in scan_values]
+    fixed = {}
+    for k, v in fixed_parameters.items():
+        canon_k = PARAM_ALIASES.get(k.lower(), k)
+        fixed[canon_k] = v
+
+    # Fill in any omitted parameters from BEM_DEFAULTS
+    for p in BEM_PARAMETERS:
+        if p != scan_param and p not in fixed:
+            if p in BEM_DEFAULTS:
+                fixed[p] = BEM_DEFAULTS[p]
+            else:
+                raise ValueError(f"Missing required fixed parameter {p!r}.")
+
+    def _format_param_val(p: str, val: Any) -> Any:
+        if p in ("zl", "ex", "ey", "ez", "u1", "u2", "u3", "u4", "u5", "max_voltage"):
+            return _as_value(val, p)
+        elif p == "free_multipoles":
+            if isinstance(val, (list, tuple, set)):
+                return list(sorted(str(m).upper() for m in val))
+            return [str(val).upper()]
+        elif p == "trap_name":
+            return str(val)
+        elif p == "resolution":
+            return val.name if hasattr(val, "name") else str(val).upper()
+        return val
+
+    formatted_fixed = {p: _format_param_val(p, fixed[p]) for p in BEM_PARAMETERS if p != scan_param}
+    formatted_scan = [_format_param_val(scan_param, v) for v in scan_values]
 
     bem_python = Path(BEM_PYTHON_EXE)
     bem_dir = Path(BEM_CODE_DIR)
@@ -224,17 +353,27 @@ def fetch_voltage_dicts(
     if not (bem_dir / "voltage_database_manipulation.py").is_file():
         raise FileNotFoundError(f"voltage_database_manipulation.py not found in BEM_CODE_DIR: {bem_dir}")
 
-    parameter_values = {p: ([fixed[p]] if p != scan_parameter else scan) for p in BEM_PARAMETERS}
+    parameter_values = {
+        p: ([formatted_fixed[p]] if p != scan_param else formatted_scan)
+        for p in BEM_PARAMETERS
+    }
+
+    trap_name_val = formatted_fixed.get("trap_name", BEM_TRAP_NAME) if scan_param != "trap_name" else formatted_scan[0]
+    resolution_val = formatted_fixed.get("resolution", BEM_RESOLUTION) if scan_param != "resolution" else formatted_scan[0]
+    max_voltage_val = formatted_fixed.get("max_voltage", BEM_MAX_VOLTAGE) if scan_param != "max_voltage" else formatted_scan[0]
+    free_multipoles_val = formatted_fixed.get("free_multipoles", list(BEM_FREE_MULTIPOLES)) if scan_param != "free_multipoles" else formatted_scan[0]
+
     request = {
         "bem_code_dir": str(bem_dir.resolve()),
         "specialized_class": BEM_SPECIALIZED_CLASS,
-        "trap_name": BEM_TRAP_NAME,
-        "resolution": BEM_RESOLUTION,
+        "trap_name": trap_name_val,
+        "resolution": resolution_val,
         "stl_filename": BEM_STL_FILENAME,
-        "max_voltage": float(BEM_MAX_VOLTAGE),
-        "free_multipoles": list(BEM_FREE_MULTIPOLES),
+        "max_voltage": float(max_voltage_val),
+        "free_multipoles": list(free_multipoles_val),
         "scan_order": BEM_SCAN_ORDER,
         "allow_compute": bool(ALLOW_BEM_COMPUTE),
+        "verbose": int(BEM_VERBOSE),
         "parameter_values": parameter_values,
     }
 
@@ -242,45 +381,54 @@ def fetch_voltage_dicts(
         request_path = Path(tmp_dir) / "request.json"
         result_path = Path(tmp_dir) / "result.json"
         request_path.write_text(json.dumps(request), encoding="utf-8")
-
-        try:
-            completed = subprocess.run(
-                [str(bem_python), str(BRIDGE_SCRIPT), str(request_path), str(result_path)],
-                cwd=str(bem_dir),
-                env=_bem_subprocess_env(),
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                timeout=BEM_TIMEOUT_S,
-                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-            )
-        except subprocess.TimeoutExpired as exc:
+        returncode, output_tail = _run_bem_subprocess(
+            [str(bem_python), "-u", str(BRIDGE_SCRIPT), str(request_path), str(result_path)],
+            cwd=bem_dir,
+        )
+        if returncode != 0:
             raise RuntimeError(
-                f"BEM voltage lookup timed out after {BEM_TIMEOUT_S} s (BEM_TIMEOUT_S)."
-            ) from exc
-
-        stdout = ANSI_ESCAPE.sub("", completed.stdout)
-        stderr = ANSI_ESCAPE.sub("", completed.stderr)
-        for line in stdout.splitlines():
-            if line.strip():
-                logger.info("[BEM] %s", line.strip())
-        if completed.returncode != 0:
-            raise RuntimeError(
-                f"BEM voltage lookup failed (exit code {completed.returncode}):\n"
-                f"{stderr.strip() or stdout.strip()}"
+                f"BEM voltage lookup failed (exit code {returncode}). Last output:\n"
+                + "\n".join(output_tail)
             )
         if not result_path.is_file():
             raise RuntimeError("BEM voltage lookup finished without writing a result file.")
         result = json.loads(result_path.read_text(encoding="utf-8"))
 
-    lookup = {tuple(float(x) for x in entry["key"]): entry["voltages"] for entry in result["entries"]}
+    def _parse_entry_key(raw_key):
+        if len(raw_key) == 13:
+            return tuple(float(x) for x in raw_key[:10]) + (tuple(raw_key[10]), str(raw_key[11]), str(raw_key[12]))
+        elif len(raw_key) >= 11:
+            return tuple(float(x) for x in raw_key[:10]) + (tuple(raw_key[10]),)
+        return tuple(float(x) for x in raw_key)
+
+    lookup = {_parse_entry_key(entry["key"]): entry["voltages"] for entry in result["entries"]}
     voltage_dicts = []
-    for value in scan:
-        key = tuple(value if p == scan_parameter else fixed[p] for p in BEM_PARAMETERS)
-        if key not in lookup:
-            raise RuntimeError(f"BEM result is missing {dict(zip(BEM_PARAMETERS, key))}.")
-        voltage_dicts.append({name: float(v) for name, v in lookup[key].items()})
+    for value in formatted_scan:
+        full_mapping = {p: (value if p == scan_param else formatted_fixed[p]) for p in BEM_PARAMETERS}
+        key_13 = (
+            full_mapping["zl"], full_mapping["ex"], full_mapping["ey"], full_mapping["ez"],
+            full_mapping["u1"], full_mapping["u2"], full_mapping["u3"], full_mapping["u4"], full_mapping["u5"],
+            full_mapping["max_voltage"], tuple(sorted(full_mapping["free_multipoles"])),
+            str(full_mapping["trap_name"]), str(full_mapping["resolution"])
+        )
+        if key_13 in lookup:
+            voltage_dicts.append({name: float(v) for name, v in lookup[key_13].items()})
+        else:
+            match = None
+            for lk, lv in lookup.items():
+                if len(lk) == 13 and lk == key_13:
+                    match = lv
+                    break
+                elif len(lk) >= 11 and lk[:11] == key_13[:11]:
+                    match = lv
+                    break
+                elif lk[:9] == key_13[:9]:
+                    match = lv
+                    break
+            if match is not None:
+                voltage_dicts.append({name: float(v) for name, v in match.items()})
+            else:
+                raise RuntimeError(f"BEM result is missing {key_13}.")
     return voltage_dicts
 
 
@@ -407,20 +555,57 @@ def main(argv: list) -> int:
         return EXIT_USAGE
 
     parameter_values = request["parameter_values"]
-    if set(parameter_values) != set(VALID_PARAMS):
-        print(f"parameter_values must contain exactly {list(VALID_PARAMS)}", file=sys.stderr)
-        return EXIT_USAGE
-    values = {p: [float(v) for v in parameter_values[p]] for p in VALID_PARAMS}
     scan_order = list(request["scan_order"])
-    trap_name = str(request["trap_name"])
+
+    from batch_bem_voltage import _normalize_param_values
+    all_vals = _normalize_param_values(parameter_values)
+    ordered = _ordered_keys(scan_order, all_vals)
+    unique_traps_res = set((k[11], k[12]) for k in ordered)
+    combined_db = {}
+    for tname, res_str in unique_traps_res:
+        renum = (
+            bem_voltage_streamlined.Resolution[res_str]
+            if res_str in bem_voltage_streamlined.Resolution.__members__
+            else resolution
+        )
+        combined_db.update(load_database(database_path(tname, renum)))
+
+    cached_count = sum(
+        1 for key in ordered
+        if key in combined_db or key[:11] in combined_db or key[:9] in combined_db
+    )
+    missing_count = len(ordered) - cached_count
+    print(
+        f"[bridge] Voltage database: {cached_count} hit(s), "
+        f"{missing_count} miss(es) out of {len(ordered)} requested point(s)."
+    )
+    missing = [k for k in ordered if k not in combined_db and k[:11] not in combined_db and k[:9] not in combined_db]
+
+    if request["allow_compute"] and missing:
+        # Missing points at a zl without a field cache need a full BEM field simulation first.
+        missing_fields = []
+        for tname, res_str, zl in sorted(set((k[11], k[12], k[0]) for k in missing)):
+            renum = (
+                bem_voltage_streamlined.Resolution[res_str]
+                if res_str in bem_voltage_streamlined.Resolution.__members__
+                else resolution
+            )
+            pkl = Path(f"{bem_voltage_streamlined.field_cache_path(tname, renum, zl)}.pkl")
+            if not pkl.is_file():
+                missing_fields.append(f"{tname}/{res_str}/zl={zl}")
+        if missing_fields:
+            print(
+                f"[bridge] No field cache for {len(missing_fields)} zl value(s): {missing_fields}. "
+                "Running the BEM field simulation for each of them first."
+            )
+        else:
+            print(f"[bridge] Field caches found; computing {len(missing)} voltage solution(s).")
 
     if not request["allow_compute"]:
-        database = load_database(database_path(trap_name, resolution))
-        missing = [k for k in _ordered_keys(scan_order, values) if k not in database]
         if missing:
             print(
-                f"{len(missing)} requested point(s) are not in the voltage database and "
-                "ALLOW_BEM_COMPUTE is False. Missing (zl, ex, ey, ez, u1, u2, u3, u4, u5):",
+                f"[bridge] {len(missing)} requested point(s) are not in the voltage database and "
+                "ALLOW_BEM_COMPUTE is False. Missing keys:",
                 file=sys.stderr,
             )
             for key in missing:
@@ -430,29 +615,33 @@ def main(argv: list) -> int:
     result = search_and_fill(
         specialized_cls=specialized_cls,
         stl_path=stl_path,
-        resolution=resolution,
-        zl_vals=values["zl"],
-        ex_vals=values["ex"],
-        ey_vals=values["ey"],
-        ez_vals=values["ez"],
-        u1_vals=values["u1"],
-        u2_vals=values["u2"],
-        u3_vals=values["u3"],
-        u4_vals=values["u4"],
-        u5_vals=values["u5"],
-        max_voltage=float(request["max_voltage"]),
-        free_multipoles=tuple(request["free_multipoles"]),
         scan_order=scan_order,
-        trap_name=trap_name,
-        verbose=1,
+        verbose=int(request.get("verbose", 1)),
+        **parameter_values,
     )
 
     # Database voltages are numpy.float64; convert so the JSON holds plain floats.
-    entries = [
-        {"key": [float(x) for x in key], "voltages": {name: float(v) for name, v in voltages.items()}}
-        for key, voltages in result.items()
-    ]
-    result_path.write_text(json.dumps({"entries": entries}), encoding="utf-8")
+    # Key has 13 elements: (zl, ex, ey, ez, u1, u2, u3, u4, u5, max_voltage, free_multipoles, trap_name, resolution)
+    entries = []
+    for key, voltages in result.items():
+        if len(key) == 13:
+            ser_key = [float(x) for x in key[:10]] + [list(key[10]), str(key[11]), str(key[12])]
+        elif len(key) >= 11:
+            ser_key = [float(x) for x in key[:10]] + [list(key[10])]
+        else:
+            ser_key = [float(x) for x in key]
+        entries.append({
+            "key": ser_key,
+            "voltages": {name: float(v) for name, v in voltages.items()}
+        })
+    result_path.write_text(
+        json.dumps({
+            "entries": entries,
+            "cached_count": cached_count,
+            "missing_count": missing_count,
+        }),
+        encoding="utf-8",
+    )
     return 0
 
 

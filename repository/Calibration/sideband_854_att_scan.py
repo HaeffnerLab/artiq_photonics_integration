@@ -120,8 +120,7 @@ class Sideband_AttScan854(_ACFExperiment):
 
                 self.seq.rabi.run(self.RSB_drive_time,
                                   self.RSB_freq_729_dp,
-                                  self.RSB_att_729_dp,
-                                  0.0
+                                  self.RSB_att_729_dp
                 )
 
                 delay(15*us)

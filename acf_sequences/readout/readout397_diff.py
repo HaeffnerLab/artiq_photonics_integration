@@ -34,7 +34,7 @@ class ReadOut397Diff(Sequence):
         with parallel:
 
             num_pmt_pulses1 = self.ttl_pmt_input.count(
-                self.ttl_pmt_input.gate_rising(self.m_pmt_sampling_time)
+                self.ttl_pmt_input.gate_rising(self.readout_pmt_sampling_time)
             )
             with sequential:
                 delay(20*us+self.readout_pmt_sampling_time)

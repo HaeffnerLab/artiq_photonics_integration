@@ -21,13 +21,13 @@ except ImportError:
 SCAN_ORDERING = "linear"
 
 # ey (V/mm). Inclusive on both ends; step must divide the range.
-EY_START_V_PER_MM = 2.0
-EY_STOP_V_PER_MM = 4.0
+EY_START_V_PER_MM = 0.0
+EY_STOP_V_PER_MM = 6.0
 EY_STEP_V_PER_MM = 0.1
 
 # Fixed parameters, held constant during the ey scan. zl in um, ex/ez in V/mm, u1..u5 in V/mm^2.
 FIXED_PARAMETERS = {
-    "zl": 680.0,
+    "zl": 740.0,
     "ex": 0.0,
     "ez": 0.0,
     "u1": 0.0,
@@ -35,6 +35,10 @@ FIXED_PARAMETERS = {
     "u3": 2.0,  # (1/3) * u2
     "u4": 0.0,
     "u5": 0.0,
+    "max_voltage": 49.5,
+    "free_multipoles": ("U4", "U5"),
+    "trap_name": "gen3",
+    "resolution": "LOW",
 }
 # =============================================================================
 

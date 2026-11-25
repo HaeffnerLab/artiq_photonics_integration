@@ -136,7 +136,6 @@ class TimeScan854(_ACFExperiment):
 
                 self.seq.rabi.run(self.PI_drive_time,
                                   self.PI_freq_729_dp,
-                                  self.PI_att_729_dp,
                                   self.PI_att_729_dp
                     )
                 delay(5*us)

@@ -12,8 +12,6 @@ class Off_DDS(Sequence):
     @kernel
     def run(self):
         
-        self.dds_729_radial_dp.sw.off()
-        self.dds_729_radial_sp.cfg_sw(False)
     
         self.dds_729_dp.sw.off()
         delay(1*us)
